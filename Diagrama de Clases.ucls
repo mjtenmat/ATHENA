@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.8" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <class id="1" language="java" name="delphos.iu.Delphos" project="Delphos" file="/Delphos/src/delphos/iu/Delphos.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="331" width="208" x="1269" y="4456"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="delphos.iu.PanelPaginacionPatentes" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelPaginacionPatentes.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="151" width="252" x="978" y="462"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="delphos.iu.PanelBusqueda" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelBusqueda.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="745" width="278" x="674" y="1402"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="delphos.iu.PanelResultado" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelResultado.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="709" width="234" x="409" y="653"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="delphos.iu.DelphosSelectionTreeDialog" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosSelectionTreeDialog.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="241" width="338" x="1911" y="3995"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="delphos.iu.PanelLicitacion" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelLicitacion.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="241" width="157" x="1372" y="2947"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="delphos.iu.PanelVigilancia" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelVigilancia.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="637" width="214" x="1596" y="3318"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="delphos.iu.DelphosTreeDialog" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosTreeDialog.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="421" width="232" x="430" y="3995"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="delphos.iu.PanelBusquedaController" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelBusquedaController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="457" width="264" x="709" y="2450"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="delphos.iu.DelphosSelectionDialog" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosSelectionDialog.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="367" width="378" x="1892" y="3318"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="11" language="java" name="delphos.iu.DelphosSelectionListener" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosSelectionListener.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="133" width="224" x="2291" y="4456"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="12" language="java" name="delphos.iu.PanelPaginacion" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelPaginacion.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="223" width="210" x="763" y="2947"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="delphos.iu.PanelBuscarHostsController" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelBuscarHostsController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="115" width="258" x="67" y="2450"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="delphos.iu.PanelBuscarHosts" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelBuscarHosts.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="169" width="192" x="763" y="3318"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="delphos.iu.PanelVigilanciaController" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelVigilanciaController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="385" width="365" x="1814" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="delphos.iu.DelphosFrame" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosFrame.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="313" width="183" x="1128" y="2947"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="delphos.iu.DelphosSelectionListDialog" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosSelectionListDialog.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="187" width="333" x="1538" y="3995"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="18" language="java" name="delphos.iu.PanelHost" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelHost.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="331" width="242" x="83" y="2947"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="19" language="java" name="delphos.iu.PanelPatente" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelPatente.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="259" width="157" x="1569" y="2947"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="20" language="java" name="delphos.iu.PanelAltaFuenteController" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelAltaFuenteController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="97" width="236" x="1013" y="653"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="21" language="java" name="delphos.iu.PanelAltaFuente" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelAltaFuente.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="115" width="181" x="1067" y="3318"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="22" language="java" name="delphos.iu.DialogRelevantes" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DialogRelevantes.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="223" width="239" x="470" y="2187"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="23" language="java" name="delphos.iu.PanelVigilanciaResultados" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelVigilanciaResultados.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="295" width="229" x="1394" y="2450"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="24" language="java" name="delphos.iu.DelphosFrameController" project="Delphos" 
+    file="/Delphos/src/delphos/iu/DelphosFrameController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="115" width="218" x="1270" y="462"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="25" language="java" name="delphos.iu.PanelVigilanciaResultadosController" project="Delphos" 
+    file="/Delphos/src/delphos/iu/PanelVigilanciaResultadosController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="97" width="332" x="1394" y="2187"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="26" language="java" name="delphos.iu.JCheckBoxResultadoRelevante" project="Delphos" 
+    file="/Delphos/src/delphos/iu/JCheckBoxResultadoRelevante.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="169" width="232" x="470" y="2947"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
+  <realization id="28">    
+    <bendpoint x="2321" y="462"/>    
+    <bendpoint x="2321" y="653"/>    
+    <bendpoint x="2321" y="1402"/>    
+    <bendpoint x="2321" y="2187"/>    
+    <bendpoint x="2321" y="2450"/>    
+    <bendpoint x="2321" y="2947"/>    
+    <bendpoint x="2321" y="3318"/>    
+    <bendpoint x="2321" y="3995"/>    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="29">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="30" name="dsldDocClasificacion">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="31" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="32">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <association id="33">    
+    <bendpoint x="1321" y="2450"/>    
+    <bendpoint x="1321" y="2187"/>    
+    <bendpoint x="1321" y="1402"/>    
+    <bendpoint x="1321" y="653"/>    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="34" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="35" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="24" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="36">    
+    <end type="SOURCE" refId="22" navigable="false">      
+      <attribute id="37" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="39">    
+    <bendpoint x="1024" y="1402"/>    
+    <bendpoint x="1024" y="2187"/>    
+    <bendpoint x="1024" y="2450"/>    
+    <bendpoint x="1024" y="2947"/>    
+    <bendpoint x="1024" y="3318"/>    
+    <bendpoint x="1024" y="3995"/>    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="40">    
+    <bendpoint x="982" y="653"/>    
+    <bendpoint x="982" y="1402"/>    
+    <bendpoint x="982" y="2187"/>    
+    <bendpoint x="1003" y="2450"/>    
+    <bendpoint x="1003" y="2947"/>    
+    <end type="SOURCE" refId="24"/>    
+    <end type="TARGET" refId="14"/>  
+  </dependency>  
+  <dependency id="41">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <dependency id="42">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <association id="43">    
+    <end type="SOURCE" refId="15" navigable="false">      
+      <attribute id="44" name="pnPagEPO">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="45" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="46">    
+    <bendpoint x="1279" y="653"/>    
+    <bendpoint x="1235" y="1402"/>    
+    <bendpoint x="1192" y="2187"/>    
+    <bendpoint x="1150" y="2450"/>    
+    <bendpoint x="1097" y="2947"/>    
+    <end type="SOURCE" refId="24"/>    
+    <end type="TARGET" refId="21"/>  
+  </dependency>  
+  <association id="47">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="48" name="panelVigilanciaResultados">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="49" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="23" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="50">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="51" name="dlgRelevantes">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="52" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="22" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="53">    
+    <bendpoint x="1405" y="1402"/>    
+    <bendpoint x="1405" y="653"/>    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="24"/>  
+  </dependency>  
+  <dependency id="54">    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <association id="55">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="56" name="treeFrameLocalizacion">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="57" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="58">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <association id="59">    
+    <bendpoint x="732" y="2947"/>    
+    <bendpoint x="732" y="3318"/>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="60" name="treeDialog">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="61" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="62">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="63" name="framePrincipal">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="64" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="65">    
+    <bendpoint x="439" y="2187"/>    
+    <bendpoint x="439" y="2450"/>    
+    <bendpoint x="439" y="2947"/>    
+    <bendpoint x="439" y="3318"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="66" name="treeFrameTipoOrganizacion">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="67" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="68">    
+    <bendpoint x="1518" y="462"/>    
+    <bendpoint x="1451" y="653"/>    
+    <bendpoint x="1384" y="1402"/>    
+    <bendpoint x="1342" y="2187"/>    
+    <bendpoint x="1342" y="2450"/>    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <association id="69">    
+    <bendpoint x="760" y="2187"/>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="70" name="panelBusqueda">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="71" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="72">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="73" name="treeFrameSector">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="74" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="75">    
+    <bendpoint x="418" y="1402"/>    
+    <bendpoint x="418" y="2187"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="76" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="77" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="78">    
+    <bendpoint x="1066" y="1402"/>    
+    <bendpoint x="1066" y="2187"/>    
+    <bendpoint x="1045" y="2450"/>    
+    <bendpoint x="1045" y="2947"/>    
+    <end type="SOURCE" refId="20" navigable="false">      
+      <attribute id="79" name="panelAltaFuente">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="80" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="81">    
+    <bendpoint x="1076" y="2947"/>    
+    <bendpoint x="1087" y="2450"/>    
+    <bendpoint x="1087" y="2187"/>    
+    <bendpoint x="1087" y="1402"/>    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="82" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="83" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="84">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="10"/>  
+  </generalization>  
+  <association id="85">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="86" name="pnHostEditado">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="87" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="88">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="89" name="framePrincipal">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="90" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="91">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="92" name="panelVigilanciaResultados">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="93" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="23" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="94">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
+  <association id="95">    
+    <bendpoint x="355" y="2187"/>    
+    <bendpoint x="355" y="2450"/>    
+    <bendpoint x="355" y="2947"/>    
+    <bendpoint x="355" y="3318"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="96" name="treeFrameSector">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="97" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="98">    
+    <end type="SOURCE" refId="18" navigable="false">      
+      <attribute id="99" name="controlador">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="100" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="101">    
+    <bendpoint x="52" y="2947"/>    
+    <bendpoint x="52" y="3318"/>    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <association id="102">    
+    <bendpoint x="1798" y="462"/>    
+    <bendpoint x="1798" y="653"/>    
+    <bendpoint x="1798" y="1402"/>    
+    <bendpoint x="1798" y="2187"/>    
+    <bendpoint x="1798" y="2450"/>    
+    <bendpoint x="1798" y="2947"/>    
+    <end type="SOURCE" refId="15" navigable="false">      
+      <attribute id="103" name="panelVigilancia">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="104" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="105">    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="24"/>  
+  </dependency>  
+  <dependency id="106">    
+    <bendpoint x="961" y="653"/>    
+    <end type="SOURCE" refId="24"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <association id="107">    
+    <bendpoint x="1108" y="2450"/>    
+    <bendpoint x="1045" y="2187"/>    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="108" name="panelBusqueda">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="109" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="110">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="111" name="framePrincipal">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="112" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="113">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="114" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="115" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="25" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="116">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="117" name="treeFrameTipoOrganizacion">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="118" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="119">    
+    <bendpoint x="1756" y="2450"/>    
+    <bendpoint x="1756" y="2947"/>    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="120">    
+    <bendpoint x="1129" y="1402"/>    
+    <bendpoint x="1129" y="2187"/>    
+    <bendpoint x="1129" y="2450"/>    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <dependency id="121">    
+    <bendpoint x="1278" y="3318"/>    
+    <bendpoint x="1278" y="3995"/>    
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="122">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="24"/>  
+  </dependency>  
+  <association id="123">    
+    <bendpoint x="334" y="1402"/>    
+    <bendpoint x="334" y="2187"/>    
+    <bendpoint x="397" y="2450"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="124" name="relevante">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="125" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="26" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="126">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="127" name="panelHosts">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="128" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="14" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="129">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="130" name="panelVigilancia">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="131" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="132">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="133" name="panelPaginacion">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="134" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="135">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="19"/>  
+  </dependency>  
+  <association id="136">    
+    <bendpoint x="1819" y="2947"/>    
+    <bendpoint x="1819" y="2450"/>    
+    <bendpoint x="1819" y="2187"/>    
+    <bendpoint x="1819" y="1402"/>    
+    <bendpoint x="1819" y="653"/>    
+    <bendpoint x="1819" y="462"/>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="137" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="138" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="139">    
+    <bendpoint x="1882" y="462"/>    
+    <bendpoint x="1882" y="653"/>    
+    <bendpoint x="1882" y="1402"/>    
+    <bendpoint x="1882" y="2187"/>    
+    <bendpoint x="1882" y="2450"/>    
+    <bendpoint x="1882" y="2947"/>    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <association id="140">    
+    <bendpoint x="2300" y="3995"/>    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="141" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="142" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="143">    
+    <bendpoint x="1363" y="2450"/>    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <association id="144">    
+    <bendpoint x="397" y="2947"/>    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="145" name="pnBuscarHosts">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="146" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="14" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="147">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="148" name="panelBusqueda">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="149" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="150">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="16"/>  
+  </dependency>  
+  <dependency id="151">    
+    <bendpoint x="1861" y="462"/>    
+    <bendpoint x="1861" y="653"/>    
+    <bendpoint x="1861" y="1402"/>    
+    <bendpoint x="1861" y="2187"/>    
+    <bendpoint x="1861" y="2450"/>    
+    <bendpoint x="1861" y="2947"/>    
+    <bendpoint x="1861" y="3318"/>    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <association id="152">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="153" name="panelAltaFuente">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="154" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="155">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="156" name="dstdPatenteSector">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="157" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="158">    
+    <bendpoint x="1341" y="2947"/>    
+    <bendpoint x="1341" y="3318"/>    
+    <bendpoint x="1341" y="3995"/>    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="159">    
+    <bendpoint x="1735" y="653"/>    
+    <bendpoint x="1735" y="1402"/>    
+    <bendpoint x="1777" y="2187"/>    
+    <bendpoint x="1777" y="2450"/>    
+    <bendpoint x="1777" y="2947"/>    
+    <end type="SOURCE" refId="24"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="160">    
+    <bendpoint x="1756" y="462"/>    
+    <bendpoint x="1756" y="653"/>    
+    <bendpoint x="1756" y="1402"/>    
+    <bendpoint x="1756" y="2187"/>    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="23"/>  
+  </dependency>  
+  <association id="161">    
+    <bendpoint x="1003" y="2187"/>    
+    <bendpoint x="1066" y="2450"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="162" name="framePrincipal">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="163" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="164">    
+    <bendpoint x="739" y="2187"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="165" name="controller">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="166" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="167">    
+    <bendpoint x="376" y="2187"/>    
+    <bendpoint x="376" y="2450"/>    
+    <bendpoint x="376" y="2947"/>    
+    <bendpoint x="376" y="3318"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="168" name="treeFrameLocalizacion">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="169" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="170">    
+    <bendpoint x="418" y="2947"/>    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="171" name="controlador">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="172" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="173">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="26"/>  
+  </dependency>  
+  <dependency id="174">    
+    <bendpoint x="31" y="2947"/>    
+    <bendpoint x="31" y="3318"/>    
+    <bendpoint x="31" y="3995"/>    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="175">    
+    <bendpoint x="2300" y="462"/>    
+    <bendpoint x="2300" y="653"/>    
+    <bendpoint x="2300" y="1402"/>    
+    <bendpoint x="2300" y="2187"/>    
+    <bendpoint x="2300" y="2450"/>    
+    <bendpoint x="2300" y="2947"/>    
+    <bendpoint x="2300" y="3318"/>    
+    <bendpoint x="2279" y="3995"/>    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="176">    
+    <bendpoint x="1363" y="653"/>    
+    <bendpoint x="1363" y="1402"/>    
+    <bendpoint x="1363" y="2187"/>    
+    <end type="SOURCE" refId="24"/>    
+    <end type="TARGET" refId="23"/>  
+  </dependency>  
+  <dependency id="177">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <association id="178">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="179" name="framePrincipal">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="180" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="181">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="10"/>  
+  </generalization>  
+  <association id="182">    
+    <bendpoint x="1300" y="653"/>    
+    <bendpoint x="1300" y="1402"/>    
+    <bendpoint x="1300" y="2187"/>    
+    <bendpoint x="1300" y="2450"/>    
+    <end type="SOURCE" refId="24" navigable="false">      
+      <attribute id="183" name="framePrincipal">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="184" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

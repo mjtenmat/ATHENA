@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<!-- MySQL Database connection settings -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="connection.url">jdbc:mysql://localhost/delphos2?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8</property>
+		
+		<!-- MSSQL Database connection settings -->
+		<!--<property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+		<property name="hibernate.dialect">com.hibernate.custom.dialect.SQLServerDialectOverrider</property>
+		<property name="connection.url">jdbc:sqlserver://localhost\SQLSERVEREV</property>
+		-->
+
+
+		<!-- JDBC connection pool (use the built-in) -->
+<!-- 		<property name="connection.pool_size">1</property> -->
+
+		<!--  Configuración del Pool de Conexiones con C3P0 -->
+		<property name="hibernate.connection_provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.c3p0.min_size">2</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">300</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+
+
+		
+		<!--  Soporte a UTF8 -->    
+        <property name="hibernate.connection.CharSet">utf8</property>
+        <property name="hibernate.connection.characterEncoding">utf8</property>
+        <property name="hibernate.connection.useUnicode">true</property>
+
+		<!-- Enable Hibernate's automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Disable the second-level cache -->
+		<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+		<!-- Echo all executed SQL to stdout -->
+		<property name="show_sql">true</property>
+		<!-- <property name="format_sql">true</property> -->
+		<!-- <property name="use_sql_comments">false</property> -->
+
+		<!-- Drop and re-create the database schema on startup -->
+		<!-- <property name="hbm2ddl.auto">update</property> -->
+
+		<!-- Mapping por ficheros hbm -->
+		<!-- <mapping resource="delphos/Fuente.hbm.xml" /> -->
+
+		<!-- Mapping directo en las clases (Annotations) -->
+		<mapping class="delphos.Fuente"></mapping>
+		<mapping class="delphos.Documento"></mapping>
+		<mapping class="delphos.Peso"></mapping>
+		<mapping class="delphos.Descriptor"></mapping>
+		<mapping class="delphos.Host"></mapping>
+		<mapping class="delphos.Sector"></mapping>
+		<mapping class="delphos.TipoOrganizacion"></mapping>
+		<mapping class="delphos.Localizacion"></mapping>
+		<mapping class="delphos.Licitacion_Sector"></mapping>
+		<mapping class="delphos.Licitacion_Localizacion"></mapping>
+		<mapping class="delphos.Patente_Localizacion"></mapping>
+		<mapping class="delphos.TipoLicitacion"></mapping>
+		<mapping class="delphos.CPV"></mapping>
+		<mapping class="delphos.CPI"></mapping>
+		<mapping class="delphos.CPI_Oficial"></mapping>
+		<mapping class="delphos.Patente_Sector"></mapping>
+		<mapping class="delphos.AvisoTecnologiasEmergentes"></mapping>
+		<mapping class="delphos.ContrastarCon"></mapping>
+		<mapping class="delphos.Tendencia"></mapping>
+		<mapping class="delphos.AvisoTendencia"></mapping>
+
+	</session-factory>
+</hibernate-configuration>

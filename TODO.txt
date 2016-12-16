@@ -1,0 +1,282 @@
+
+HECHO:	Guardar la frecuencia del Descriptor en la Fuente cada vez que se actualiza la Fuente, indicando la fecha.
+		Tabla: Fuente_Descriptor_Frecuencia (id, idFuente, idDescriptor, frecuencia, fecha).
+		Quita a Crawler el modo ACTUALIZAR
+
+2_TODO:	Crawler de Wipo (https://patentscope.wipo.int/search/en/search.jsf). Búsqueda por IPCs (A01B, ...)
+		Alternativa: http://lp.espacenet.com/- http://lp.espacenet.com/advancedSearch?locale=es_LP - Por CIP
+
+TODO: 	Actualizador de TED
+TODO:	Crawler de Documentos Académicos(http://dspace.mit.edu/).
+TODO:	En PanelBusqueda, cambiar los labels de los DelphosSeleccionTree. Cambiar ya los Tree.
+TODO: 	Revisar AG ¿para que aprovechen el nuevo private buscar? 
+TODO:	Crawler. En modo ACTUALIZAR, si la Fuente pertenece a un Medio de Comunicación, no actualizar la fuente.
+
+
+CORREGIDO:	Searcher. No utilizar Pesos nulos, fuentes no pesadas.
+HECHO: 	Parser debe identificar en que parte del documento está cada Descriptor (añadir campos Sección/Posición en Peso), 
+		(Diccionario Inverso) para que Searcher.quitarImpresentables, pueda quitar aquellas fuentes que no tengan ningún DESCRIPTOR
+		en el body del documento.
+		O mejor aún, que extraerTexto nos extraiga el texto de la posición del documento donde este. Que deberá 
+		funcionar con Descriptores, no con textos. 
+		
+		REQUIERE PARSEAR y PROBAR!!
+
+HECHO:	Reactivar RRMax.
+HECHO:	Reactivar RRMin
+HECHO:	Colocar scroll al inicio en Paneles de resultado.
+HECHO:	Searcher. Al ordenar por similitud, poner primero los que tengan más descriptores coincidentes con los descriptores
+		de la consulta. (Las búsquedas automáticas van a la lista, las manuales van a la lista). No tocar relevantes.
+MEJORA:	Quitar entidadEmisora del combo. Usar TextField.
+HECHO:	Mejorar lista de resultados de Licitaciones. Navegar a URL.
+HECHO:	Mejorar el buscador de licitaciones para que no busque por todo el Texto Libre. Partir palabras.
+HECHO:	Creado índice sobre Licitacion.entidadEmisora para acelerar el arranque de la aplicación. No vale.
+HECHO:	Finalizar búscador de Licitaciones.
+BUG: 	Problema de encoding (Ejemplo Murcia).
+TODO:	TED: Mostrar el resumen.
+
+
+TODO: 	Mejorar el rendimiento precompilando sentencias SQL.
+
+HECHO:	Arreglar Weigher. @@ROWCOUNT y el lío Integer y BigInteger.
+
+HECHO:	TED - Poner etiquetas a los resultados. Mejorar la presentación (bordes, tipos de letra)
+
+HECHO: Searcher - Presentación de resultados. Después de calcular similitud y ordenar por similitud...
+	Mostrar primero los resultados que tengan más descriptores coincidentes con los descriptores de la consulta.
+		Si la consulta tiene 5 términos, primero los resultados que tengan los cinco descriptores de la consulta,
+			Ordenados por similitud.
+
+
+TODO:	Actualizador de TED. Como proceso hijo. Evitar meter duplicados si hay cancelación del proceso.
+			
+TODO: 	Terminar TED. 
+		- Ampliar interfaz de Vigilancia con checkboxes para: Licitaciones, Patentes, Tesis, Artículos y Congresos.
+		para cada uno de ellos activar/desactivar panel de campos específicos.
+		- Ampliar el panel de Vigilancia-Licitaciones con la selección de la fuente: TED, ....
+
+TODO:	Diseñar el proceso de trabajo: Crawler, Parser, Weigher... TEDCrawler.
+
+TODO:	Ver rendimiento de Parser.
+			
+
+CORREGIDO: 	Buscador de Licitaciones falla al borrar el país.
+HECHO: 	Añadir número de resultados al buscador de licitaciones.
+HECHO: 	Ordenar por fecha descendente.
+
+
+TODO:	Quitar latin-swedish de todas las tablas de Delphos2.
+
+				
+TODO: Alertas. Añadir alerta (palabras/Expresiones Regulares si es fácil). 
+	Revisión de procesos de carga para detectar alertas.
+	Mostrar alertas en página principal mediante JDialog. Consultar - check Atendida.
+	Gestor de Alertas.
+TODO: Interfaz para RSS. Alta de RSS, recogida, interfaz de consulta.
+		¿Cómo lanzamos el proceso de recogida?
+
+
+
+
+TODO: Instalar y probar Hontza.
+TODO: Recuperar el SVN - Probar cliente.
+	svnserve -d -r /home/mjaque/svn
+	svn co --username mjtena  svn://192.168.1.33/Delphos /tmp
+
+TODO: Programar gestión jerarquías (sectores, localización y Tipos de Organización).
+TODO: Añadir el idioma a las restricciones de búsqueda.
+TODO: Revisar política de teclas rápidas.
+
+
+HECHO: Hacer que Parser Actualizar actualice la fuente antes de reparsearla.
+CORREGIDO: Con "energía méxico".
+CORREGIDO: PARSER no va.
+CORREGIDO: ¿Parser sigue dando de alta los nuevos descriptores que encuentra?
+TODO: Revisar Cascade y Remove Orphan para hacerlos ¿como Peso?
+TODO: Quitar "No hay coincidencia en el texto". Buscar la coincidencia en el título, descripción, etc.
+y mostrarlo. 
+HECHO: Añadido indicador de NO_ACTUALIZAR en la base de datos.
+TODO: Reglas para NO_ACTUALIZAR:
+	- páginas de hosts de medios de comunicación que tengan en su URL formato de fecha.
+
+HECHO: Editar de hosts.
+HECHO: Gestión de jerarquías.
+TODO: Parsear pdfs.
+
+HECHO: Weigher empieza siempre desde cero.
+TODO: Controlador de Ejecución. Lanza Parser-Crawler y coordina con Weigher. 
+Informar al usuario de la hora de actualización. 
+TODO: Valorar poner fecha de parseo como fechaActualizacion en Fuente.
+TODO: Hacer que el usuario seleccione el idioma de los resultados de búsqueda. 
+La identificación falla si hay pocos términos ("Dubai"); 
+	
+TODO: Searcher. Mejorar similitud para premiar a quienes tengan más términos de la consulta,
+para evitar que alguno con un solo término con mucho peso, salga antes.
+	Para ello, que presente primero los que más términos coincidentes tengan (ordenados por similitud)... 
+
+	- Crear tabla Host_Sector
+
+
+TODO: Paquete de Entrega. Cuatro opciones de ejecución.
+	- Exportar como jar ejecutable.
+	- Ejecutar con java -cp .:path/to/Jar.jar com.company.package.Class arg1=val1 arg2=val2 ....
+	Pueden ejecutarse varias clases cambiando el com.company.package.ClassB
+		http://stackoverflow.com/questions/2232602/java-jar-access-external-configuration-file
+		Para que encuentre los ficheros en su mismo dir, que serían los de configuración.
+
+TODO: Mejorar el tiempo de primera búsqueda - Calculo de similitud -Ordenar para romper antes. Si no, considerar el 
+uso de binary Tree para la consulta.
+BUG: PanelResultado.cargarResultado Peta si no hay resultados.
+Ver búsqueda licitación
+TODO: Buscar coincidencias en el texto. Mostrar dónde quiera que esté...
+
+TODO: Comprobar AG.
+TODO: Cambiar la forma de comprobar cromosomas por la Exhaust. Precisión (ver Excel).
+BUG: Sectores. Cada host tiene múltiples sectores. Hay que cambiar la tabla, la migración y las búsquedas?, y el IU para mostrarlo.
+BUG: Si buscamos "wind energy" aparecen resultados de "Estados Unidos". Pero si restringimos la búsqueda a Estados Unidos, no aparecen resultados.
+	- Algo pasa aquí.
+TODO: Mejorar IU.
+BUG: El menú de contexto de No Relevante debe salir si se pulsa en un control del Panel de Resultados.
+TODO: Al mostrar el número de resultados, poner el total encontrados, no el umbral.
+TODO: Hacer ejecutable.
+TODO: Gestión de Errores en el interfaz de usuario.
+
+BUG: En Descriptor 41496, multiplicador y pesos excesivos. Fuente 186.
+DUDA: ¿Qué hacemos con la detección de idioma si la consulta es "mexico"?
+ERROR: Al marcar un resultado como No Relevante, debe excluirse de la lista de Relevantes, si está. 
+TODO: Poner Mirabobos para saber que está trabajando.
+DUDA: energy, mexico... ¿porqué trae resultados en francés? 
+
+TODO: Fichero de configuración con: multiplicadores, numIteracionesMejora, numResultadosMejora... umbral, 
+MEJORA: Parser.getDescriptores, soporte para el resto de idiomas.
+TODO: En la Mejora, quitar descriptores duplicados.
+TODO: En la Mejora, dejar marcados los relevantes que puso el usuario.
+TODO: Aplicar la selección de textos al resto de campos del IU.
+TODO: Configuración de MJ (delphos2, root sin password)
+TODO: En extraer texto, tratar de eliminar textos similares.
+MEJORA: Detectar los "Moved Permanently. The document has moved here".
+MEJORA: Limpiar métodos no utilizados.
+MEJORA: Detectar venta de dominio ¿?. Escaso número de líneas en el documento.
+MEJORA:	Utilizar Tesauros.
+MEJORA: Utilizar Maven.
+NOTA: Si hay problemas de rendimiento, podemos desnormarlizar llevando identificadores de otras tablas (host, sector...) a Descriptor.
+	Tener en cuenta que todas las consultas a hibernate hacen todos los joins (¿ponerlos lazy?)	
+BUG: Problema en las búsquedas. Si busco por "mines" aparecen resultados con "nominee".
+TODO: Poner logos.
+BUG: IU no muestra correctamente caracteres chinos. 
+TODO: Algortimo Genético:
+	- Busca igual (utilizando los relevantes de las 3 ó 5 primeras páginas). Sin iteración.
+	- No presentamos resultados ya marcados como relevantes.
+	- Medir precisión en cada búsqueda: 
+	...
+MEJORA: Si la página es de redirección, traernos la página definitiva y registrar la url definitiva.
+TODO: Gestión de Categoría, Fuentes, Hosts (buscar nulos) y Errores. 
+TODO: Completar migración.
+	MJT: 1. Copiar las tablas de delphos.
+BUG: Revisar Parser.getExtractoTexto. Parece que falla (no pone en negrita) en algunos.
+
+
+CORREGIDO: Crawler no guarda documentos. Falta auto_increment en la tabla Documento. Y error si doc es null.
+-----------------------------------------
+TODO: Mejorar el texto de "Encontrados" para indicar el total.
+HECHO: Archivo de propiedades - Profundidad, Umbral de Resultados, Num Resultados de RRMin y Num Iteraciones de RRMin.
+HECHO: En la lista de relevantes, marcar el no relevante (si está) (Título en rojo).
+CORREGIDO: Searcher.buscar debe incluir los resultados relevantes. 
+HECHO: Poner mirabobos
+CORREGIDO: En comportamiento de botón de AG
+CORREGIDO: En AG-ruleta. Parece que el último resultado no puede salir nunca (peso > 1)
+HECHO: En el cruce de cromosomas, si hay último suelto, cruzarlo con el siguiente que haya sido cruzado, no con el siguiente elegidoParaCruzar.
+¿¿??
+HECHO: AG, todos los descriptores alfabéticamente.
+HECHO: Extraer tabla de Descriptores. Ordenar Alfabéticamente.
+CORREGIDO: Bug en comportamiento del botón AG.
+HECHO: AG - En los cromosomas, limitarnos a los descriptores que hay entre todos los resultadosElegidosParaCruzar en lugar
+	de hacerlo con toda la BD.
+HECHO: Extraer tabla de Descriptores.
+HECHO: Añadido Lazy Load.
+CORREGIDO: Parser obtenerFuentes, se la pega si ya están todas las fuentes parseadas.
+CORREGIDO: Umbral (50) como límite de resultados devueltos.
+HECHO: Implementado Comportamiento botón AG, activar el botón al llegar a la última página de resultados si la Precision no ha mejorado.
+HECHO: RRMax.
+HECHO: En RRMax, utilizar todos los relevantes marcados en la consulta.
+HECHO: Restar pesos del Resultado No Relevante.
+HECHO: IU marcar resultado como No Relevante.
+HECHO: Meter Umbral, como máximo de resultados a obtener de cada búsqueda. 
+HECHO: Comprobar que en RRMin no aparecer los relevantes marcados.
+HECHO: Gestionar correctamente la lista de relevantes en Searcher.
+	- Pasar la lista de Relevantes en RRMin y RRMax.
+	- Establecer Umbral de Resultados.
+HECHO: Hacer que Searcher busque con un Set<Descriptor> en lugar de hacerlo con un texto (para conservar pesos de descriptores)
+HECHO: En RRMin y RRMax, al procesar descriptores de relevantes, incluir su peso (sumado o restado).
+HECHO: Comprobar que en RRMin y RRMax, la consulta permanece, es decir, que se incluye en los pesos de las iteraciones.
+HECHO: Pantalla de Relevantes. Borramos por Búsqueda.
+CORREGIDO: Parser cae en fuente 354 con  org.hibernate.QueryException: Space is not allowed after parameter prefix
+CORREGIDO: Crawler cae en fuente 2981 con javaLangIllegalArgumentException protocol = http host = null. Ya no cae
+CORREGIDO: Falla Parser al procesar descripción.
+HECHO: Evitar que Crawler muera en los errores de base de datos.
+CORREGIDO: No se graba el error de Fuente si falla el SQL. Corregido con un query.excuteUpdate();
+CORREGIDO: Hacer el enlace "pinchable" (ver página real) -> sudo update-alternatives –config x-www-browser
+HECHO: Si al destacar términos de la consulta no hay coincidencias, poner un mensaje "No hay coincidencias en la parte textual del documento".
+CORREGIDO: No se destacan los términos de la consulta si llevan tildes.
+HECHO: Cargar todas las palabras vacías (Snowball) y trabajar con todos los idiomas (en, es, fr, pt, it, ro, de, nl, sv, no, da, ru, fi, ga, hu).
+HECHO: Reconfigurado  el menú principal de la aplicación.
+HECHO: Problema de tildes. Unificar charset de Eclipse y de base de datos (utf-8)
+HECHO: IU,Destacar términos de consulta también en la descripción.
+HECHO: Registrar la fecha en la que nos traemos la página. En Fuente.fechaActualizacion
+HECHO?: Mejorar Fail&Recovery de BD. Añadido C3P0
+HECHO: Añadir connection pooling - C3P0 - http://www.mkyong.com/hibernate/how-to-configure-the-c3p0-connection-pool-in-hibernate/ 
+HECHO: Searcher. Identificar el idioma de la consulta con https://code.google.com/p/language-detection/. O preguntar al usuario.
+HECHO: Searcher. Limitar los resultados de la consulta a las Fuentes en el idioma de la consulta o idioma=null
+HECHO: En Searcher.buscar, para cada Fuente del resultado cambiar el cálculo de similitud: multiplicar el resultado actual por el número de descriptores de la consulta que están en el vector del documento al cuadrado.
+HECHO: Parser. Mejorar descripción: si no hay description, buscar el primer párrafo <p> que tenga texto (al menos 100 char y que no diga cookie ni JavaScript, Adobe, Flash, Oracle). 
+CORREGIDO: Parser. No actualiza las fuentes porque no borra el vector. 
+CORREGIDO: Parser. Duplicate URL si los 200 caracteres son iguales. Es una limitación del index.
+	Borramos índice y lo gestionamos en programa.
+HECHO: Meter profiles de Idioma en proyecto. /home/mjaque/Descargas/langdetect-09-13-2011/profile
+HECHO: Solo se detecta el primer idioma.
+CORREGIDO: Falla migración. Mezcla Localización, Sector y TipoOrganización, cargando cada tabla con todos ellos.
+CORREGIDO: Crawler Out of Memory al arrancar. Selección de uno en uno.
+CORREGIDO: Bug en fuente 1377. Quitado la detección de idioma en Crawler (Fuente.actualizar).
+CORREGIDO: Parsear Fuente con URL larga. Incrementada long de Fuente.url
+CORREGIDO: Limitado tamaño de Fuente.titulo y Fuente.descripcion
+HECHO:Cortar por nivel de profundidad (pej 3, pero siempre se puede dentro del mismo host o a hosts ya registrados).
+HECHO: Añadir tipo_organizacion, localización y sector.
+		Localización está en taxonomy. Con field_revision_field_tags
+		HECHO: Añadir JTree para la selección múltiple de elementos jerarquizados en ventana nueva.
+		- Ventana emergente de selección con JTree. Texto en ventana principal con elementos elegidos.
+		- ¿Cómo se eliminan? - Editar texto o boton en tooltip.
+HECHO: Buscar por TipoOrganizacion, localización y sector.
+HECHO: Mostrar TipoOrganizacion, Sector y Localización en los Resultados.    	
+HECHO: Parser. Identificar el idioma de la página con https://code.google.com/p/language-detection/
+grant all on delphos2.* to delphos@localhost identified by 'delphos';
+CORREGIDO: Parser.207. SELECT COUNT. Falla por comilla simple. ¡Escapar las puñeteras comillas de la url! Revisar.
+CORREGIDO: Parser registra la misma página dos veces (si termina en / y si no terminar en /). Al crear la Fuente, quitar la última barra de la url.
+CORREGIDO: Parser (413) StringIndexOutOfBounds - while ((extracto... - ERA CASO RARO
+
+HECHO: Scroll de resultados.
+HECHO: Permitir Búsquedas en inglés y castellano.
+	- Unir lista de palabras vacías.
+	- Buscar descriptores en cada idioma. 
+HECHO: Paginar Resultados (guardando fuentes relevantes) y hacer scroll
+HECHO Delphos.PanelBusqueda: Añadir botón "Mejorar". Aparece al marcar el primer relevante.
+HECHO Delphos.PanelBusqueda: Marcar Resultados Relevantes.
+HECHO: Al pulsar "Mejorar" Realiza la Búsqueda por Relevancia con Iteración Mínima.
+	- Cogemos los descriptores de los relevantes y creamos una consulta con ellos.
+TODO: MJT: ¿Dejamos los descriptores duplicados (por mejorar el peso)? NO
+	- Cogemos los 5 primeros resultados de esa consulta. Y repetimos 5 veces el proceso.
+MJT: Menos la última iteración ¿no?
+HECHO: En Parser, heredar el sector y la localización del host padre. (Está relacionado a Host).
+BUG: Extraer textos pone en negrita el descriptor. Tiene que poner la palabra de la consulta (Visto en palabras con tilde).
+	PROBAR a cambiar codificación a UTF-8 en MJT.
+CORREGIDO: El extracto de textos no tiene que ser editable (ahora se borra).
+MIGRADO: Tipo Organizacion
+
+HECHO: Terminar migración de tipoOrganización y Localización.
+	- Añadir tipoOrganizacion y localización a la fuentes migradas.
+	- Añadir idHost a Fuente.
+	
+HECHO (Sin Probar): Implementar Máxima profundidad de búsqueda. 
+HECHO: Migración, incluida Oceanía.
+CORREGIDO: En Migración, el tipoOrganización.id = 124, debería tener idPadre el que corresponde a "Grupos de Presión", que no se ha migrado.
+	No han migrado: "Asociaciones de Consumidores",... Ver foto.
+	
