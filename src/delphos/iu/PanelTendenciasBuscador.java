@@ -23,20 +23,12 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jdatepicker.JDateComponentFactory;
 import org.jdatepicker.JDatePicker;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
 
+import delphos.Documento_Clasificacion;
 import delphos.Licitacion_Localizacion;
 import delphos.Licitacion_Sector;
 import delphos.Patente_Localizacion;
 import delphos.Patente_Sector;
-import delphos.Searcher;
 import delphos.Tendencia;
 
 public class PanelTendenciasBuscador extends javax.swing.JPanel implements ActionListener, DelphosSelectionListener {
@@ -58,8 +50,6 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 	private javax.swing.JCheckBox jCheckBox6;
 	private javax.swing.JLabel jLabel11;
 	private javax.swing.JLabel jLabel12;
-	private javax.swing.JLabel jLabel13;
-	private javax.swing.JLabel jLabel14;
 	private javax.swing.JLabel jLabel15;
 	private javax.swing.JLabel jLabel16;
 	private javax.swing.JLabel jLabel2;
@@ -78,8 +68,6 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 	private javax.swing.JRadioButton jrbEntreFechas;
 	protected javax.swing.JButton jbtnBuscar;
 	protected javax.swing.JComboBox jcbLicitacionTipo;
-	private javax.swing.JComboBox jcbDocsLocalizacion;
-	private javax.swing.JComboBox jcbDocsSectores;
 	private javax.swing.JTextField jtfDocsAutor;
 	private javax.swing.JTextField jtfDocsEntidad;
 	private javax.swing.JTextField jtfLicitacionEntidadSolicitante;
@@ -93,18 +81,22 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 	protected DelphosSelectionTreeDialog<Licitacion_Localizacion> dstdLicitacionLocalizacion;
 	protected DelphosSelectionListDialog<Patente_Localizacion> dsldPatenteLocalizacion;
 	protected DelphosSelectionTreeDialog<Patente_Sector> dstdPatenteSector;
+	protected DelphosSelectionTreeDialog<Documento_Clasificacion> dstdDocumentoClasificacion;
 	protected JButton btnLicitacionSectores;
 	protected JButton btnLicitacionLocalizacion;
 	protected JButton btnPatenteLocalizacion;
 	protected JButton btnPatenteSectores;
+	protected JButton btnDocumentoClasificacion;
 	protected JLabel lblLicitacionSectores;
 	protected JLabel lblLicitacionLocalizacion;
 	protected JLabel lblPatenteLocalizacion;
 	protected JLabel lblPatenteSectores;
+	protected JLabel lblDocumentoClasificacion;
 	protected Set<Licitacion_Sector> licitacionSectores = new HashSet<>();
 	protected Set<Patente_Localizacion> patenteLocalizacion = new HashSet<>();
 	protected Set<Licitacion_Localizacion> licitacionLocalizacion = new HashSet<>();
 	protected Set<Patente_Sector> patenteSectores = new HashSet<>();
+	protected Set<Patente_Sector> documentoClasificacion = new HashSet<>();
 
 	private PanelTendencias panelPadre;
 	// End of variables declaration
@@ -168,15 +160,13 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 		jtfPatentesInventor = new javax.swing.JTextField();
 		jLabel12 = new javax.swing.JLabel();
 		jtfPatentesSolicitante = new javax.swing.JTextField();
+		lblDocumentoClasificacion = new javax.swing.JLabel();
 		jPanel2 = new javax.swing.JPanel();
 		cbDocs = new javax.swing.JCheckBox();
 		jCheckBox4 = new javax.swing.JCheckBox();
 		jCheckBox5 = new javax.swing.JCheckBox();
 		jCheckBox6 = new javax.swing.JCheckBox();
-		jLabel13 = new javax.swing.JLabel();
-		jcbDocsSectores = new javax.swing.JComboBox();
-		jLabel14 = new javax.swing.JLabel();
-		jcbDocsLocalizacion = new javax.swing.JComboBox();
+		btnDocumentoClasificacion = new javax.swing.JButton();
 		jLabel15 = new javax.swing.JLabel();
 		jtfDocsAutor = new javax.swing.JTextField();
 		jLabel16 = new javax.swing.JLabel();
@@ -188,6 +178,7 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 		dstdLicitacionLocalizacion = new DelphosSelectionTreeDialog<Licitacion_Localizacion>(Licitacion_Localizacion.class, this);
 		dstdPatenteSector = new DelphosSelectionTreeDialog<Patente_Sector>(Patente_Sector.class, this);
 		dsldPatenteLocalizacion = new DelphosSelectionListDialog<Patente_Localizacion>(Patente_Localizacion.class, this);
+		dstdDocumentoClasificacion = new DelphosSelectionTreeDialog<Documento_Clasificacion>(Documento_Clasificacion.class, this);
 
 		jLabel2.setBackground(new java.awt.Color(153, 153, 153));
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -314,14 +305,14 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 		jCheckBox6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
 		jCheckBox6.setText("Congresos");
 		jCheckBox6.addActionListener(this);
-
-		jLabel13.setText("Sectores:");
-
-		jcbDocsSectores.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-		jLabel14.setText("Localización:");
-
-		jcbDocsLocalizacion.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+		
+		btnDocumentoClasificacion.setText("Clasificación:");
+		btnDocumentoClasificacion.addActionListener(this);
+		this.lblDocumentoClasificacion.setFont(new Font("Dialog", Font.PLAIN, 12));
+		this.lblDocumentoClasificacion.setBackground(Color.WHITE);
+		this.lblDocumentoClasificacion.setOpaque(true);
+		this.lblDocumentoClasificacion.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY), BorderFactory.createEmptyBorder(3, 5, 3, 5)));
+		this.lblDocumentoClasificacion.setText("Todos");
 
 		jLabel15.setText("Autor:");
 
@@ -332,14 +323,14 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 		jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(jPanel2Layout.createSequentialGroup().addContainerGap()
 						.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanel2Layout.createSequentialGroup().addComponent(jLabel13).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jcbDocsSectores, 0, 121, Short.MAX_VALUE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jLabel14).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jcbDocsLocalizacion, 0, 122, Short.MAX_VALUE))
+								.addGroup(jPanel2Layout.createSequentialGroup().addComponent(btnDocumentoClasificacion).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(lblDocumentoClasificacion, 0, 121, Short.MAX_VALUE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
 								.addGroup(jPanel2Layout.createSequentialGroup().addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(cbDocs).addGroup(jPanel2Layout.createSequentialGroup().addComponent(jCheckBox4).addGap(18, 18, 18).addComponent(jCheckBox5).addGap(18, 18, 18).addComponent(jCheckBox6))).addGap(0, 0, Short.MAX_VALUE)))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel15).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jtfDocsAutor, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel16).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jtfDocsEntidad, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE).addContainerGap()));
 		jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addContainerGap().addComponent(cbDocs).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jCheckBox4).addComponent(jCheckBox5).addComponent(jCheckBox6))
 				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-				.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel13).addComponent(jcbDocsSectores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel15)
-						.addComponent(jtfDocsAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jcbDocsLocalizacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel16).addComponent(jtfDocsEntidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+				.addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(btnDocumentoClasificacion).addComponent(lblDocumentoClasificacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel15)
+						.addComponent(jtfDocsAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel16).addComponent(jtfDocsEntidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
 				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		jbtnBuscar.setText("Buscar");
@@ -379,8 +370,10 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 			// Validación
 			if (!this.cbLicitaciones.isSelected())
 				if (!this.cbPatentes.isSelected())
-					// if (!this.cbDocs.isSelected())
-					JOptionPane.showMessageDialog(this, "Debe seleccionar Licitaciones y/o Patentes", "Error", JOptionPane.ERROR_MESSAGE);
+					if (!this.cbDocs.isSelected()){
+						JOptionPane.showMessageDialog(this, "Debe seleccionar Licitaciones, Patentes y/o Documentos", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 
 			Tendencia tendencia = new Tendencia();
 			tendencia.setTerminoPrincipal(jtfTerminoPrincipal.getText());
@@ -399,6 +392,11 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 				tendencia.setPatenteSolicitante(jtfPatentesSolicitante.getText());
 			}
 			tendencia.setIndicadorDocs(cbDocs.isSelected());
+			if (cbDocs.isSelected()) {
+				tendencia.setListaDocumentoClasificacion(dstdDocumentoClasificacion.getSeleccion());
+				tendencia.setDocumentoAutor(jtfDocsAutor.getText());
+				tendencia.setDocumentoEntidad(jtfDocsEntidad.getText());
+			}
 			int periodo = 0;
 
 			Calendar fechaInicio = Calendar.getInstance();
@@ -445,6 +443,9 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 			if (tendencia.getFiltroPrincipalLicitaciones() == null)
 				if (tendencia.getIndicadorLicitaciones())
 					tendencia.setFiltroPrincipalLicitaciones(panelPadre.preguntarFiltroPrincipal(tendencia, "Licitaciones"));
+			if (tendencia.getFiltroPrincipalLicitaciones() == null)
+				if (tendencia.getIndicadorDocs())
+					tendencia.setFiltroPrincipalLicitaciones(panelPadre.preguntarFiltroPrincipal(tendencia, "Documentos"));
 
 			this.panelPadre.mostrarGraficaTendencia(tendencia, periodo, (GregorianCalendar)fechaInicio, (GregorianCalendar)fechaFin, sPeriodo);
 		}
@@ -460,6 +461,9 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 
 		if (e.getSource() == btnPatenteSectores)
 			dstdPatenteSector.mostrar();
+		
+		if (e.getSource() == btnDocumentoClasificacion)
+			dstdDocumentoClasificacion.mostrar();
 
 		this.panelPadre.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
@@ -499,6 +503,11 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 		if (dtd == dstdPatenteSector) {
 			patenteSectores = dtd.getSeleccion();
 			lblPatenteSectores.setText(dtd.getTextoSeleccion());
+		}
+		
+		if (dtd == dstdDocumentoClasificacion) {
+			documentoClasificacion = dtd.getSeleccion();
+			lblDocumentoClasificacion.setText(dtd.getTextoSeleccion());
 		}
 
 	}

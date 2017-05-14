@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.LineNumberInputStream;
 import java.math.BigDecimal;
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -18,17 +17,18 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -74,10 +74,12 @@ public class Searcher {
 
 	static HttpURLConnection conn;
 	static String cookie = null;
+	private static int numTotalDocs;
 
 	private final static Logger log = Logger.getLogger(Searcher.class);
 
-	public static ArrayList<Resultado> buscar(String textoConsulta, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion, Set<Jerarquia> localizaciones) {
+	public static ArrayList<Resultado> buscar(String textoConsulta, Set<Jerarquia> sectores,
+			Set<Jerarquia> tiposOrganizacion, Set<Jerarquia> localizaciones) {
 		// public static ArrayList<Resultado> buscar(String textoConsulta,
 		// Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
 		// Set<Jerarquia> localizaciones) {
@@ -124,7 +126,8 @@ public class Searcher {
 		return listaResultados;
 	}
 
-	private static List buscar(Set<Peso> descriptores, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion, Set<Jerarquia> localizaciones) {
+	private static List buscar(Set<Peso> descriptores, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
+			Set<Jerarquia> localizaciones) {
 
 		String select, from, groupBy, orderBy;
 		ArrayList<String> joins = new ArrayList<String>();
@@ -240,7 +243,9 @@ public class Searcher {
 		return resultado;
 	}
 
-	public static ArrayList<Resultado> mejorarRRmin(ArrayList<Resultado> listaResultadosRelevantes, Resultado resultadoNoRelevante, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion, Set<Jerarquia> localizaciones) {
+	public static ArrayList<Resultado> mejorarRRmin(ArrayList<Resultado> listaResultadosRelevantes,
+			Resultado resultadoNoRelevante, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
+			Set<Jerarquia> localizaciones) {
 
 		Searcher.listaResultadosRelevantes = listaResultadosRelevantes;
 
@@ -278,7 +283,9 @@ public class Searcher {
 		return listaResultados;
 	}
 
-	public static ArrayList<Resultado> mejorarRRmax(ArrayList<Resultado> listaResultadosRelevantes, Resultado resultadoNoRelevante, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion, Set<Jerarquia> localizaciones) {
+	public static ArrayList<Resultado> mejorarRRmax(ArrayList<Resultado> listaResultadosRelevantes,
+			Resultado resultadoNoRelevante, Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
+			Set<Jerarquia> localizaciones) {
 
 		Searcher.listaResultadosRelevantes = listaResultadosRelevantes;
 
@@ -301,7 +308,8 @@ public class Searcher {
 
 	}
 
-	public static ArrayList<Resultado> mejorarAG(Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion, Set<Jerarquia> localizaciones) {
+	public static ArrayList<Resultado> mejorarAG(Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
+			Set<Jerarquia> localizaciones) {
 		/*
 		 * log.trace("Iniciando AG");
 		 * 
@@ -505,9 +513,10 @@ public class Searcher {
 						while (it.hasNext() && !encontrado) {
 							Peso descriptorConsulta = it.next();
 							if (descriptorConsulta.equals(descriptorListaResultados)) {
-								descriptorConsulta.setPeso(descriptorConsulta.getPeso() + descriptorListaResultados.getPeso()); // Sumamos
-																																// su
-																																// peso
+								descriptorConsulta
+										.setPeso(descriptorConsulta.getPeso() + descriptorListaResultados.getPeso()); // Sumamos
+																														// su
+																														// peso
 								encontrado = true;
 							}
 						}
@@ -598,7 +607,8 @@ public class Searcher {
 		// Muestra por syso el conjunto de descritores y sus pesos
 		int i = 1;
 		for (Peso peso : descriptores)
-			System.out.println(i++ + ".- " + peso.getTextoDescriptor() + "(" + peso.getId() + ") peso = " + peso.getPeso());
+			System.out.println(
+					i++ + ".- " + peso.getTextoDescriptor() + "(" + peso.getId() + ") peso = " + peso.getPeso());
 	}
 
 	private static void verCromosoma(Cromosoma cromosoma) {
@@ -611,7 +621,9 @@ public class Searcher {
 		System.out.println("Pesos: " + cromosoma.getPesos().size());
 	}
 
-	public static ArrayList<Licitacion> buscarLicitaciones(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, String pais, String ciudad, String tipoLicitacion, String entidadEmisora, Set<Sector> sectores, Set<CPV> codCPV) {
+	public static ArrayList<Licitacion> buscarLicitaciones(String textoLibre, GregorianCalendar fechaDesde,
+			GregorianCalendar fechaHasta, String pais, String ciudad, String tipoLicitacion, String entidadEmisora,
+			Set<Sector> sectores, Set<CPV> codCPV) {
 
 		// String sql =
 		// "SELECT id, titulo, entidadEmisora, pais, ciudad, url,
@@ -704,7 +716,8 @@ public class Searcher {
 		return resultado;
 	}
 
-	public static ArrayList<Patente> buscarPatentes(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, String inventor, String solicitante, Set<CPI> listaCPI) {
+	public static ArrayList<Patente> buscarPatentes(String textoLibre, GregorianCalendar fechaDesde,
+			GregorianCalendar fechaHasta, String inventor, String solicitante, Set<CPI> listaCPI) {
 		ArrayList<Patente> resultado = new ArrayList<Patente>();
 
 		String sql = "SELECT Patente.id ";
@@ -762,7 +775,10 @@ public class Searcher {
 		return resultado;
 	}
 
-	public static ArrayList<Patente> buscarPatentesEnLinea(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, String inventor, String solicitante, Set<Patente_Sector> listaCPI, Set<Patente_Localizacion> listaLocalizacion, int indiceBusquedaEPO, Set<ContrastarCon> listaContrastarCon) throws Exception {
+	public static ArrayList<Patente> buscarPatentesEnLinea(String textoLibre, GregorianCalendar fechaDesde,
+			GregorianCalendar fechaHasta, String inventor, String solicitante, Set<Patente_Sector> listaCPI,
+			Set<Patente_Localizacion> listaLocalizacion, int indiceBusquedaEPO, Set<ContrastarCon> listaContrastarCon)
+			throws Exception {
 
 		ArrayList<Patente> listaPatentes = new ArrayList<Patente>();
 
@@ -916,7 +932,7 @@ public class Searcher {
 			else
 				query += " and (" + condiciones.get(i) + ")";
 		}
-		query=query.replace("\"\"", "\"");
+		query = query.replace("\"\"", "\"");
 		System.out.println("query: " + query);
 
 		try {
@@ -973,7 +989,8 @@ public class Searcher {
 			// http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 			doc.getDocumentElement().normalize();
 
-			Searcher.totalResultadosEPO = Integer.parseInt(doc.getElementsByTagName("ops:biblio-search").item(0).getAttributes().getNamedItem("total-result-count").getTextContent());
+			Searcher.totalResultadosEPO = Integer.parseInt(doc.getElementsByTagName("ops:biblio-search").item(0)
+					.getAttributes().getNamedItem("total-result-count").getTextContent());
 			log.info("Total Resultados: " + Searcher.totalResultadosEPO);
 			org.w3c.dom.NodeList docList = doc.getElementsByTagName("ops:publication-reference");
 			log.info("Encontradas " + docList.getLength() + " patentes.");
@@ -983,13 +1000,15 @@ public class Searcher {
 					org.w3c.dom.Element elemento = (org.w3c.dom.Element) docList.item(i);
 					Patente patente = new Patente();
 					listaPatentes.add(patente);
-					patente.documentIdType = elemento.getElementsByTagName("document-id").item(0).getAttributes().getNamedItem("document-id-type").getTextContent();
+					patente.documentIdType = elemento.getElementsByTagName("document-id").item(0).getAttributes()
+							.getNamedItem("document-id-type").getTextContent();
 					patente.docNumber = elemento.getElementsByTagName("doc-number").item(0).getTextContent();
 					patente.kind = elemento.getElementsByTagName("kind").item(0).getTextContent();
 					patente.setLocalizacion(elemento.getElementsByTagName("country").item(0).getTextContent());
 					log.trace(patente);
 					String sURL = "http://worldwide.espacenet.com/publicationDetails/biblio?DB=worldwide.espacenet.com";
-					sURL += "&II=0&ND=3&adjacent=true&locale=en_EP&FT=D&CC=" + patente.getLocalizacion() + "&NR=" + patente.docNumber + patente.kind + "&KC=" + patente.kind;
+					sURL += "&II=0&ND=3&adjacent=true&locale=en_EP&FT=D&CC=" + patente.getLocalizacion() + "&NR="
+							+ patente.docNumber + patente.kind + "&KC=" + patente.kind;
 					try {
 						patente.setUrl(new URL(sURL));
 					} catch (MalformedURLException e2) {
@@ -1032,7 +1051,8 @@ public class Searcher {
 		String path = "/3.1/rest-services/published-data/publication/";
 
 		// https://ops.epo.org/3.1/rest-services/published-data/publication/docdb/US.8995573/biblio
-		path += patente.documentIdType + "/" + patente.getLocalizacion() + "." + patente.docNumber + "." + patente.kind + "/biblio";
+		path += patente.documentIdType + "/" + patente.getLocalizacion() + "." + patente.docNumber + "." + patente.kind
+				+ "/biblio";
 		try {
 			URI uri = new URI(scheme, authority, path, null);
 			System.out.println("URI patente: " + uri.toString());
@@ -1073,8 +1093,12 @@ public class Searcher {
 			for (int i = 0; i < listaCPI.getLength(); i++) {
 				if (slistaCPI != "")
 					slistaCPI += ", ";
-				String codigoCPI = ((org.w3c.dom.Element) listaCPI.item(i)).getElementsByTagName("text").item(0).getTextContent();
-				Query query = Delphos.getSession().createSQLQuery("SELECT descripcion FROM CPI_Oficial WHERE codigo LIKE '" + codigoCPI.replace(" ", "").substring(0, codigoCPI.replace(" ", "").length() - 2) + "%' ORDER BY codigo LIMIT 1");
+				String codigoCPI = ((org.w3c.dom.Element) listaCPI.item(i)).getElementsByTagName("text").item(0)
+						.getTextContent();
+				Query query = Delphos.getSession()
+						.createSQLQuery("SELECT descripcion FROM CPI_Oficial WHERE codigo LIKE '"
+								+ codigoCPI.replace(" ", "").substring(0, codigoCPI.replace(" ", "").length() - 2)
+								+ "%' ORDER BY codigo LIMIT 1");
 				String descripcion = (String) query.uniqueResult();
 				slistaCPI += codigoCPI + " - " + descripcion;
 				// slistaCPI += ((org.w3c.dom.Element)
@@ -1099,7 +1123,8 @@ public class Searcher {
 			for (int i = 0; i < listaInventores.getLength(); i++) {
 				if (inventor != "")
 					inventor += ", ";
-				inventor += ((org.w3c.dom.Element) listaInventores.item(i)).getElementsByTagName("name").item(0).getTextContent();
+				inventor += ((org.w3c.dom.Element) listaInventores.item(i)).getElementsByTagName("name").item(0)
+						.getTextContent();
 			}
 			patente.setInventor(inventor);
 
@@ -1108,13 +1133,15 @@ public class Searcher {
 			for (int i = 0; i < listaSolicitantes.getLength(); i++) {
 				if (solicitante != "")
 					solicitante += ", ";
-				solicitante += ((org.w3c.dom.Element) listaSolicitantes.item(i)).getElementsByTagName("name").item(0).getTextContent();
+				solicitante += ((org.w3c.dom.Element) listaSolicitantes.item(i)).getElementsByTagName("name").item(0)
+						.getTextContent();
 				inventor += ", ";
 			}
 			patente.setSolicitante(solicitante);
 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			String sFecha = ((org.w3c.dom.Element) doc.getElementsByTagName("publication-reference").item(0)).getElementsByTagName("date").item(0).getTextContent();
+			String sFecha = ((org.w3c.dom.Element) doc.getElementsByTagName("publication-reference").item(0))
+					.getElementsByTagName("date").item(0).getTextContent();
 			try {
 				patente.setFechaPublicacion(sdf.parse(sFecha));
 			} catch (ParseException e) {
@@ -1125,8 +1152,10 @@ public class Searcher {
 			String resumen = "";
 			org.w3c.dom.NodeList listaResumen = doc.getElementsByTagName("abstract");
 			for (int i = 0; i < listaResumen.getLength(); i++)
-				for (int j = 0; j < ((org.w3c.dom.Element) listaResumen.item(i)).getElementsByTagName("p").getLength(); j++)
-					resumen += ((org.w3c.dom.Element) listaResumen.item(i)).getElementsByTagName("p").item(j).getTextContent();
+				for (int j = 0; j < ((org.w3c.dom.Element) listaResumen.item(i)).getElementsByTagName("p")
+						.getLength(); j++)
+					resumen += ((org.w3c.dom.Element) listaResumen.item(i)).getElementsByTagName("p").item(j)
+							.getTextContent();
 			patente.setResumen(resumen);
 
 		} catch (URISyntaxException e) {
@@ -1247,7 +1276,9 @@ public class Searcher {
 
 	}
 
-	public static ArrayList<Licitacion> buscarLicitacionesEnLinea(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises, String tipoLicitacion, String entidadEmisora, Set<Licitacion_Sector> listaSectores) throws Exception {
+	public static ArrayList<Licitacion> buscarLicitacionesEnLinea(String textoLibre, GregorianCalendar fechaDesde,
+			GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises, String tipoLicitacion,
+			String entidadEmisora, Set<Licitacion_Sector> listaSectores) throws Exception {
 		ArrayList<Licitacion> listaLicitaciones = new ArrayList<Licitacion>();
 
 		URL url;
@@ -1344,6 +1375,7 @@ public class Searcher {
 		System.out.println("Parámetros POST: " + postParameters);
 
 		html = verPagina(url, postParameters);
+		System.out.println("HTML: "+ html);
 		escribirFichero(html);
 
 		int numPaginas = verNumPag(html);
@@ -1374,7 +1406,10 @@ public class Searcher {
 		return listaLicitaciones;
 	}
 
-	public static ArrayList<Licitacion> buscarLicitacionesEnLineaModoExperto(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises, String tipoLicitacion, String entidadEmisora, Set<Licitacion_Sector> listaSectores, Set<ContrastarCon> listaContrastarCon) throws Exception {
+	public static ArrayList<Licitacion> buscarLicitacionesEnLineaModoExperto(String textoLibre,
+			GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises,
+			String tipoLicitacion, String entidadEmisora, Set<Licitacion_Sector> listaSectores,
+			Set<ContrastarCon> listaContrastarCon) throws Exception {
 		ArrayList<Licitacion> listaLicitaciones = new ArrayList<Licitacion>();
 
 		URL url = new URL("http://ted.europa.eu/TED/search/search.do?");
@@ -1382,7 +1417,8 @@ public class Searcher {
 		textoLibre = generarTextoLibreConOrganizaciones(textoLibre, listaContrastarCon);
 		System.out.println("textoLibre en buscarLicitacionesEnLineaModoExperto = " + textoLibre);
 
-		String html = verPagina(url, construirParametrosPostBusquedaExpertaLicitaciones(textoLibre, fechaDesde, fechaHasta, paises, tipoLicitacion, entidadEmisora, listaSectores));
+		String html = verPagina(url, construirParametrosPostBusquedaExpertaLicitaciones(textoLibre, fechaDesde,
+				fechaHasta, paises, tipoLicitacion, entidadEmisora, listaSectores));
 		escribirFichero(html);
 
 		int numPaginas = verNumPag(html);
@@ -1395,7 +1431,8 @@ public class Searcher {
 		return listaLicitaciones;
 	}
 
-	private static String generarTextoLibreConOrganizaciones(String textoLibre, Set<ContrastarCon> listaConstrastarCon) {
+	private static String generarTextoLibreConOrganizaciones(String textoLibre,
+			Set<ContrastarCon> listaConstrastarCon) {
 		// Generamos la lista de Organizaciones con las que constrastar:
 		if (listaConstrastarCon == null)
 			return textoLibre;
@@ -1583,14 +1620,16 @@ public class Searcher {
 	}
 
 	private static String verPagina(URL url, String postParameters) throws Exception {
-		// System.out.println("\nConectando a : " + url);
+		System.out.println("\nverPagina: Conectando a : " + url);
+		System.out.println("\nverPagina: Paramátros POST : " + postParameters);
 		conn.setInstanceFollowRedirects(true);
 		HttpURLConnection.setFollowRedirects(true);
 
 		// Establecemos las cabeceras
 		conn.setReadTimeout(500000);
 		conn.setRequestProperty("Host", "ted.europa.eu");
-		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:33.0) Gecko/20100101 Firefox/33.0");
+		conn.setRequestProperty("User-Agent",
+				"Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:33.0) Gecko/20100101 Firefox/33.0");
 		conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		conn.setRequestProperty("Accept-Language", "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3");
 		conn.setRequestProperty("Accept-Encoding", "deflate");
@@ -1610,8 +1649,9 @@ public class Searcher {
 			conn.setUseCaches(false);
 
 			System.out.println("Poniendo parámetros de POST: " + postParameters);
-			System.out.println("Long String: " + postParameters.length());
-			System.out.println("Long Bytes: " + Integer.toString(postParameters.getBytes().length));
+			// System.out.println("Long String: " + postParameters.length());
+			// System.out.println("Long Bytes: " +
+			// Integer.toString(postParameters.getBytes().length));
 
 			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
 			// wr.write(postParameters.getBytes( StandardCharsets.UTF_8 ));
@@ -1633,7 +1673,8 @@ public class Searcher {
 		// System.out.println("Procesando respuesta:");
 		int status = conn.getResponseCode();
 		if (status != HttpURLConnection.HTTP_OK) {
-			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER)
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+					|| status == HttpURLConnection.HTTP_SEE_OTHER)
 				redirect = true;
 		}
 
@@ -1769,7 +1810,9 @@ public class Searcher {
 			System.out.println("Cabecera: " + conn.getHeaderFieldKey(i) + " = " + conn.getHeaderField(i));
 	}
 
-	public static ArrayList<DocumentoWeb> buscarDocumentosWeb(String textoLibre, Set<Localizacion> listaLocalizacion, Set<Sector> listaSector, Set<TipoOrganizacion> listaTipoOrganizacion, int offset, Set<ContrastarCon> listaConstrastarCon) {
+	public static ArrayList<DocumentoWeb> buscarDocumentosWeb(String textoLibre, Set<Localizacion> listaLocalizacion,
+			Set<Sector> listaSector, Set<TipoOrganizacion> listaTipoOrganizacion, int offset,
+			Set<ContrastarCon> listaConstrastarCon) {
 		ArrayList<DocumentoWeb> listaResultados = new ArrayList<DocumentoWeb>();
 
 		// String[] palabras = textoLibre.toLowerCase().split(" ");
@@ -1800,15 +1843,19 @@ public class Searcher {
 		// }
 
 		if (listaSector.size() > 0) {
-			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class) + ") OR Host_Sector.idSector IS NULL)");
+			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
+					+ ") OR Host_Sector.idSector IS NULL)");
 			order.add("Host_Sector.idSector DESC");
 		}
 		if (listaTipoOrganizacion.size() > 0) {
-			where.add("(Host.idTipoOrganizacion IN (" + verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class) + ") OR Host.idTipoOrganizacion IS NULL)");
+			where.add("(Host.idTipoOrganizacion IN ("
+					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
+					+ ") OR Host.idTipoOrganizacion IS NULL)");
 			order.add("Host.idTipoOrganizacion DESC");
 		}
 		if (listaLocalizacion.size() > 0) {
-			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class) + ") OR Host.idLocalizacion IS NULL)");
+			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
+					+ ") OR Host.idLocalizacion IS NULL)");
 			order.add("Host.idLocalizacion DESC");
 		}
 
@@ -1848,7 +1895,8 @@ public class Searcher {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			DocumentoWeb docWeb = new DocumentoWeb((String) row[2], url, "", (int) row[0], (String) row[4], (String) row[5], (String) row[6]);
+			DocumentoWeb docWeb = new DocumentoWeb((String) row[2], url, "", (int) row[0], (String) row[4],
+					(String) row[5], (String) row[6]);
 			docWeb.setExtracto(Parser.getExtractoTexto((String) row[3], textoLibre));
 			if ((docWeb.getExtracto() != null) || ("".equals(textoLibre)))
 				listaResultados.add(docWeb);
@@ -1888,7 +1936,8 @@ public class Searcher {
 		return resultado;
 	}
 
-	public static DefaultCategoryDataset buscarTendencia(Tendencia tendencia, int periodoIndicado, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta) throws Exception {
+	public static DefaultCategoryDataset buscarTendencia(Tendencia tendencia, int periodoIndicado,
+			GregorianCalendar fechaDesde, GregorianCalendar fechaHasta) throws Exception {
 		DefaultCategoryDataset resultado = new DefaultCategoryDataset();
 
 		int tipoPeriodo = 0, periodo = 0, tipoIntervalo = 0, intervalo = 0;
@@ -1996,12 +2045,14 @@ public class Searcher {
 			Calendar fechaFinIntervalo = (Calendar) fechaInicioPeriodo.clone();
 			fechaFinIntervalo.add(tipoIntervalo, intervalo);
 
-			System.out.println("Calculando: " + sdf.format(fechaInicioPeriodo.getTime()) + " - " + sdf.format(fechaFinIntervalo.getTime()));
+			System.out.println("Calculando: " + sdf.format(fechaInicioPeriodo.getTime()) + " - "
+					+ sdf.format(fechaFinIntervalo.getTime()));
 
 			if (tendencia.getIndicadorLicitaciones()) {
 				int numEncontrados = verNumLicitacionesModoExperto(fechaInicioPeriodo, fechaFinIntervalo, tendencia);
 				int numTotal = verNumLicitacionesModoExperto(fechaInicioPeriodo, fechaFinIntervalo, tendenciaClon);
-				System.out.println("Licitaciones: Fecha " + sdf.format(fechaInicioPeriodo.getTime()) + " = " + numEncontrados + "/" + numTotal + " = " + (double) numEncontrados / numTotal);
+				System.out.println("Licitaciones: Fecha " + sdf.format(fechaInicioPeriodo.getTime()) + " = "
+						+ numEncontrados + "/" + numTotal + " = " + (double) numEncontrados / numTotal);
 				if ((numTotal == 0) || (numEncontrados == 0))
 					resultado.addValue(0, "Licitaciones", sdf.format(fechaFinIntervalo.getTime()));
 				else {
@@ -2012,7 +2063,8 @@ public class Searcher {
 			if (tendencia.getIndicadorPatentes()) {
 				int numEncontrados = verNumPatentes(fechaInicioPeriodo, fechaFinIntervalo, tendencia);
 				int numTotal = verNumPatentes(fechaInicioPeriodo, fechaFinIntervalo, tendenciaClon);
-				System.out.println("Patentes: Fecha " + sdf.format(fechaInicioPeriodo.getTime()) + " = " + numEncontrados + "/" + numTotal + " = " + (double) numEncontrados / numTotal);
+				System.out.println("Patentes: Fecha " + sdf.format(fechaInicioPeriodo.getTime()) + " = "
+						+ numEncontrados + "/" + numTotal + " = " + (double) numEncontrados / numTotal);
 				if ((numTotal == 0) || (numEncontrados == 0))
 					resultado.addValue(0, "Patentes", sdf.format(fechaFinIntervalo.getTime()));
 				else {
@@ -2021,7 +2073,19 @@ public class Searcher {
 				}
 			}
 			if (tendencia.getIndicadorDocs()) {
-
+				int numEncontrados = verNumDocs(fechaInicioPeriodo, fechaFinIntervalo, tendencia);
+				// int numTotal = verNumDocs(fechaInicioPeriodo,
+				// fechaFinIntervalo, tendenciaClon);
+				if (numTotalDocs == 0 && numEncontrados > 0)
+					numTotalDocs = verNumTotalDocsDSpace(); 
+				System.out.println("Documentos: Fecha " + sdf.format(fechaInicioPeriodo.getTime()) + " = "
+						+ numEncontrados + "/" + numTotalDocs + " = " + (double) numEncontrados / numTotalDocs);
+				if ((numTotalDocs == 0) || (numEncontrados == 0))
+					resultado.addValue(0, "Documentos", sdf.format(fechaFinIntervalo.getTime()));
+				else {
+					double dato = (double) numEncontrados / numTotalDocs * 1000;
+					resultado.addValue(dato / 10, "Documentos", sdf.format(fechaFinIntervalo.getTime()));
+				}
 			}
 
 			fechaInicioPeriodo.add(tipoIntervalo, intervalo);
@@ -2031,16 +2095,150 @@ public class Searcher {
 		return resultado;
 	}
 
-	public static int verNumLicitacionesModoExperto(Calendar fechaDesde, Calendar fechaHasta, Tendencia tendencia) throws Exception {
+	public static int verNumTotalDocsDSpace() {
+		int result = 0;
+		try {
+			Document doc = Jsoup.connect("http://dspace.mit.edu/browse?type=dateissued").get();
+			Element elem = doc.select("p.pagination-info").get(0);
+			String[] trozos = elem.text().split(" ");
+			result = Integer.parseInt(trozos[trozos.length-1]);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+
+	private static int verNumDocs(Calendar fechaInicioPeriodo, Calendar fechaFinIntervalo, Tendencia tendencia) {
+		ArrayList<String> urls = new ArrayList<>();
+
+		// TODO:Mejora. Guardar el último resultado obtenido y si la consulta es la misma (porque es para otro periodo, utilizarla)
+		// Es decir, montar una caché de urls.
+		
+		System.out.println("En Searcher.verNumDocs");
+
+		numTotalDocs = 0;
+
+		// Recorremos la lista de clasificaciones
+		for (Documento_Clasificacion dc : tendencia.getListaDocumentoClasificacion()) {
+			urls.add(dc.descripcion+"/advanced-search");
+		}
+		if (urls.isEmpty())
+			// Añadimos la url por defecto (todo DSpace)
+			urls.add("http://dspace.mit.edu/advanced-search");
+		int resultado = 0;
+
+		for (String sUrl : urls) {
+			int page = 1;
+			int numDocs = 0;
+			do {
+				try {
+					URL url = new URL(sUrl);
+					System.out.println("URL: " + url);
+					conn = (HttpURLConnection) url.openConnection();
+					String params = "num_search_field=3&results_per_page=100&";
+					if (url.equals("http://dspace.mit.edu/advanced-search"))
+						params += "scope=%2F&";
+					params += "field1=ANY";
+					params += "&page=" + page;
+					params += "&query1=" + tendencia.getTextoLibre().replace(" ", "+");
+					params += "&conjunction2=AND&field2=";
+					if (tendencia.getDocumentoAutor().isEmpty())
+						params += "ANY&query2=";
+					else
+						params += "author&query2=" + tendencia.getDocumentoAutor().replace(" ", "+");
+					params += "&conjunction3=AND&field3=ANY&query3=&rpp=10&sort_by=2&order=DESC&submit=Ir";
+
+					// params =
+					// "order=DESC&rpp=100&sort_by=2&page=1&conjunction1=AND&results_per_page=10&etal=0&field1=ANY&num_search_field=3&query1=energy";
+
+					String html = verPagina(url, params);
+					escribirFichero(html);
+
+					Document doc = Jsoup.parse(html);
+					if (numTotalDocs == 0) {
+						try {
+							String numTotal = doc.select(".pagination-info").first().text();
+							numTotalDocs = Integer.valueOf(numTotal.substring(numTotal.indexOf("de ") + 3));
+						} catch (NullPointerException e) {
+							numTotalDocs = 0;
+							break;
+						}
+						System.out.println("TOTAL DE DOCUMENTOS: " + numTotalDocs);
+					}
+
+					Elements listaLi = doc.select("li.ds-artifact-item");
+					for (Element li : listaLi) {
+						numDocs++;
+						System.out.println("Leyendo documento " + numDocs + " de " + numTotalDocs + " página: " + page);
+						Element aTitulo = li.select("div.artifact-title>a").first();
+						String docTitulo = aTitulo.text();
+						String docUrl = "http://dspace.mit.edu" + aTitulo.attr("href");
+						String docAutor = li.select("span.author").text();
+						String docEntidad = li.select("span.publisher").text();
+						String docFechaPublicacion = li.select("span.date").text();
+						String docResumen = li.select(".artifact-abstract").text();
+						Document docDetalle = Jsoup.connect(docUrl + "?show=full").get();
+
+						// Si hay rango de fechas
+						Date fechaCandidato = adivinarFechaDocAcademico(docFechaPublicacion);
+						System.out.println("Fecha Documento: " + fechaCandidato);
+						if (fechaCandidato == null) {
+							System.out.println("Falla por fechaCandidato nula.");
+							continue;
+						}
+
+						Date fechaDesde = fechaInicioPeriodo.getTime();
+						if (fechaCandidato.compareTo(fechaDesde) < 0) {
+							System.out.println("Falla por fecha inferior a periodo: " + fechaDesde);
+							continue;
+						}
+
+						Date fechaHasta = fechaFinIntervalo.getTime();
+						if (fechaCandidato.compareTo(fechaHasta) > 0) {
+							System.out.println("Falla por fecha superior a periodo: " + fechaHasta);
+							continue;
+						}
+
+						// Si hay entidad
+						if (!tendencia.getDocumentoEntidad().isEmpty()) {
+							if (!docEntidad.toLowerCase().contains(tendencia.getDocumentoEntidad().toLowerCase())) {
+								System.out.println("Falla por no coincide la entidad.");
+								continue;
+							}
+						}
+						System.out.println("COINCIDE.");
+						resultado++;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				page++;
+			} while (numDocs < numTotalDocs);
+		}
+
+		return resultado;
+	}
+
+	public static int verNumLicitacionesModoExperto(Calendar fechaDesde, Calendar fechaHasta, Tendencia tendencia)
+			throws Exception {
 
 		URL url = new URL("http://ted.europa.eu/TED/search/search.do?");
 
-		String html = verPagina(url, construirParametrosPostBusquedaExpertaLicitaciones(tendencia.getTextoLibre(), (GregorianCalendar) fechaDesde, (GregorianCalendar) fechaHasta, tendencia.getListaLicitacionLocalizacion(), tendencia.getLicitacionTipo(), tendencia.getLicitacionEntidadSolicitante(), tendencia.getListaLicitacionSector()));
+		String html = verPagina(url,
+				construirParametrosPostBusquedaExpertaLicitaciones(tendencia.getTextoLibre(),
+						(GregorianCalendar) fechaDesde, (GregorianCalendar) fechaHasta,
+						tendencia.getListaLicitacionLocalizacion(), tendencia.getLicitacionTipo(),
+						tendencia.getLicitacionEntidadSolicitante(), tendencia.getListaLicitacionSector()));
 
+		escribirFichero(html);
 		return verNumResultados(html);
 	}
 
-	private static String construirParametrosPostBusquedaExpertaLicitaciones(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises, String tipoLicitacion, String entidadEmisora, Set<Licitacion_Sector> listaSectores) throws Exception {
+	private static String construirParametrosPostBusquedaExpertaLicitaciones(String textoLibre,
+			GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises,
+			String tipoLicitacion, String entidadEmisora, Set<Licitacion_Sector> listaSectores) throws Exception {
 		String postParameters;
 
 		URL url;
@@ -2077,7 +2275,8 @@ public class Searcher {
 		// Periodo de Publicación
 		if ((fechaDesde != null) && (fechaHasta != null)) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			listaCondicionesBusqueda.add("PD=[" + sdf.format(fechaDesde.getTime()) + " <> " + sdf.format(fechaHasta.getTime()) + "]");
+			listaCondicionesBusqueda
+					.add("PD=[" + sdf.format(fechaDesde.getTime()) + " <> " + sdf.format(fechaHasta.getTime()) + "]");
 		}
 		// Lista de Países
 		if (paises.size() > 0) {
@@ -2137,25 +2336,36 @@ public class Searcher {
 	private static int verNumResultados(String html) {
 		// Buscar <span class="pagebanner">91,050 elements found, displaying 1
 		// to 25.</span>
+		//Han cambiado: Showing 1 - 25 of 2,391 results. Y en div
+		
 		int resultado = 0;
 		Document doc = Jsoup.parse(html);
-		Elements nodos = doc.select("span.pagebanner");
+		Elements nodos = doc.select("div.pagebanner");
 		if (nodos.size() > 0) {
 			if (nodos.get(0).text().contains("One"))
 				resultado = 1;
-			else
-				resultado = Integer.parseInt(nodos.get(0).text().split(" ")[0].replace(",", ""));
+			else{
+				String texto = nodos.get(0).text();
+				int inicio = texto.indexOf("of ") + 3;
+				int fin = texto.indexOf(" result");
+				//resultado = Integer.parseInt(nodos.get(0).text().split(" ")[0].replace(",", ""));
+				resultado = Integer.parseInt(texto.substring(inicio, fin).replace(",", ""));
+			}
 		}
 
+		System.out.println("verNumResultados = " + resultado);
 		return resultado;
 	}
 
-	public static int verNumTotalPatentes(Calendar fechaDesde, Calendar fechaHasta, Tendencia tendencia) throws Exception {
+	public static int verNumTotalPatentes(Calendar fechaDesde, Calendar fechaHasta, Tendencia tendencia)
+			throws Exception {
 		if (!tendencia.getIndicadorPatentes())
 			return -12;
 
 		// Detectamos el tipo de total que hay que calcular
-		if (!tendencia.getTerminoPrincipal().isEmpty() && tendencia.getListaPatenteLocalizacion().isEmpty() && tendencia.getListaPatenteSector().isEmpty() && tendencia.getPatenteInventor().isEmpty() && tendencia.getPatenteSolicitante().isEmpty()) {
+		if (!tendencia.getTerminoPrincipal().isEmpty() && tendencia.getListaPatenteLocalizacion().isEmpty()
+				&& tendencia.getListaPatenteSector().isEmpty() && tendencia.getPatenteInventor().isEmpty()
+				&& tendencia.getPatenteSolicitante().isEmpty()) {
 			// Caso 1. Con texto libre y sin filtros; comparamos con el total de
 			// documentos sin filtros, sin término.
 			// System.out.println("verNumTotalLicitaciones: Caso 1");
@@ -2163,7 +2373,9 @@ public class Searcher {
 			tendenciaClon.setTerminoPrincipal("");
 			return verNumPatentes(fechaDesde, fechaHasta, tendenciaClon);
 		}
-		if (!tendencia.getTerminoPrincipal().isEmpty() && (!tendencia.getListaPatenteLocalizacion().isEmpty() || !tendencia.getListaPatenteSector().isEmpty() || !tendencia.getPatenteInventor().isEmpty() || !tendencia.getPatenteSolicitante().isEmpty())) {
+		if (!tendencia.getTerminoPrincipal().isEmpty()
+				&& (!tendencia.getListaPatenteLocalizacion().isEmpty() || !tendencia.getListaPatenteSector().isEmpty()
+						|| !tendencia.getPatenteInventor().isEmpty() || !tendencia.getPatenteSolicitante().isEmpty())) {
 			// 2) Si el usuario introduce un término y uno o más filtros: El
 			// sistema compara los resultados obtenidos por la consulta en la
 			// que figuran el término y sus filtros, con los resultados
@@ -2172,7 +2384,9 @@ public class Searcher {
 			tendenciaClon.setTerminoPrincipal("");
 			return verNumPatentes(fechaDesde, fechaHasta, tendenciaClon);
 		}
-		if (tendencia.getTerminoPrincipal().isEmpty() && (!tendencia.getListaPatenteLocalizacion().isEmpty() ^ !tendencia.getListaPatenteSector().isEmpty() ^ !tendencia.getPatenteInventor().isEmpty() ^ !tendencia.getPatenteSolicitante().isEmpty())) {
+		if (tendencia.getTerminoPrincipal().isEmpty()
+				&& (!tendencia.getListaPatenteLocalizacion().isEmpty() ^ !tendencia.getListaPatenteSector().isEmpty()
+						^ !tendencia.getPatenteInventor().isEmpty() ^ !tendencia.getPatenteSolicitante().isEmpty())) {
 			// 1) Si no se introduce término y se selecciona un solo filtro: El
 			// sistema compara los resultados obtenidos por ese filtro, con el
 			// total de documentos existentes en el período indicado sin filtros
@@ -2328,19 +2542,22 @@ public class Searcher {
 		System.out.print("numPatentes entre " + sdf.format(fechaDesde.getTime()) + " y ");
 		sdf.setCalendar(fechaHasta);
 		System.out.print(sdf.format(fechaHasta.getTime()) + " = ");
-		numPatentes = Integer.parseInt(doc.getElementsByTagName("ops:biblio-search").item(0).getAttributes().getNamedItem("total-result-count").getTextContent());
+		numPatentes = Integer.parseInt(doc.getElementsByTagName("ops:biblio-search").item(0).getAttributes()
+				.getNamedItem("total-result-count").getTextContent());
 		System.out.println(numPatentes);
 		if (numPatentes >= 100000) { // Se ha saturado
 			System.out.println("SATURADO");
 			Thread.sleep(2000);
 			Calendar fechaMedia = new GregorianCalendar();
 			fechaMedia.setTimeInMillis((fechaDesde.getTimeInMillis() + fechaHasta.getTimeInMillis()) / 2);
-			return verNumPatentes(fechaDesde, fechaMedia, tendencia) + verNumPatentes(fechaMedia, fechaHasta, tendencia);
+			return verNumPatentes(fechaDesde, fechaMedia, tendencia)
+					+ verNumPatentes(fechaMedia, fechaHasta, tendencia);
 		} else
 			return numPatentes;
 	}
 
-	public static ArrayList<AnalisisTendencia> analizarTendencia(Tendencia tendencia, Calendar fechaDesde, Calendar fechaHasta) {
+	public static ArrayList<AnalisisTendencia> analizarTendencia(Tendencia tendencia, Calendar fechaDesde,
+			Calendar fechaHasta) {
 		ArrayList<AnalisisTendencia> resultado = new ArrayList<AnalisisTendencia>();
 
 		// Cálculo de Periodos
@@ -2358,25 +2575,31 @@ public class Searcher {
 		Calendar fechaFinPeriodoPosterior = (Calendar) fechaInicioPeriodoPosterior.clone();
 		fechaFinPeriodoPosterior.add(Calendar.DATE, ((int) diferencia));
 
-		AnalisisTendencia atPeriodoAnterior = analizarTendenciaPeriodo(tendencia, fechaInicioPeriodoAnterior, fechaFinPeriodoAnterior);
+		AnalisisTendencia atPeriodoAnterior = analizarTendenciaPeriodo(tendencia, fechaInicioPeriodoAnterior,
+				fechaFinPeriodoAnterior);
 		resultado.add(atPeriodoAnterior);
 
 		AnalisisTendencia atPeriodoActual = analizarTendenciaPeriodo(tendencia, fechaDesde, fechaHasta);
 		resultado.add(atPeriodoActual);
 
-		AnalisisTendencia atPeriodoPosterior = analizarTendenciaPeriodo(tendencia, fechaInicioPeriodoPosterior, fechaFinPeriodoPosterior);
+		AnalisisTendencia atPeriodoPosterior = analizarTendenciaPeriodo(tendencia, fechaInicioPeriodoPosterior,
+				fechaFinPeriodoPosterior);
 		resultado.add(atPeriodoPosterior);
 
 		return resultado;
 	}
 
-	public static AnalisisTendencia analizarTendenciaPeriodo(Tendencia tendencia, Calendar fechaDesde, Calendar fechaHasta) {
+	public static AnalisisTendencia analizarTendenciaPeriodo(Tendencia tendencia, Calendar fechaDesde,
+			Calendar fechaHasta) {
 		AnalisisTendencia resultado = new AnalisisTendencia();
 
 		if (tendencia.getIndicadorLicitaciones()) {
 			ArrayList<Licitacion> listaLicitaciones;
 			try {
-				listaLicitaciones = buscarLicitacionesEnLineaModoExperto(tendencia.getTextoLibre(), (GregorianCalendar) fechaDesde, (GregorianCalendar) fechaHasta, tendencia.getListaLicitacionLocalizacion(), tendencia.getLicitacionTipo(), tendencia.getLicitacionEntidadSolicitante(), tendencia.getListaLicitacionSector(), null);
+				listaLicitaciones = buscarLicitacionesEnLineaModoExperto(tendencia.getTextoLibre(),
+						(GregorianCalendar) fechaDesde, (GregorianCalendar) fechaHasta,
+						tendencia.getListaLicitacionLocalizacion(), tendencia.getLicitacionTipo(),
+						tendencia.getLicitacionEntidadSolicitante(), tendencia.getListaLicitacionSector(), null);
 				for (Licitacion lic : listaLicitaciones) {
 					// System.out.println("TRON - lic.getListaCPV()" +
 					// lic.getListaCPV());
@@ -2407,7 +2630,8 @@ public class Searcher {
 
 					ArrayList<String> tipos = new ArrayList<String>(Arrays.asList(lic.getTipoDocumento().split(",")));
 					resultado.aniadirListaALista(AnalisisTendencia.TipoGeneral.LICITACION_TIPO, tipos);
-					ArrayList<String> solicitantes = new ArrayList<String>(Arrays.asList(lic.getEntidadEmisora().split(",")));
+					ArrayList<String> solicitantes = new ArrayList<String>(
+							Arrays.asList(lic.getEntidadEmisora().split(",")));
 					resultado.aniadirListaALista(AnalisisTendencia.TipoGeneral.LICITACION_SOLICITANTE, solicitantes);
 					ArrayList<String> contenido = Parser.limpiar(lic.getTitulo() + " " + lic.getResumen());
 					// Quitamos los repetidos de contenido y así estaremos
@@ -2426,7 +2650,10 @@ public class Searcher {
 		if (tendencia.getIndicadorPatentes()) {
 			ArrayList<Patente> listaPatentes;
 			try {
-				listaPatentes = buscarTodasPatentesEnLinea(tendencia.getTextoLibre(), (GregorianCalendar) fechaDesde, (GregorianCalendar) fechaHasta, tendencia.getPatenteInventor(), tendencia.getPatenteSolicitante(), tendencia.getListaPatenteSector(), tendencia.getListaPatenteLocalizacion());
+				listaPatentes = buscarTodasPatentesEnLinea(tendencia.getTextoLibre(), (GregorianCalendar) fechaDesde,
+						(GregorianCalendar) fechaHasta, tendencia.getPatenteInventor(),
+						tendencia.getPatenteSolicitante(), tendencia.getListaPatenteSector(),
+						tendencia.getListaPatenteLocalizacion());
 				for (Patente pat : listaPatentes) {
 					// for(CPI sector : pat.getCpi())
 					// resultado.aniadirALista(AnalisisTendencia.TipoGeneral.PATENTE_SECTOR,
@@ -2437,7 +2664,8 @@ public class Searcher {
 					resultado.aniadirListaALista(AnalisisTendencia.TipoGeneral.PATENTE_PAIS, paises);
 					ArrayList<String> inventores = new ArrayList<String>(Arrays.asList(pat.getInventor().split(",")));
 					resultado.aniadirListaALista(AnalisisTendencia.TipoGeneral.PATENTE_INVENTOR, inventores);
-					ArrayList<String> solicitantes = new ArrayList<String>(Arrays.asList(pat.getSolicitante().split(",")));
+					ArrayList<String> solicitantes = new ArrayList<String>(
+							Arrays.asList(pat.getSolicitante().split(",")));
 					resultado.aniadirListaALista(AnalisisTendencia.TipoGeneral.PATENTE_SOLICITANTE, solicitantes);
 					ArrayList<String> contenido = Parser.limpiar(pat.getTitulo() + " " + pat.getResumen());
 					// Quitamos los repetidos de contenido y así estaremos
@@ -2456,14 +2684,17 @@ public class Searcher {
 		return resultado;
 	}
 
-	public static ArrayList<Patente> buscarTodasPatentesEnLinea(String textoLibre, GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, String inventor, String solicitante, Set<Patente_Sector> listaCPI, Set<Patente_Localizacion> listaLocalizacion) {
+	public static ArrayList<Patente> buscarTodasPatentesEnLinea(String textoLibre, GregorianCalendar fechaDesde,
+			GregorianCalendar fechaHasta, String inventor, String solicitante, Set<Patente_Sector> listaCPI,
+			Set<Patente_Localizacion> listaLocalizacion) {
 		ArrayList<Patente> resultado = new ArrayList<Patente>();
 		int aux, indiceBusquedaEPO = 1;
 
 		do {
 			aux = resultado.size();
 			try {
-				resultado.addAll(buscarPatentesEnLinea(textoLibre, fechaDesde, fechaHasta, inventor, solicitante, listaCPI, listaLocalizacion, indiceBusquedaEPO, null));
+				resultado.addAll(buscarPatentesEnLinea(textoLibre, fechaDesde, fechaHasta, inventor, solicitante,
+						listaCPI, listaLocalizacion, indiceBusquedaEPO, null));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2473,4 +2704,142 @@ public class Searcher {
 		} while (aux < resultado.size());
 		return resultado;
 	}
+
+	public static ArrayList<DocumentoAcademico> buscarDocsDSpace(String textoLibreCompleto,
+			GregorianCalendar fechaDesde, GregorianCalendar fechaHasta, String autor, String entidad, String sUrl,
+			int indiceBusquedaDocumentosAcademicos) {
+
+		ArrayList<DocumentoAcademico> listaDocumentosAcademicos = new ArrayList<DocumentoAcademico>();
+
+		try {
+			URL url = new URL(sUrl);
+			conn = (HttpURLConnection) url.openConnection();
+			String params = "num_search_field=3&results_per_page=100&";
+			if (url.equals("http://dspace.mit.edu/advanced-search"))
+				params += "scope=%2F&";
+			params += "field1=ANY";
+			params += "&page=" + ((indiceBusquedaDocumentosAcademicos / 100) + 1);
+			params += "&query1=" + textoLibreCompleto.replace(" ", "+");
+			params += "&conjunction2=AND&field2=";
+			if (autor.isEmpty())
+				params += "ANY&query2=";
+			else
+				params += "author&query2=" + autor.replace(" ", "+");
+			params += "&conjunction3=AND&field3=ANY&query3=&rpp=10&sort_by=2&order=DESC&submit=Ir";
+
+			// params =
+			// "order=DESC&rpp=100&sort_by=2&page=1&conjunction1=AND&results_per_page=10&etal=0&field1=ANY&num_search_field=3&query1=energy";
+
+			String html = verPagina(url, params);
+			escribirFichero(html);
+
+			Document doc = Jsoup.parse(html);
+			Elements listaLi = doc.select("li.ds-artifact-item");
+			for (Element li : listaLi) {
+				Element aTitulo = li.select("div.artifact-title>a").first();
+				String docTitulo = aTitulo.text();
+				String docUrl = "http://dspace.mit.edu" + aTitulo.attr("href");
+				String docAutor = li.select("span.author").text();
+				String docEntidad = li.select("span.publisher").text();
+				String docFechaPublicacion = li.select("span.date").text();
+				String docResumen = li.select(".artifact-abstract").text();
+				Document docDetalle = Jsoup.connect(docUrl + "?show=full").get();
+				// String docFechaDisponibilidad = null;
+				// try {
+				// docFechaDisponibilidad =
+				// docDetalle.select("td:contains(dc.date.available)").first()
+				// .nextElementSibling().text();
+				// } catch (Exception e) {
+				// ;
+				// }
+				System.out.println("Título:" + docTitulo);
+				System.out.println("URL: " + docUrl);
+				System.out.println("Autor:" + docAutor);
+				System.out.println("Entidad: " + docEntidad);
+				System.out.println("FechaPublicacion: " + docFechaPublicacion);
+				System.out.println("Resumen: " + docResumen);
+				System.out.println();
+				DocumentoAcademico docAcademico = new DocumentoAcademico();
+				docAcademico.setTitulo(docTitulo);
+				docAcademico.setHref(docUrl);
+				if (docAutor.length() > 100)
+					docAutor = docAutor.substring(0, 100);
+				docAcademico.setAutor(docAutor);
+				docAcademico.setEntidad(docEntidad);
+				// try{
+				// docAcademico.setFechaPublicacion(sdf.parse(docFechaPublicacion));
+				// }catch(Exception e){
+				// System.out.println("Fecha incorrecta: " +
+				// docFechaPublicacion);
+				// }
+				docAcademico.setFechaPublicacion(docFechaPublicacion);
+				docAcademico.setResumen(docResumen);
+
+				// Si hay rango de fechas
+				Date fechaCandidato = adivinarFechaDocAcademico(docFechaPublicacion);
+				if (fechaCandidato == null)
+					continue;
+
+				Date fechaDesde2 = fechaDesde.getTime();
+				if (fechaCandidato.compareTo(fechaDesde2) < 0)
+					continue;
+				Date fechaHasta2 = fechaHasta.getTime();
+				if (fechaCandidato.compareTo(fechaHasta2) > 0)
+					continue;
+				// Es válido, lo añadimos a la lista de resultados
+
+				// Si hay entidad
+				if (!entidad.isEmpty()) {
+					if (!docEntidad.toLowerCase().contains(entidad.toLowerCase()))
+						continue;
+				}
+
+				listaDocumentosAcademicos.add(docAcademico);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return listaDocumentosAcademicos;
+	}
+
+	private static Date adivinarFechaDocAcademico(String docFechaPublicacion) {
+		Date fecha = null;
+		SimpleDateFormat sdf, normal;
+		normal = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			sdf = new SimpleDateFormat("©yyyy");
+			fecha = sdf.parse(docFechaPublicacion);
+		} catch (ParseException e1) {
+			try {
+				sdf = new SimpleDateFormat("'c'yyyy");
+				fecha = sdf.parse(docFechaPublicacion);
+			} catch (ParseException e2) {
+				try {
+					sdf = new SimpleDateFormat("MMMM yyyy", Locale.US);
+					fecha = sdf.parse(docFechaPublicacion);
+				} catch (ParseException e3) {
+					try {
+						sdf = new SimpleDateFormat("yyyy-MM-dd");
+						fecha = sdf.parse(docFechaPublicacion);
+					} catch (ParseException e4) {
+						try {
+							sdf = new SimpleDateFormat("yyyy-MM");
+							fecha = sdf.parse(docFechaPublicacion);
+						} catch (ParseException e5) {
+							try {
+								sdf = new SimpleDateFormat("yyyy");
+								fecha = sdf.parse(docFechaPublicacion);
+							} catch (ParseException e6) {
+								System.out.println("Imposible adivinar fecha " + docFechaPublicacion);
+							}
+						}
+					}
+				}
+			}
+		}
+		return fecha;
+	}
+
 }

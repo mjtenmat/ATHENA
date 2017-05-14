@@ -190,6 +190,16 @@ public class PanelTendencias extends javax.swing.JPanel implements ConDefaultBut
 			if (!tendencia.getPatenteSolicitante().isEmpty())
 				filtros.add(Tendencia.SOLICITANTE);
 		}
+		if ("Documentos".equals(tipo)) {
+			if (!tendencia.getTerminoPrincipal().isEmpty())
+				filtros.add(Tendencia.TEXTO_LIBRE);
+			if (!tendencia.getListaDocumentoClasificacion().isEmpty())
+				filtros.add(Tendencia.CLASIFICACION);
+			if (!tendencia.getDocumentoAutor().isEmpty())
+				filtros.add(Tendencia.AUTOR);
+			if (!tendencia.getDocumentoEntidad().isEmpty())
+				filtros.add(Tendencia.ENTIDAD);
+		}
 		String[] afiltros = new String[filtros.size()];
 		for (int i = 0; i < filtros.size(); i++)
 			afiltros[i] = filtros.get(i);

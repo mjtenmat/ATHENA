@@ -53,7 +53,88 @@ public class VigilanteTecnologico extends TimerTask {
 		for (TerminoTecnologiaEmergente terminoTE : terminosTecnologiasEmergentes) {
 			buscarAvisosTED(terminoTE);
 			buscarAvisosEPO(terminoTE);
+			buscarAvisosDSpace(terminoTE);
 		}
+	}
+
+	private void buscarAvisosDSpace(TerminoTecnologiaEmergente terminoTE) {
+		try {
+			URL url = new URL("http://dspace.mit.edu/advanced-search");
+			conn = (HttpURLConnection) url.openConnection();
+			String params = "num_search_field=3&results_per_page=100&";
+			params += "scope=%2F&";
+			params += "field1=ANY";
+			params += "&page=1";
+			params += "&query1=" + terminoTE.getTermino().replace(" ", "+");
+			params += "&conjunction2=AND&field2=";
+			params += "ANY&query2=";
+			params += "&conjunction3=AND&field3=ANY&query3=&rpp=10&sort_by=2&order=DESC&submit=Ir";
+			
+			String html = verPagina(url, params);
+			escribirFichero(html);
+
+			Document doc = Jsoup.parse(html);
+			Elements listaLi = doc.select("li.ds-artifact-item");
+			UltimoAvisoDSpace ultimoAviso = null;
+			UltimoAvisoDSpace uad = null;
+			for (Element li : listaLi) {
+				Element aTitulo = li.select("div.artifact-title>a").first();
+				String docTitulo = aTitulo.text();
+				String docUrl = "http://dspace.mit.edu" + aTitulo.attr("href");
+				String docAutor = li.select("span.author").text();
+				String docEntidad = li.select("span.publisher").text();
+				String docFechaPublicacion = li.select("span.date").text();
+				String docResumen = li.select(".artifact-abstract").text();
+				Document docDetalle = Jsoup.connect(docUrl + "?show=full").get();
+				System.out.println("Título:" + docTitulo);
+				System.out.println("URL: " + docUrl);
+				System.out.println("Autor:" + docAutor);
+				System.out.println("Entidad: " + docEntidad);
+				System.out.println("FechaPublicacion: " + docFechaPublicacion);
+				System.out.println("Resumen: " + docResumen);
+				System.out.println();
+				AvisoTecnologiasEmergentes aviso = new AvisoTecnologiasEmergentes();
+				aviso.setTermino(terminoTE.getTermino());
+				aviso.setTitulo(docTitulo);
+				aviso.setUrl(docUrl);
+				aviso.setExtracto(docResumen);
+				aviso.setTipo("Documento Académico");
+				aviso.setRevisado(false);
+
+				//Guardamos el primero
+				if (ultimoAviso == null){
+					ultimoAviso = new UltimoAvisoDSpace(terminoTE.getTermino(), docUrl);
+				}
+				//Buscamos el último aviso registrado para este término
+				uad = UltimoAvisoDSpace.buscar(terminoTE.getTermino());
+				if (uad != null){
+					//Si ya hemos llegado al último que teníamos registrado, paramos
+					if (uad.getUrl().equals(docUrl))
+						break;
+				}
+				Delphos.getSession().beginTransaction();
+				Delphos.getSession().save(aviso);
+				Delphos.getSession().getTransaction().commit();
+			}
+			if (ultimoAviso != null){
+				if (uad==null){ //No había avisos previos
+					Delphos.getSession().beginTransaction();
+					Delphos.getSession().save(ultimoAviso);
+					Delphos.getSession().getTransaction().commit();
+				}
+				else{
+					//Actualizamos el último aviso del término
+					uad.setUrl(ultimoAviso.getUrl());
+					Delphos.getSession().beginTransaction();
+					Delphos.getSession().save(uad);
+					Delphos.getSession().getTransaction().commit();
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	private static void buscarAvisosTED(TerminoTecnologiaEmergente terminoTE) {

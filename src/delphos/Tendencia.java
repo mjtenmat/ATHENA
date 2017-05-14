@@ -25,11 +25,15 @@ public class Tendencia implements Cloneable {
 	public static final String TIPO = "Tipo";
 	public static final String SOLICITANTE = "Solicitante";
 	public static final String INVENTOR = "Inventor";
+	public static final String CLASIFICACION = "Clasificación";
+	public static final String AUTOR = "Autor";
+	public static final String ENTIDAD = "Entidad";
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String terminoPrincipal;
 	private String listaTerminosRelacionados;
+	
 	private Boolean indicadorLicitaciones;
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "Tendencia_Licitacion_Sector", joinColumns = { @JoinColumn(name = "idTendencia", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "idLicitacion_Sector", nullable = false, updatable = false) })
@@ -39,6 +43,7 @@ public class Tendencia implements Cloneable {
 	private Set<Licitacion_Localizacion> listaLicitacionLocalizacion = new HashSet<Licitacion_Localizacion>();
 	private String licitacionTipo;
 	private String licitacionEntidadSolicitante;
+	
 	private Boolean indicadorPatentes;
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "Tendencia_Patente_Sector", joinColumns = { @JoinColumn(name = "idTendencia", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "idPatente_Sector", nullable = false, updatable = false) })
@@ -48,13 +53,21 @@ public class Tendencia implements Cloneable {
 	private Set<Patente_Localizacion> listaPatenteLocalizacion = new HashSet<Patente_Localizacion>();
 	private String patenteInventor;
 	private String patenteSolicitante;
+	
 	private Boolean indicadorDocs;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "Tendencia_Documento_Clasificacion", joinColumns = { @JoinColumn(name = "idTendencia", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "idDocumento_Clasificacion", nullable = false, updatable = false) })
+	private Set<Documento_Clasificacion> listaDocumentoClasificacion = new HashSet<Documento_Clasificacion>();
+	private String documentoAutor;
+	private String documentoEntidad;
+	
 	private Double incUltimoMes;
 	private Double incUltimos3Meses;
 	private Double incUltimos6Meses;
 	private Double incUltimoAnio;
 	private String filtroPrincipalLicitaciones;
 	private String filtroPrincipalPatentes;
+	private String filtroPrincipalDocumentos;
 
 	public int getId() {
 		return id;
@@ -431,6 +444,34 @@ public class Tendencia implements Cloneable {
 					textoLibre += " OR \"" + palabra + "\"";
 			}
 		return textoLibre;
+	}
+
+	public Set<Documento_Clasificacion> getListaDocumentoClasificacion() {
+		return listaDocumentoClasificacion;
+	}
+
+	public String getDocumentoAutor() {
+		return documentoAutor;
+	}
+
+	public String getDocumentoEntidad() {
+		return documentoEntidad;
+	}
+
+	public void setDocumentoAutor(String documentoAutor) {
+		this.documentoAutor = documentoAutor;
+	}
+
+	public void setListaDocumentoClasificacion(Set<Documento_Clasificacion> seleccion) {
+		this.listaDocumentoClasificacion = seleccion;
+	}
+
+	public void setDocumentoEntidad(String documentoEntidad) {
+		this.documentoEntidad = documentoEntidad;	
+	}
+
+	public String getFiltroPrincipalDocumentos() {
+		return filtroPrincipalDocumentos;
 	}
 
 }

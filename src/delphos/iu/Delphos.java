@@ -1,5 +1,6 @@
 package delphos.iu;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Timer;
 
@@ -11,6 +12,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import delphos.Propiedades;
+import delphos.Searcher;
 import delphos.VigilanteTecnologico;
 import delphos.VigilanteTendencias;
 
@@ -40,7 +42,10 @@ public class Delphos implements Runnable {
 		new DelphosFrame();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException{
+//		String textoFecha = "June 2012";
+//		SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.US);
+//		System.out.println("Sale " + sdf.parse(textoFecha));
 		SwingUtilities.invokeLater(new Delphos());
 	}
 

@@ -71,6 +71,8 @@
 		<mapping class="delphos.ContrastarCon"></mapping>
 		<mapping class="delphos.Tendencia"></mapping>
 		<mapping class="delphos.AvisoTendencia"></mapping>
+		<mapping class="delphos.Documento_Clasificacion"></mapping>
+		<mapping class="delphos.UltimoAvisoDSpace"></mapping>
 
 	</session-factory>
 </hibernate-configuration>

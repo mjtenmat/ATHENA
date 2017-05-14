@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import delphos.DocumentoAcademico;
 import delphos.DocumentoWeb;
 import delphos.Licitacion;
 import delphos.Patente;
@@ -24,7 +25,7 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 	protected JPanel panelLicitaciones;
 	protected JPanel panelPatentes;
 	protected JPanel panelDocumentosWeb;
-	private JPanel panelDocs;
+	protected JPanel panelDocsAcademicos;
 
 	public PanelVigilanciaResultados(DelphosFrame framePrincipal) {
 		this.framePrincipal = framePrincipal;
@@ -65,8 +66,11 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 		this.panelTabs.addTab("Documentos Web", new ImageIcon(Delphos.class.getClassLoader().getResource("res/docsweb.png")), panelScrollDocumentosWeb, "Documentos Web");
 		//this.panelTabs.addTab("Patentes", panelScrollPatentes);
 		
-		panelDocs = new JPanel();
-		JScrollPane panelScrollDocs = new JScrollPane(panelDocs);
+		panelDocsAcademicos = new JPanel();
+		panelDocsAcademicos.setLayout(new BoxLayout(panelDocsAcademicos, BoxLayout.Y_AXIS));
+		panelDocsAcademicos.setAlignmentX(LEFT_ALIGNMENT);
+		panelDocsAcademicos.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
+		JScrollPane panelScrollDocs = new JScrollPane(panelDocsAcademicos);
 		this.panelTabs.addTab("Docs.Académicos", new ImageIcon(Delphos.class.getClassLoader().getResource("res/docs.png")), panelScrollDocs, "Tesis, Artículos, Congresos...");
 		//this.panelTabs.addTab("Docs. Académicos", panelScrollDocs);
 
@@ -104,6 +108,22 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 	@Override
 	public JButton getDefaultButton() {
 		return btnVolver;
+	}
+
+	public void borrarDocumentosAcademicos() {
+		this.panelDocsAcademicos.removeAll();
+	}
+
+	public void setResultadoDocumentosAcademicos(int numDocsAcademicos) {
+		this.panelDocumentosWeb.add(new JLabel("Se muestran " + numDocsAcademicos + " documentos académicos:"));
+	}
+
+	public void addDocumentoAcademico(DocumentoAcademico docAcademico, PanelVigilanciaController panelVigilanciaController, JPanel panel) {
+		this.controllerVigilancia = controllerVigilancia;
+		if (panel != null)
+			panel.add(new PanelDocumentoAcademico(docAcademico,controllerVigilancia));
+		else
+			this.panelDocsAcademicos.add(new PanelDocumentoAcademico(docAcademico,controllerVigilancia));
 	}
 
 }

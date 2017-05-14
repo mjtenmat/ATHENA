@@ -27,6 +27,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import delphos.CPI;
 import delphos.ContrastarCon;
+import delphos.Documento_Clasificacion;
 import delphos.Licitacion_Localizacion;
 import delphos.Licitacion_Sector;
 import delphos.Localizacion;
@@ -83,7 +84,7 @@ public class PanelVigilancia extends JPanel implements ConDefaultButton{
 	protected JTextField tfDocEntidad;
 	protected JButton btnDocClasificacion;
 	protected JLabel lblDocClasificacion;
-	protected DelphosSelectionListDialog<CPI> dsldDocClasificacion;
+	protected DelphosSelectionTreeDialog<Documento_Clasificacion> dstdDocClasificacion;
 	
 	protected JButton btnBuscar;
 	protected JButton btnVerResultadosAnteriores;
@@ -461,14 +462,14 @@ public class PanelVigilancia extends JPanel implements ConDefaultButton{
 		this.dpDocsFechaDesde = new JDateComponentFactory().createJDatePicker();
 		this.dpDocsFechaDesde.setTextEditable(true);
 		this.dpDocsFechaDesde.setShowYearButtons(true);
-		this.dpDocsFechaDesde.getModel().setValue(null);
+		this.dpDocsFechaDesde.getModel().setDate(1970,0,1);
 	    panelDocsFechas.add((JComponent) this.dpDocsFechaDesde);
 	    panelDocsFechas.add(Box.createRigidArea(new Dimension(50, 1)));
 		panelDocsFechas.add(new JLabel(" y: "));
 		this.dpDocsFechaHasta = new JDateComponentFactory().createJDatePicker();
 		this.dpDocsFechaHasta.setTextEditable(true);
 		this.dpDocsFechaHasta.setShowYearButtons(true);
-		this.dpDocsFechaHasta.getModel().setValue(null);
+		this.dpDocsFechaHasta.getModel().setDate(2017,3,1);
 	    panelDocsFechas.add((JComponent) this.dpDocsFechaHasta);
 	    
 	    JPanel panelAutorEntidad = new JPanel();
@@ -494,7 +495,7 @@ public class PanelVigilancia extends JPanel implements ConDefaultButton{
 		this.btnDocClasificacion.addActionListener(this.controller);
 		panelDocClasificacion.add(this.btnDocClasificacion);
 		//TODO Cambiar para que salga de la tabla de 
-		dsldDocClasificacion = new DelphosSelectionListDialog<CPI>(CPI.class, this.controller);
+		dstdDocClasificacion = new DelphosSelectionTreeDialog<Documento_Clasificacion>(Documento_Clasificacion.class, this.controller);
 		panelDocClasificacion.add(Box.createRigidArea(new Dimension(20, 1)));
 		this.lblDocClasificacion = new JLabel("Todos");
 		this.lblDocClasificacion.setFont(new Font("Dialog", Font.PLAIN, 12));
