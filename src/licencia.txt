@@ -2,4 +2,4 @@ Autor: María José Tena Mateos (mjtemat@alcazaba.unex.es)
 
 Copyright 2014 - Todos los derechos reservados
 
-Las librerías incluidas tienen sus propias licencias.
+Las librerías incluidas tienen sus propias licencias..

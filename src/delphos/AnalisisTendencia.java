@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import delphos.AnalisisTendencia.CategoriasLicitaciones;
 import delphos.AnalisisTendencia.Tipo;
 
+
 public class AnalisisTendencia {
 	public static enum Tipo {PATENTES, LICITACIONES};
 	public static enum CategoriasPatentes {SECTOR, PAIS, INVENTOR, SOLICITANTE, CONTENIDO};
