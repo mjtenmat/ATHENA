@@ -1,5 +1,7 @@
 package delphos;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +17,14 @@ public class AvisoTecnologiasEmergentes {
 	private String titulo;
 	private String extracto;
 	private String url;
+	private LocalDate fecha;
+	
+	public LocalDate getFecha() {
+		return fecha;
+	}
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
 	private boolean revisado;
 	
 	public Integer getId() {

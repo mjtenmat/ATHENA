@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -82,6 +85,8 @@ public class PanelAvisoTecnologia  extends JPanel implements ActionListener{
 		taExtracto.setBackground(new Color(238, 238, 238));
 		taExtracto.setEditable(false);
 		taExtracto.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		JLabel lblFecha = new JLabel(aviso.getFecha().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -89,17 +94,19 @@ public class PanelAvisoTecnologia  extends JPanel implements ActionListener{
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(24)
-							.addComponent(lblTipo)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblTipo)
+								.addComponent(lblFecha))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblUrl, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+									.addComponent(lblUrl, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
 									.addGap(199))
-								.addComponent(lblTtulo, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)))
+								.addComponent(lblTtulo, GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(101)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(taExtracto, GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+								.addComponent(taExtracto, GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(chckbxRevisado)
 									.addGap(18)
@@ -114,13 +121,15 @@ public class PanelAvisoTecnologia  extends JPanel implements ActionListener{
 						.addComponent(lblTipo)
 						.addComponent(lblTtulo))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblUrl, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblUrl, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblFecha))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(chckbxRevisado)
 						.addComponent(chckbxEliminar))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(taExtracto, GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+					.addComponent(taExtracto, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		setLayout(groupLayout);

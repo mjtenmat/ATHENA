@@ -4,8 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class PanelAvisosTecnologia extends JPanel implements ConDefaultButton{
 	}
 
 	protected void cargarAvisos(){
-		String sql = "SELECT id, termino, tipo, titulo, extracto, url, revisado FROM AvisoTecnologiasEmergentes ORDER BY termino ASC";
+		String sql = "SELECT id, termino, tipo, titulo, extracto, url, revisado, fecha FROM AvisoTecnologiasEmergentes ORDER BY termino ASC";
 		Query query = Delphos.getSession().createSQLQuery(sql);
 		List list = query.list();
 		Iterator it = list.iterator();
@@ -90,6 +89,7 @@ public class PanelAvisosTecnologia extends JPanel implements ConDefaultButton{
 				aviso.setExtracto(tupla[4].toString());
 			aviso.setUrl(tupla[5].toString());
 			aviso.setRevisado((Byte)tupla[6] != 0);
+			aviso.setFecha(((Timestamp)tupla[7]).toLocalDateTime().toLocalDate());
 			panelContenido.add(new PanelAvisoTecnologia(aviso, this));
 		}
 		panelContenido.add(Box.createVerticalGlue());
