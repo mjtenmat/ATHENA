@@ -443,9 +443,9 @@ public class PanelTendenciasBuscador extends javax.swing.JPanel implements Actio
 			if (tendencia.getFiltroPrincipalLicitaciones() == null)
 				if (tendencia.getIndicadorLicitaciones())
 					tendencia.setFiltroPrincipalLicitaciones(panelPadre.preguntarFiltroPrincipal(tendencia, "Licitaciones"));
-			if (tendencia.getFiltroPrincipalLicitaciones() == null)
+			if (tendencia.getFiltroPrincipalDocumentos() == null)
 				if (tendencia.getIndicadorDocs())
-					tendencia.setFiltroPrincipalLicitaciones(panelPadre.preguntarFiltroPrincipal(tendencia, "Documentos"));
+					tendencia.setFiltroPrincipalDocumentos(panelPadre.preguntarFiltroPrincipal(tendencia, "Documentos"));
 
 			this.panelPadre.mostrarGraficaTendencia(tendencia, periodo, (GregorianCalendar)fechaInicio, (GregorianCalendar)fechaFin, sPeriodo);
 		}

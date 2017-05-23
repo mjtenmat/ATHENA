@@ -309,6 +309,28 @@ public class Tendencia implements Cloneable {
 			default:
 				throw new Exception("Tendencia sin Filtro Principal en Patentes.");
 			}
+		if (this.getFiltroPrincipalDocumentos() != null)
+			switch (this.getFiltroPrincipalDocumentos()) {
+			case Tendencia.TEXTO_LIBRE:
+				tendenciaClon.setTerminoPrincipal("");
+				break;
+			case Tendencia.SIN_FILTROS:
+				tendenciaClon.setListaDocumentoClasificacion(null);
+				tendenciaClon.setDocumentoAutor(null);
+				tendenciaClon.setDocumentoEntidad(null);
+				break;
+			case Tendencia.CLASIFICACION:
+				tendenciaClon.setListaDocumentoClasificacion(new HashSet<Documento_Clasificacion>());
+				break;
+			case Tendencia.AUTOR:
+				tendenciaClon.setDocumentoAutor("");
+				break;
+			case Tendencia.ENTIDAD:
+				tendenciaClon.setDocumentoEntidad("");
+				break;
+			default:
+				throw new Exception("Tendencia sin Filtro Principal de Documentos Académicos.");
+			}
 
 		return tendenciaClon;
 	}
@@ -470,6 +492,10 @@ public class Tendencia implements Cloneable {
 		this.documentoEntidad = documentoEntidad;	
 	}
 
+	public void setFiltroPrincipalDocumentos(String filtroPrincipalDocumentos) {
+		this.filtroPrincipalDocumentos = filtroPrincipalDocumentos;
+	}
+	
 	public String getFiltroPrincipalDocumentos() {
 		return filtroPrincipalDocumentos;
 	}
