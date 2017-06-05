@@ -435,6 +435,20 @@ public class Tendencia implements Cloneable {
 			else if (this.getTerminoPrincipal().isEmpty() && numFiltros == 1)
 				this.setFiltroPrincipalPatentes(Tendencia.SIN_FILTROS);
 		}
+		if (this.getIndicadorDocs()) {
+			numFiltros = 0;
+			if (!this.getListaDocumentoClasificacion().isEmpty())
+				numFiltros++;
+			if (!this.getDocumentoAutor().isEmpty())
+				numFiltros++;
+			if (!this.getDocumentoEntidad().isEmpty())
+				numFiltros++;
+
+			if (!this.getTerminoPrincipal().isEmpty() && numFiltros == 0)
+				this.setFiltroPrincipalDocumentos(Tendencia.TEXTO_LIBRE);
+			else if (this.getTerminoPrincipal().isEmpty() && numFiltros == 1)
+				this.setFiltroPrincipalDocumentos(Tendencia.SIN_FILTROS);
+		}
 	}
 
 	public double getIncremento(String nombrePeriodo) {

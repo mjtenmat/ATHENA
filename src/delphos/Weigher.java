@@ -92,7 +92,7 @@ public class Weigher {
 
 		// Construimos el Red-Black Tree - 
 		//Imprescindible para no tardar una eternidad.
-		rbTree = new TreeMap<Integer, Integer>();	//Descriptor.id, count(*)
+		rbTree = new TreeMap<Integer, Integer>();	//Descriptor.id, count(*) (nj: Número de documentos de la BD que contienen el descriptor)
 		Iterator it = listaDescriptorCoincidencias.iterator();
 		while (it.hasNext()) {
 			Object[] row = (Object[]) it.next();
@@ -113,6 +113,7 @@ public class Weigher {
 		int maxIdLista = 0;
 		int indice = 0;
 
+		//Obtenemos la lista de Pesos en bloques de NUM_PESOS_CONSULTA (para no quedarnos sin memoria)
 		List listaPesos = obtenerListaPesos(indice); 
 		while (listaPesos.size() > 0){
 			System.out.println("Procesando pesos de " + indice + " a " + (indice + NUM_PESOS_CONSULTA));
@@ -120,7 +121,7 @@ public class Weigher {
 			Iterator it2 = listaPesos.iterator();
 			while (it2.hasNext()) {
 				Object[] row = (Object[]) it2.next();
-				double peso = calcularPeso(row);
+				double peso = calcularPeso(row);	//Calculamos el peso de cada Peso.
 				textoTemporal += row[0] + "\t" + row[1] + "\t" + row[2] + "\t" + row[3] + "\t" + peso + "\t" + row[4] + "\t" + row[5] + "\n";
 				if (maxIdLista < (int)row[0])
 					maxIdLista = (int)row[0];
@@ -215,6 +216,8 @@ public class Weigher {
 	}
 	
 	public static double calcularPeso(Object[] row) {
+		//Procesa una fila del ResultSet de 
+		//"SELECT id, frecuencia, idFuente, multiplicador, idDescriptor, enBody ";
 		double valorPeso;
 		int nj = 0;
 		try{
@@ -232,12 +235,13 @@ public class Weigher {
 			return 0;
 		}
 		valorPeso = (int)row[1] * Math.log(((double) N) / nj)
-				/ Math.log(2);
+				/ Math.log(2);	//Math.log es log_e (natural)
 
 		return valorPeso;
 	}
 
 	public static double calcularPeso(Peso peso) {
+		//Utilizado por Searcher.buscar()
 		double valorPeso;
 
 		if (session == null) {
