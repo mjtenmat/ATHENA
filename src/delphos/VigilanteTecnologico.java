@@ -15,10 +15,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.TimerTask;
 
@@ -100,6 +101,7 @@ public class VigilanteTecnologico extends TimerTask {
 				aviso.setExtracto(docResumen);
 				aviso.setTipo("Documento Académico");
 				aviso.setRevisado(false);
+				aviso.setFecha(new Timestamp(System.currentTimeMillis()));
 
 				//Guardamos el primero
 				if (ultimoAviso == null){
@@ -185,7 +187,7 @@ public class VigilanteTecnologico extends TimerTask {
 			// "&searchCriteria.cpvCodeList=%27Construction+and+Real+Estate%27";
 			postParameters += "&searchCriteria.cpvCodeList=";
 			postParameters += "&searchCriteria.publicationDateChoice=DEFINITE_PUBLICATION_DATE";
-			Date hoy = new Date();
+			java.util.Date hoy = new java.util.Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			postParameters += "&searchCriteria.publicationDate=" + sdf.format(hoy);
 			postParameters += "&searchCriteria.documentationDate=";
@@ -365,7 +367,7 @@ public class VigilanteTecnologico extends TimerTask {
 
 		condiciones.add("titleandabstract=\"" + terminoTE.getTermino() + "\"");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Date hoy = new Date();
+		Timestamp hoy = new Timestamp(System.currentTimeMillis());
 		condiciones.add("publicationdate=" + sdf.format(hoy));
 		//condiciones.add("publicationdate>=20150101");
 

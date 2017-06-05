@@ -89,7 +89,8 @@ public class PanelAvisosTecnologia extends JPanel implements ConDefaultButton{
 				aviso.setExtracto(tupla[4].toString());
 			aviso.setUrl(tupla[5].toString());
 			aviso.setRevisado((Byte)tupla[6] != 0);
-			aviso.setFecha(((Timestamp)tupla[7]).toLocalDateTime().toLocalDate());
+			//aviso.setFecha(((Timestamp)tupla[7]).toLocalDateTime().toLocalDate());
+			aviso.setFecha((Timestamp)tupla[7]);
 			panelContenido.add(new PanelAvisoTecnologia(aviso, this));
 		}
 		panelContenido.add(Box.createVerticalGlue());

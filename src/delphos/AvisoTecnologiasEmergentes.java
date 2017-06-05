@@ -1,6 +1,6 @@
 package delphos;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,12 +17,12 @@ public class AvisoTecnologiasEmergentes {
 	private String titulo;
 	private String extracto;
 	private String url;
-	private LocalDate fecha;
+	private Timestamp fecha;
 	
-	public LocalDate getFecha() {
+	public Timestamp getFecha() {
 		return fecha;
 	}
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(Timestamp fecha) {
 		this.fecha = fecha;
 	}
 	private boolean revisado;

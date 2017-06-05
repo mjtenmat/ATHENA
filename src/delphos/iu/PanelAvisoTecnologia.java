@@ -9,9 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.FormatStyle;
+import java.text.SimpleDateFormat;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -19,14 +17,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.hibernate.Query;
 
 import delphos.AvisoTecnologiasEmergentes;
-import java.awt.BorderLayout;
 
 public class PanelAvisoTecnologia  extends JPanel implements ActionListener{
 	protected JCheckBox chckbxRevisado;
@@ -86,7 +82,8 @@ public class PanelAvisoTecnologia  extends JPanel implements ActionListener{
 		taExtracto.setEditable(false);
 		taExtracto.setFont(new Font("Dialog", Font.PLAIN, 12));
 		
-		JLabel lblFecha = new JLabel(aviso.getFecha().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+		//JLabel lblFecha = new JLabel(aviso.getFecha().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+		JLabel lblFecha = new JLabel(new SimpleDateFormat("yyyy-MMM-dd").format(aviso.getFecha()));
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
