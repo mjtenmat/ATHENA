@@ -25,10 +25,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -310,6 +312,69 @@ public class Searcher {
 
 	public static ArrayList<Resultado> mejorarAG(Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
 			Set<Jerarquia> localizaciones) {
+		
+		log.trace("Iniciando AG");
+		//1. Parsear documentos (eliminar palabras vacías, reducir a la raíz...)
+		// 	Realizado previamente por Parser.
+		
+		//2. Obtenemos descriptores (términos para cada documento)
+		//3. Base documental como matriz.
+		//4. Ponderación de términos. 
+		//5. Documento como vectores.
+		//	Están en la base de datos. Tabla Peso (idFuente, idDescriptor, peso)
+
+		
+		//6. Consulta trasformada en vector. 
+		//	Ya está en consultaInicial:Set<Peso>, que ha sido parseada y pesada en Searcher.
+		
+		
+		//7. Calculo de similitud entre consulta (Qi) y documentos (Di). Medida del Coseno.
+		//8. Los documentos se devuelven ordenados por orden de similitud (de mayor a menor)
+		ArrayList<SimilitudDocumento> similitudes = calcularSimilitudes(consultaInicial);
+		
+		//9. Evaluar el resultados calculando el promedio (Ejemplo Anexo I) de Precisión para 11 grados de Exhaustividad (1, 0'9, 0'8, …0). 
+		//E = nº de documentos relevantes recuperados / nº de documentos relevantes
+		//P = nº de documentos relevantes recuperados / nº de documentos recuperados
+
+		//10. Identificar los documentos relevantes de prueba entre los primeros 15 documentos del 	ranking de similitud y el primer no relevante.
+		
+		//... AG empieza en 17
+		/* 17. Mejora consulta con AG:
+
+			a) Tomar 10 documentos: los relevantes obtenidos tras el proceso de retroalimentción (entre los primeros 15 del ranking)  + 
+			los  primeros no relevantes que devolvía la última consulta que no mejoró el promedio de Precisión.
+			
+			b) Construir una “ruleta” con estos 10 documentos. Dividir la ruleta en porciones iguales a la  similitud que ofrece cada documento.
+			 A modo de porciones. (Ejemplo de Ruleta en Anexo II)
+			 
+			c) “Lanzar” la ruleta 10 veces. Seleccionando cada vez los documentos en los que pare.
+			
+			d) Obtenemos así 10 documentos (“cromosomas”) padre. 5 parejas.
+			
+			e) Probabilidad de cruce (Pc=0,7) entre parejas.
+		Buscar un número aleatorio entre 0,0 y 1,0.
+		Si el resultado es < 0,7. Se obtiene un número aleatorio entre 0 y n, y esa pareja se cruza en ese punto.
+		Si el resultado es > 0,7. No se cruzan.
+		Repetir para siguiente pareja.
+			f) Probabilidad de mutación (Pm= 0,05) para pesos de términos (“genes”) que componen los 	cromosomas (documentos)
+		Buscar un número aleatorio entre 0,00 y 1,00.
+		Si el resultado es < 0,05. Se obtiene un número aleatorio entre 0 y el peso máximo de los descriptores de los 10 documentos padre iniciales y asignarlo al término.
+		Si el resultado es > 0,05 No se muta.
+		Repetir para siguiente peso (descriptor).
+			g) Tenemos entonces 10 nuevos vectores.
+			h) Sumar estos 10 vectores y la última consulta de retroalimentación por relevancia que no 	obtuvo resultados relevantes nuevos. Así obtenemos una consulta de prueba (Qp).
+			i) Lanzar Qp al sistema y calcular promedio Precisión (P) para 11º de Exhaustividad (E).
+			j) Restar 1er vector  a Qp y lanzar esta nueva consulta (Qp') al sistema. Calcular promedio de 	Precisión para 11º de Exhaustividad de Qp'.
+					
+			k) Si Qp' obtiene mejor promedio de P que Qp. Eliminar 1er vector. Si no, recuperar 1er 	vector.
+			l) Repetir desde j) con los siguientes 9 vectores.
+			m) Obtenemos finalmente la consulta que mejor promedio de Precisión a obtenido a partir 	de AAGG, la consulta Qg.
+			ñ) Observar si mejora promedio de P para 11º de E. con respecto a Q'
+		Si el resultado es positivo: volver al paso 11.
+		Si el resultado es negativo: FIN.
+		
+		*/
+		
 		/*
 		 * log.trace("Iniciando AG");
 		 * 
@@ -471,6 +536,57 @@ public class Searcher {
 		 * buscar(descriptoresConsultaUtiles, sectores, tiposOrganizacion,
 		 * localizaciones);
 		 */return null;
+	}
+	
+	/**
+	 * Calcula la similitud entre una consulta y los documentos de la base de datos.
+	 */
+	private static ArrayList<SimilitudDocumento> calcularSimilitudes(Set<Peso> consulta) {
+		ArrayList<SimilitudDocumento> resultado = new ArrayList<SimilitudDocumento>();
+		
+		//Creamos un mapa de idDescriptor->Peso para la consulta
+		Map<Integer, Peso> t = new HashMap<>();
+		// Creamos una lista de idDescriptores de la consulta
+		String listaDescriptoresConsulta = " ";
+		for (Peso p : consulta){
+			listaDescriptoresConsulta += p.getDescriptor().getId()+",";
+			t.put(p.getDescriptor().getId(), p);
+		}
+		listaDescriptoresConsulta = listaDescriptoresConsulta.substring(0, listaDescriptoresConsulta.length() - 1);
+		
+		// Para cada documento de la Base de Datos
+		String sql = "SELECT idDescriptor, idFuente, peso FROM Peso ";
+		sql += "WHERE idDescriptor IN (" + listaDescriptoresConsulta + ") ORDER BY idFuente";
+		Query query = Delphos.getSession().createSQLQuery(sql);
+		List listaPesos = query.list();
+		Iterator it = listaPesos.iterator();
+		Integer idUltimaFuente = -1;
+		Integer idFuente = 0;
+		double numerador = 0.0;
+		double denominador = 0.0;
+		while (it.hasNext()) {
+			//Si es un idFuente nuevo
+			if (idFuente != idUltimaFuente){
+				if (idUltimaFuente != -1)
+					resultado.add(new SimilitudDocumento(numerador/Math.sqrt(denominador), idFuente));
+				numerador = 0.0;
+				denominador = 0.0;
+			}
+			Object[] row = (Object[]) it.next();
+			Integer idDescriptor = (Integer) row[0];
+			idFuente = (Integer) row[1];
+			idUltimaFuente = idFuente;
+			double qi = (Double) row[2];	//peso del término en la consulta		
+			double ti = t.get(idDescriptor).getPeso();
+			numerador += qi * ti;
+			denominador += Math.pow(qi*ti, 2);	
+		}
+		//Añadimos el último, si lo hay
+		if (idUltimaFuente != -1)
+			resultado.add(new SimilitudDocumento(numerador/Math.sqrt(denominador), idFuente));
+		
+		Collections.sort(resultado); //Hay SimilitudDocumento.compareTo, ordena por similitud.
+		return resultado;
 	}
 
 	private static void cruzarCromosomas(Cromosoma cromosoma1, Cromosoma cromosoma2) {

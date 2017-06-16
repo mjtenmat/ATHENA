@@ -62,7 +62,8 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 				this.panelBusqueda.getBtnRRmax().setVisible(false);
 				this.listaResultadosRelevantes.clear();
 				numResultadosRelevantesUltimaRR = null;
-				this.mostrarBotonAG = false;
+				//this.mostrarBotonAG = false;
+				this.mostrarBotonAG = true; //Cambiado para depuración.
 				this.mostrarResultados();
 				break;
 			
@@ -259,9 +260,9 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 
 	private void mostrarResultados(){
 		panelBusqueda.getPanelResultados().removeAll();
-		int totalPaginas = (Integer)(listaResultados.size() / NUM_RESULTADOS_POR_PAGINA)+1;
-		if (listaResultados.size() % NUM_RESULTADOS_POR_PAGINA == 0)
-			totalPaginas--;
+//		int totalPaginas = (Integer)(listaResultados.size() / NUM_RESULTADOS_POR_PAGINA)+1;
+//		if (listaResultados.size() % NUM_RESULTADOS_POR_PAGINA == 0)
+//			totalPaginas--;
 	    
 		//Presentamos los resultados
 		JLabel jlbResumenResultados = new JLabel();
@@ -287,9 +288,9 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 			this.panelBusqueda.getPanelResultados().add(panelResultado);
 			i++;
 		}
-		this.panelPaginacion = new PanelPaginacion(paginaActual, totalPaginas, this);
-		this.panelPaginacion.activarAG(this.mostrarBotonAG);
-		this.panelBusqueda.getPanelResultados().add(this.panelPaginacion.getPanel());
+//		this.panelPaginacion = new PanelPaginacion(paginaActual, totalPaginas, this);
+//		this.panelPaginacion.activarAG(this.mostrarBotonAG);
+//		this.panelBusqueda.getPanelResultados().add(this.panelPaginacion.getPanel());
 		
 		this.panelBusqueda.framePrincipal.getFrame().pack();
 		

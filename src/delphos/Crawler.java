@@ -115,7 +115,11 @@ public class Crawler {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				if (fuente == null){
+					System.out.println("Fin de fuentes.");
+					System.exit(0);
+				}
 				log.error("Error en el bucle principal al procesar fuente " + fuente.getId() + ": " + e.toString());
 				if (session.getTransaction().isActive())
 					session.getTransaction().rollback();

@@ -341,7 +341,7 @@ public class Parser {
 		//TODO Mejorar código duplicado.
 		if (modo == MODO_NUEVO){
 			crit.add(Restrictions.eq("parseada", false));
-			//crit.add(Restrictions.isNotNull("documento"));
+			crit.add(Restrictions.isNotNull("documento"));
 			crit.add(Restrictions.isNull("error"));
 			crit.add(Restrictions.eq("noActualizar", false));
 		}
