@@ -27,6 +27,7 @@ public class PanelBusqueda extends JPanel implements ConDefaultButton{
 	protected PanelBusquedaController controller;
 	protected JButton btnRRmin;
 	protected JButton btnRRmax;
+	protected JButton btnAG;
 	private JPanel panelRestricciones;
 	private JButton btnSectores;
 	private JButton btnTipoOrganizacion;
@@ -85,19 +86,25 @@ public class PanelBusqueda extends JPanel implements ConDefaultButton{
 		btnRRmin = new JButton("RR-min");
 		btnRRmin.setName("btnRRmin");
 		btnRRmin.addActionListener(controller);
-		btnRRmin.setVisible(false);
+		btnRRmin.setEnabled(false);
 		panelConsulta.add(btnRRmin);	
 		
 		btnRRmax = new JButton("RR-max");
 		btnRRmax.setName("btnRRmax");
 		btnRRmax.addActionListener(controller);
-		btnRRmax.setVisible(false);
+		btnRRmax.setEnabled(false);
 		panelConsulta.add(btnRRmax);	
+		
+		btnAG = new JButton("Algoritmo Genético");
+		btnAG.setName("btnAG");
+		btnAG.addActionListener(controller);
+		btnAG.setEnabled(false);
+		panelConsulta.add(btnAG);	
 		
 		btnRelevantes = new JButton("Relevantes");
 		btnRelevantes.setName("btnRelevantes");
 		btnRelevantes.addActionListener(controller);
-		btnRelevantes.setVisible(false);
+		btnRelevantes.setEnabled(false);
 		panelConsulta.add(btnRelevantes);
 	}
 	
@@ -202,6 +209,10 @@ public class PanelBusqueda extends JPanel implements ConDefaultButton{
 
 	public JButton getBtnRRmax() {
 		return btnRRmax;
+	}
+	
+	public JButton getBtnAG() {
+		return btnAG;
 	}
 
 	public JButton getBtnRelevantes() {

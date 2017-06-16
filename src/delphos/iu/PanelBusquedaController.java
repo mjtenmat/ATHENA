@@ -27,7 +27,7 @@ import delphos.Searcher;
 public class PanelBusquedaController implements ActionListener, MouseListener {
 	public final int NUM_RESULTADOS_POR_PAGINA = 10;
 	private PanelBusqueda panelBusqueda;
-	private PanelPaginacion panelPaginacion;
+	//private PanelPaginacion panelPaginacion;
 	private ArrayList<Resultado> listaResultados = new ArrayList<>();
 	protected Set<Jerarquia> sectores = new HashSet<>();
 	protected Set<Jerarquia> tiposOrganizacion = new HashSet<>();
@@ -39,7 +39,7 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 	private Resultado resultadoNoRelevante = null; 
 	private Resultado resultadoPulsado = null;
 	private Integer numResultadosRelevantesUltimaRR = null;	//Para calcular precisión
-	private boolean mostrarBotonAG = false;
+	//private boolean mostrarBotonAG = false;
 	private boolean relevantesAbiertos = false;
 
 	public PanelBusquedaController(PanelBusqueda panel){
@@ -58,12 +58,12 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 				this.listaResultados = Searcher.buscar(panelBusqueda.getConsulta(), sectores, tiposOrganizacion, localizaciones);
 				this.paginaActual = 0;
 				this.resultadoNoRelevante = null;
-				this.panelBusqueda.getBtnRRmin().setVisible(false);
-				this.panelBusqueda.getBtnRRmax().setVisible(false);
+				this.panelBusqueda.getBtnRRmin().setEnabled(false);
+				this.panelBusqueda.getBtnRRmax().setEnabled(false);
+				this.panelBusqueda.getBtnAG().setEnabled(false);
 				this.listaResultadosRelevantes.clear();
 				numResultadosRelevantesUltimaRR = null;
 				//this.mostrarBotonAG = false;
-				this.mostrarBotonAG = true; //Cambiado para depuración.
 				this.mostrarResultados();
 				break;
 			
@@ -71,7 +71,8 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 				this.numResultadosRelevantesUltimaRR = this.listaResultadosRelevantes.size();
 				this.listaResultados = Searcher.mejorarRRmin(this.listaResultadosRelevantes, this.resultadoNoRelevante, sectores, tiposOrganizacion, localizaciones);
 				this.paginaActual = 0;
-				this.mostrarBotonAG = true;
+				//this.mostrarBotonAG = true;
+				this.panelBusqueda.getBtnAG().setEnabled(true);
 				this.mostrarResultados();
 				break;
 
@@ -79,14 +80,16 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 				this.numResultadosRelevantesUltimaRR = this.listaResultadosRelevantes.size();
 				this.listaResultados = Searcher.mejorarRRmax(this.listaResultadosRelevantes, this.resultadoNoRelevante, sectores, tiposOrganizacion, localizaciones);
 				this.paginaActual = 0;
-				this.mostrarBotonAG = true;
+				//this.mostrarBotonAG = true;
+				this.panelBusqueda.getBtnAG().setEnabled(true);
 				this.mostrarResultados();
 				break;
 				
 			case "btnAG":
 				this.listaResultados = Searcher.mejorarAG(sectores, tiposOrganizacion, localizaciones);
 				this.paginaActual = 0;
-				this.mostrarBotonAG = true;
+				//this.mostrarBotonAG = true;
+				this.panelBusqueda.getBtnAG().setEnabled(true);
 				this.mostrarResultados();
 				break;
 				
@@ -179,28 +182,30 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 				//Comprobamos si hemos mejorado la precisión
 				if (numResultadosRelevantesUltimaRR != null) //Es null si no ha habido RR
 					if (listaResultadosRelevantes.size() > this.numResultadosRelevantesUltimaRR){
-						this.panelPaginacion.activarAG(false);
-						this.mostrarBotonAG = false;
+						//this.panelPaginacion.activarAG(false);
+						//this.mostrarBotonAG = false;
+						this.panelBusqueda.getBtnAG().setEnabled(false);
 					}
 			}
 			else{
 				listaResultadosRelevantes.remove(jcheck.getResultado());
 				if (numResultadosRelevantesUltimaRR != null) //Es null si no ha habido RR
 					if (listaResultadosRelevantes.size() <= this.numResultadosRelevantesUltimaRR){
-						this.panelPaginacion.activarAG(true);
-						this.mostrarBotonAG = true;
+						//this.panelPaginacion.activarAG(true);
+						//this.mostrarBotonAG = true;
+						this.panelBusqueda.getBtnAG().setEnabled(true);
 					}
 			}
 			
 			if (listaResultadosRelevantes.size() > 0){
-				panelBusqueda.getBtnRRmin().setVisible(true);
-				panelBusqueda.getBtnRRmax().setVisible(true);
-				panelBusqueda.getBtnRelevantes().setVisible(true);
+				panelBusqueda.getBtnRRmin().setEnabled(true);
+				panelBusqueda.getBtnRRmax().setEnabled(true);
+				panelBusqueda.getBtnRelevantes().setEnabled(true);
 			}
 			else{
-				panelBusqueda.getBtnRRmin().setVisible(false);
-				panelBusqueda.getBtnRRmax().setVisible(false);
-				panelBusqueda.getBtnRelevantes().setVisible(false);
+				panelBusqueda.getBtnRRmin().setEnabled(false);
+				panelBusqueda.getBtnRRmax().setEnabled(false);
+				panelBusqueda.getBtnRelevantes().setEnabled(false);
 			}
 			break;
 		case "class javax.swing.JMenuItem":
@@ -290,7 +295,7 @@ public class PanelBusquedaController implements ActionListener, MouseListener {
 		}
 //		this.panelPaginacion = new PanelPaginacion(paginaActual, totalPaginas, this);
 //		this.panelPaginacion.activarAG(this.mostrarBotonAG);
-//		this.panelBusqueda.getPanelResultados().add(this.panelPaginacion.getPanel());
+//		this.panelBusqueda.getPanelResultados().add(this.panelPaginacion.getPanel())
 		
 		this.panelBusqueda.framePrincipal.getFrame().pack();
 		

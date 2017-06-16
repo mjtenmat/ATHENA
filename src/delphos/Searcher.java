@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.GenericJDBCException;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -198,9 +199,16 @@ public class Searcher {
 		System.out.println("SQL de búsqueda: " + sql);
 
 		Query query = Delphos.getSession().createSQLQuery(sql);
-		List listaObjetos = query.list();
-
-		System.out.println("Hay " + listaObjetos.size() + " fuentes coincidentes");
+		List listaObjetos = null;
+		try{
+			listaObjetos = query.list();
+			System.out.println("Hay " + listaObjetos.size() + " fuentes coincidentes");
+		}
+		catch(GenericJDBCException ex){
+			System.out.println("Excepcion: " + ex.getMessage());
+			if (ex.getMessage().contains("could not extract Resultset"))
+				System.out.println("Es necesario cambiar la configuración de MySQL. Incremente la pila de hilos (thread_stack) modificando el parámetro thread_stack en mysqld.conf. Ponga al menos 512K.");
+		}
 
 		// if (listaObjetos.size() == 0)
 		// return null;
@@ -303,6 +311,9 @@ public class Searcher {
 		List listaObjetosResultado = null;
 		listaObjetosResultado = buscar(descriptoresConsulta, sectores, tiposOrganizacion, localizaciones);
 
+		if (listaObjetosResultado == null)
+			return null;
+		
 		eliminarRelevantes(listaObjetosResultado);
 		listaResultados = expandir(listaObjetosResultado);
 
@@ -343,6 +354,7 @@ public class Searcher {
 
 			a) Tomar 10 documentos: los relevantes obtenidos tras el proceso de retroalimentción (entre los primeros 15 del ranking)  + 
 			los  primeros no relevantes que devolvía la última consulta que no mejoró el promedio de Precisión.
+			
 			
 			b) Construir una “ruleta” con estos 10 documentos. Dividir la ruleta en porciones iguales a la  similitud que ofrece cada documento.
 			 A modo de porciones. (Ejemplo de Ruleta en Anexo II)
