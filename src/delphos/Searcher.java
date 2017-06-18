@@ -122,7 +122,8 @@ public class Searcher {
 			Object[] row = (Object[]) it.next();
 			int idFuente = (Integer) row[0];
 			double cobertura = ((BigDecimal) row[1]).doubleValue();
-			double similitud = (double) row[2];
+			//double similitud = (double) row[2];
+			double similitud = calcularSimilitud(consultaInicial, idFuente);
 			Resultado resultado = new Resultado(idFuente, cobertura, similitud);
 			listaResultados.add(resultado);
 		}
@@ -140,19 +141,21 @@ public class Searcher {
 		// la consulta
 		select = "SELECT Fuente.id, ";
 		select += "COUNT(*)/" + descriptores.size() + " AS cobertura";
-		select += ", SUM(";
-		String parentesis = "";
-		for (Peso peso : descriptores) {
-			select += "IF(Descriptor.id = " + peso.getDescriptor().getId() + "," + peso.getPeso() + ",";
-			parentesis += ")";
-		}
-		select += "0" + parentesis;
-		select += "* Peso.peso) as similitud ";
+		
+//		Cálculo original de similitud
+//		select += ", SUM(";
+//		String parentesis = "";
+//		for (Peso peso : descriptores) {
+//			select += "IF(Descriptor.id = " + peso.getDescriptor().getId() + "," + peso.getPeso() + ",";
+//			parentesis += ")";
+//		}
+//		select += "0" + parentesis;
+//		select += "* Peso.peso) as similitud ";
 
 		from = "FROM Fuente";
 
 		groupBy = "GROUP BY Fuente.id";
-		orderBy = "ORDER BY cobertura DESC, similitud DESC";
+		orderBy = "ORDER BY cobertura DESC";	
 
 		// Si hay texto libre, unimos Descriptor y Peso y ponemos claúsula where
 		String idsDescriptoresSeparadosComas;
@@ -548,6 +551,48 @@ public class Searcher {
 		 * buscar(descriptoresConsultaUtiles, sectores, tiposOrganizacion,
 		 * localizaciones);
 		 */return null;
+	}
+	
+	/**
+	 * Calcula la similitud entre una consulta y un documento de la base de datos.
+	 */
+	private static double calcularSimilitud(Set<Peso> consulta, int idFuente) {
+		double resultado = 0;
+		
+		//Creamos un mapa de idDescriptor->Peso para la consulta
+		Map<Integer, Peso> t = new HashMap<>();
+		// Creamos una lista de idDescriptores de la consulta
+		String listaDescriptoresConsulta = " ";
+		for (Peso p : consulta){
+			listaDescriptoresConsulta += p.getDescriptor().getId()+",";
+			t.put(p.getDescriptor().getId(), p);
+		}
+		listaDescriptoresConsulta = listaDescriptoresConsulta.substring(0, listaDescriptoresConsulta.length() - 1);
+		
+		// Para cada documento de la Base de Datos
+		String sql = "SELECT idDescriptor, idFuente, peso FROM Peso ";
+		sql += "WHERE idDescriptor IN (" + listaDescriptoresConsulta + ") "
+				+ " AND idFuente = " + idFuente
+				+ " ORDER BY idFuente";
+		Query query = Delphos.getSession().createSQLQuery(sql);
+		List listaPesos = query.list();
+		Iterator it = listaPesos.iterator();
+		Integer idUltimaFuente = -1;
+		double numerador = 0.0;
+		double denominador = 0.0;
+		while (it.hasNext()) {
+			Object[] row = (Object[]) it.next();
+			Integer idDescriptor = (Integer) row[0];
+			idFuente = (Integer) row[1];
+			idUltimaFuente = idFuente;
+			double qi = (Double) row[2];	//peso del término en la consulta		
+			double ti = t.get(idDescriptor).getPeso();
+			numerador += qi * ti;
+			denominador += Math.pow(qi*ti, 2);	
+		}
+		resultado = numerador/Math.sqrt(denominador);
+		
+		return resultado;
 	}
 	
 	/**
