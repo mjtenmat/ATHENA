@@ -91,6 +91,12 @@ public class PanelVigilancia extends JPanel implements ConDefaultButton{
 	
 	protected JPanel panelResultados;
 	protected JScrollPane panelScroll;
+	
+	
+	JCheckBox chckbxDocsWebInBody;
+	JCheckBox chckbxDocsWebInTitle;
+	JCheckBox chckbxDocsWebInKeywords;
+	protected JComboBox<String> cbDocsWebActualidad;
 	protected JButton btnDocsWebLocalizacion;
 	protected DelphosSelectionTreeDialog<Localizacion> dstdDocsWebLocalizacion;
 	protected JLabel lblDocsWebLocalizacion;
@@ -370,7 +376,26 @@ public class PanelVigilancia extends JPanel implements ConDefaultButton{
 				
 		chckbxDocsWeb = new JCheckBox("DOCUMENTOS WEB:");
 		panelDocsWeb.add(chckbxDocsWeb);
-		panelDocsWeb.add(Box.createHorizontalGlue());		
+		panelDocsWeb.add(Box.createHorizontalGlue());
+		
+		//Subpanel Bing
+		JPanel panelBing = new JPanel();
+		panelBing.setLayout(new BoxLayout(panelBing, BoxLayout.X_AXIS));
+		panelBing.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
+		panelBing.setAlignmentX(LEFT_ALIGNMENT);
+		panelBing.add(new JLabel("Buscar en:   "));
+		this.chckbxDocsWebInBody = new JCheckBox("el cuerpo del documento   ");
+		panelBing.add(chckbxDocsWebInBody);
+		this.chckbxDocsWebInTitle = new JCheckBox("el título   ");
+		panelBing.add(chckbxDocsWebInTitle);
+		this.chckbxDocsWebInKeywords = new JCheckBox("las palabras clave");
+		panelBing.add(chckbxDocsWebInKeywords);
+		panelBing.add(Box.createHorizontalGlue());
+		panelBing.add(new JLabel("Actualidad:"));
+		this.cbDocsWebActualidad = new JComboBox<>(new String[] {"", "Últimas 24 horas", "Última semana", "Último mes"});
+		this.cbDocsWebActualidad.setMaximumSize( new Dimension(300, 24) );
+		panelBing.add(cbDocsWebActualidad);
+		panelDocsWeb.add(panelBing);
 				
 		//Criterios
 		JPanel panelCriteriosDocsWeb = new JPanel();
