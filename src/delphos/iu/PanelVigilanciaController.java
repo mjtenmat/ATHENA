@@ -431,7 +431,11 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 					this.panelVigilancia.dstdDocsWebLocalizacion.getSeleccion(),
 					this.panelVigilancia.dstdDocsWebSector.getSeleccion(),
 					this.panelVigilancia.dstdDocsWebTipoOrganizacion.getSeleccion(), this.indiceBusquedaDocumentosWeb,
-					this.panelVigilancia.dstdContrastarCon.getSeleccion());
+					this.panelVigilancia.dstdContrastarCon.getSeleccion(),
+					this.panelVigilancia.chckbxDocsWebInBody.isSelected(),
+					this.panelVigilancia.chckbxDocsWebInTitle.isSelected(),
+					this.panelVigilancia.chckbxDocsWebInKeywords.isSelected(),
+					this.panelVigilancia.cbDocsWebActualidad.getSelectedItem().toString());
 			mostrarDocumentosWeb();
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta de Documentos Web", "Error",

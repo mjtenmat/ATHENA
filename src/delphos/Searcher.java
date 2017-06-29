@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,8 +53,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
+import com.orsoncharts.util.json.JSONArray;
+import com.orsoncharts.util.json.JSONObject;
+import com.orsoncharts.util.json.parser.JSONParser;
+
+import aux.BingAPIKey;
 import delphos.iu.Delphos;
 import delphos.iu.PanelTendenciasBuscador;
+import delphos.iu.PanelVigilancia;
 
 public class Searcher {
 	private static final int MEJORA_NUM_ITERACIONES = Integer.parseInt(Propiedades.get("searcherNumIteracionesRRMin"));
@@ -1985,100 +1992,91 @@ public class Searcher {
 
 	public static ArrayList<DocumentoWeb> buscarDocumentosWeb(String textoLibre, Set<Localizacion> listaLocalizacion,
 			Set<Sector> listaSector, Set<TipoOrganizacion> listaTipoOrganizacion, int offset,
-			Set<ContrastarCon> listaConstrastarCon) {
+			Set<ContrastarCon> listaConstrastarCon, boolean inBody, boolean inTitle, boolean inKeywords, String freshness) throws Exception {
+		//Busca documentos web en Bing
+		
 		ArrayList<DocumentoWeb> listaResultados = new ArrayList<DocumentoWeb>();
-
-		// String[] palabras = textoLibre.toLowerCase().split(" ");
-		textoLibre = generarTextoLibreConOrganizaciones(textoLibre, listaConstrastarCon);
-		textoLibre = textoLibre.replace("'", "\\'");
-		textoLibre = textoLibre.replace(":", " ");
-
-		String select, from, orderBy, limit;
-		ArrayList<String> join = new ArrayList<String>();
-		ArrayList<String> where = new ArrayList<String>();
-		ArrayList<String> order = new ArrayList<String>();
-
-		select = "Fuente.id, Fuente.url, Fuente.titulo, Documento.texto, ";
-		select += " Localizacion.nombre, Sector.nombre AS sector_nombre, TipoOrganizacion.nombre AS to_nombre";
-		from = "Fuente ";
-
-		join.add("INNER JOIN Documento ON Fuente.idDocumento = Documento.id");
-		join.add("LEFT JOIN Host ON Fuente.idHost = Host.id");
-		join.add("LEFT JOIN Host_Sector ON Host.id = Host_Sector.idHost");
-		join.add("LEFT JOIN Sector ON Host_Sector.idSector = Sector.id");
-		join.add("LEFT JOIN TipoOrganizacion ON Host.idTipoOrganizacion = TipoOrganizacion.id");
-		join.add("LEFT JOIN Localizacion ON Host.idLocalizacion = Localizacion.id");
-
-		where.add("(" + codificar(textoLibre, "SQL") + ")");
-		// if ((palabras.length > 0) && !textoLibre.isEmpty()) {
-		// for (String palabra : palabras)
-		// where.add("LOWER(Documento.texto) LIKE '%" + palabra + "%'");
-		// }
-
-		if (listaSector.size() > 0) {
-			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
-					+ ") OR Host_Sector.idSector IS NULL)");
-			order.add("Host_Sector.idSector DESC");
+		
+		textoLibre = URLEncoder.encode(textoLibre);
+		
+		//Construimos la query
+		String baseURL = "https://api.cognitive.microsoft.com/bing/v5.0/search?";
+		ArrayList<String> queryParams = new ArrayList<>();
+		queryParams.add("count=50");
+		queryParams.add("resonseFilter=Webpages");
+		if (freshness != ""){
+			String freshnessText = "";
+			if (freshness.equals(PanelVigilancia.ULTIMAS_24_HORAS))
+					freshnessText = "Day";
+			if (freshness.equals(PanelVigilancia.ULTIMA_SEMANA))
+					freshnessText = "Week";
+			if (freshness.equals(PanelVigilancia.ULTIMO_MES))
+					freshnessText = "Month";
+			queryParams.add("freshness=" + freshnessText);
 		}
-		if (listaTipoOrganizacion.size() > 0) {
-			where.add("(Host.idTipoOrganizacion IN ("
-					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
-					+ ") OR Host.idTipoOrganizacion IS NULL)");
-			order.add("Host.idTipoOrganizacion DESC");
+		if (offset != 0)
+			queryParams.add("offet=" + offset);
+			
+		ArrayList<String> advancedOperators = new ArrayList<>();
+		//TODO: añadir site:
+		if (inBody)
+			advancedOperators.add("inBody:"+textoLibre);
+		if (inTitle)
+			advancedOperators.add("inTitle:"+textoLibre);
+		if (inKeywords)
+			advancedOperators.add("inKeywords:"+textoLibre);
+		
+		String advancedOperatorsText = "q=" + textoLibre;
+		for (int i = 1; i < advancedOperators.size(); i++)
+			advancedOperatorsText += "+AND+" + advancedOperators.get(i);
+		
+		String query = advancedOperatorsText;
+		for (String queryParam : queryParams)
+			query += "&" + queryParam;
+		
+		String urlText = baseURL + query;
+		System.out.println("URL: " + urlText);
+		if (query.length() > 1500)
+			throw new Exception("Query demasiado larga.");
+		
+		//urlText = "http://19e37.com/tmp/bing.txt";
+		URL obj = new URL(urlText);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("Ocp-Apim-Subscription-Key", BingAPIKey.KEY);	//Obligatoria
+
+		int responseCode = con.getResponseCode();
+		System.out.println("Response Code : " + responseCode);
+
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
 		}
-		if (listaLocalizacion.size() > 0) {
-			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
-					+ ") OR Host.idLocalizacion IS NULL)");
-			order.add("Host.idLocalizacion DESC");
+		in.close();
+
+		//print result
+		System.out.println(response.toString());
+		
+		// Parseamos el resultado
+		JSONParser parser = new JSONParser();
+		Object json = parser.parse(response.toString());
+		JSONObject jsonObject = (JSONObject) json;
+		JSONObject webPages = (JSONObject) jsonObject.get("webPages");
+		JSONArray value = (JSONArray) webPages.get("value");
+		Iterator<JSONObject> iterator = value.iterator();
+		while (iterator.hasNext()) {
+			JSONObject next = iterator.next();
+			String titulo = next.get("name").toString();
+			String urlResultado = next.get("displayUrl").toString();
+			if (!urlResultado.startsWith("http"))
+				urlResultado = "http://" + urlResultado;
+			String extracto = next.get("snippet").toString();
+			listaResultados.add(new DocumentoWeb(titulo, new URL(urlResultado), extracto, 0, "localizacion", "sector", "tipoOrgnizacion"));
 		}
-
-		limit = " LIMIT 50 OFFSET " + offset;
-
-		String sql = "SELECT " + select + " FROM " + from + " ";
-		for (String sJoin : join)
-			sql += sJoin + " ";
-		if (where.size() > 0)
-			sql += "WHERE " + where.get(0);
-		for (int i = 1; i < where.size(); i++)
-			sql += " AND " + where.get(i) + " ";
-		// if (order.size() > 0){
-		// sql += " ORDER BY " + order.get(0);
-		// for (int i = 1; i < order.size(); i++)
-		// sql += ", " + order.get(i);
-		// }
-
-		sql += " GROUP BY Fuente.id "; // Evitamos duplicados
-		sql += " " + limit;
-
-		System.out.println("SQL de búsqueda: " + sql);
-
-		// System.out.println("SQL: " + sql);
-		Query query = Delphos.getSession().createSQLQuery(sql);
-		List lista = query.list();
-
-		Iterator it = lista.iterator();
-		ArrayList<DocumentoWeb> listaMalosDocumentos = new ArrayList<>();
-		while (it.hasNext()) {
-			Object row[] = (Object[]) it.next();
-			System.out.println(row[0] + " - " + row[1] + " - " + row[2]);
-			URL url = null;
-			try {
-				url = new URL((String) row[1]);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			DocumentoWeb docWeb = new DocumentoWeb((String) row[2], url, "", (int) row[0], (String) row[4],
-					(String) row[5], (String) row[6]);
-			docWeb.setExtracto(Parser.getExtractoTexto((String) row[3], textoLibre));
-			if ((docWeb.getExtracto() != null) || ("".equals(textoLibre)))
-				listaResultados.add(docWeb);
-			else
-				listaMalosDocumentos.add(docWeb);
-		}
-		// Ponemos los "malos documentos" al final
-		listaResultados.addAll(listaMalosDocumentos);
-
+		
 		return listaResultados;
 	}
 

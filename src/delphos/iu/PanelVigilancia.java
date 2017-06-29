@@ -38,6 +38,9 @@ import delphos.TipoOrganizacion;
 
 public class PanelVigilancia extends JPanel implements ConDefaultButton{
 	
+	public static final String ULTIMAS_24_HORAS = "Últimas 24 horas";
+	public static final String ULTIMO_MES = "Último mes";
+	public static final String ULTIMA_SEMANA = "Última semana";
 	protected DelphosFrame framePrincipal;
 	protected PanelVigilanciaController controller;
 	
@@ -392,7 +395,7 @@ public class PanelVigilancia extends JPanel implements ConDefaultButton{
 		panelBing.add(chckbxDocsWebInKeywords);
 		panelBing.add(Box.createHorizontalGlue());
 		panelBing.add(new JLabel("Actualidad:"));
-		this.cbDocsWebActualidad = new JComboBox<>(new String[] {"", "Últimas 24 horas", "Última semana", "Último mes"});
+		this.cbDocsWebActualidad = new JComboBox<>(new String[] {"", ULTIMAS_24_HORAS, ULTIMA_SEMANA, ULTIMO_MES});
 		this.cbDocsWebActualidad.setMaximumSize( new Dimension(300, 24) );
 		panelBing.add(cbDocsWebActualidad);
 		panelDocsWeb.add(panelBing);
