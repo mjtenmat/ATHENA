@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 
 import org.hibernate.Query;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
