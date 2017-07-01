@@ -2070,11 +2070,12 @@ public class Searcher {
 		while (iterator.hasNext()) {
 			JSONObject next = iterator.next();
 			String titulo = next.get("name").toString();
-			String urlResultado = next.get("displayUrl").toString();
-			if (!urlResultado.startsWith("http"))
-				urlResultado = "http://" + urlResultado;
+			String bingUrl = next.get("url").toString();
+			String displayUrl = next.get("displayUrl").toString();
+			if (!displayUrl.startsWith("http"))
+				displayUrl = "http://" + displayUrl;
 			String extracto = next.get("snippet").toString();
-			listaResultados.add(new DocumentoWeb(titulo, new URL(urlResultado), extracto, 0, "localizacion", "sector", "tipoOrgnizacion"));
+			listaResultados.add(new DocumentoWeb(titulo, new URL(bingUrl), new URL(displayUrl), extracto, 0, "localizacion", "sector", "tipoOrgnizacion"));
 		}
 		
 		return listaResultados;

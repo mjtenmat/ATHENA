@@ -5,6 +5,7 @@ import java.net.URL;
 public class DocumentoWeb {
 	private String titulo;
 	private URL url;
+	private URL displayUrl;
 	private String extracto;
 	private int idFuente;
 	private String localizacion;
@@ -12,9 +13,10 @@ public class DocumentoWeb {
 	private String tipoOrgnizacion;
 
 	
-	public DocumentoWeb(String titulo, URL url, String extracto, int idFuente, String localizacion, String sector, String tipoOrgnizacion) {
+	public DocumentoWeb(String titulo, URL url, URL displayUrl, String extracto, int idFuente, String localizacion, String sector, String tipoOrgnizacion) {
 		this.titulo = titulo;
 		this.url = url;
+		this.displayUrl = displayUrl;
 		this.extracto = extracto;
 		this.idFuente = idFuente;
 		this.localizacion = localizacion;
@@ -62,5 +64,11 @@ public class DocumentoWeb {
 	}
 	public void setIdFuente(int idFuente) {
 		this.idFuente = idFuente;
+	}
+	public URL getDisplayUrl() {
+		return displayUrl;
+	}
+	public void setDisplayUrl(URL displayUrl) {
+		this.displayUrl = displayUrl;
 	}
 }

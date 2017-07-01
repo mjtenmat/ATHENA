@@ -21,14 +21,14 @@ import javax.swing.SwingConstants;
 import delphos.DocumentoWeb;
 
 public class PanelDocumentoWeb extends JPanel {
-	protected DocumentoWeb docWeb;
+	protected final DocumentoWeb docWeb;
 	protected JLabel lblTitulo;
 	protected JLabel lblUrl;
 	protected JTextArea taExtracto;
 	private JLabel lblOtrosDatos;
 	private PanelVigilanciaController controlador;
 
-	public PanelDocumentoWeb(DocumentoWeb docWeb, PanelVigilanciaController controlador) {
+	public PanelDocumentoWeb(final DocumentoWeb docWeb, PanelVigilanciaController controlador) {
 		this.docWeb = docWeb;
 		this.controlador = controlador;
 
@@ -40,7 +40,7 @@ public class PanelDocumentoWeb extends JPanel {
 		this.lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.add(lblTitulo);
 
-		this.lblUrl = new JLabel(docWeb.getUrl().toString());
+		this.lblUrl = new JLabel(docWeb.getDisplayUrl().toString());
 		this.lblUrl.setForeground(Color.GREEN);
 		this.lblUrl.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.lblUrl.setHorizontalAlignment(SwingConstants.LEFT);
@@ -79,7 +79,8 @@ public class PanelDocumentoWeb extends JPanel {
 					if ((desktop.isSupported(Desktop.Action.BROWSE))) {
 						Desktop.getDesktop().browse(java.net.URI.create(((JLabel) e.getSource()).getText()));
 					} else {
-						ProcessBuilder pb = new ProcessBuilder("/usr/bin/firefox", ((JLabel) e.getSource()).getText());
+						//ProcessBuilder pb = new ProcessBuilder("/usr/bin/firefox", ((JLabel) e.getSource()).getText());
+						ProcessBuilder pb = new ProcessBuilder("/usr/bin/firefox", docWeb.getUrl().toString());
 						Process p = pb.start();
 					}
 				} catch (Exception exc) {
