@@ -1997,7 +1997,12 @@ public class Searcher {
 		
 		ArrayList<DocumentoWeb> listaResultados = new ArrayList<DocumentoWeb>();
 		
-		textoLibre = URLEncoder.encode(textoLibre);
+		//Añadimos los términos para contrastar
+		textoLibre = generarTextoLibreConOrganizaciones(textoLibre, listaConstrastarCon);
+//		textoLibre = textoLibre.replace("'", "\\'");
+//		textoLibre = textoLibre.replace(":", " ");
+		
+		textoLibre = URLEncoder.encode(textoLibre, "UTF-8");
 		
 		//Construimos la query
 		String baseURL = "https://api.cognitive.microsoft.com/bing/v5.0/search?";
@@ -2019,6 +2024,13 @@ public class Searcher {
 			
 		ArrayList<String> advancedOperators = new ArrayList<>();
 		//TODO: añadir site:
+		if (!listaLocalizacion.isEmpty() ||
+				!listaSector.isEmpty() ||
+				!listaTipoOrganizacion.isEmpty()){
+			String sites = getListaSites(listaLocalizacion, listaSector, listaTipoOrganizacion, 0);
+			System.out.println("Sites: " + sites);	
+			advancedOperators.add(sites);
+		}
 		if (inBody)
 			advancedOperators.add("inBody:"+textoLibre);
 		if (inTitle)
@@ -2027,8 +2039,8 @@ public class Searcher {
 			advancedOperators.add("inKeywords:"+textoLibre);
 		
 		String advancedOperatorsText = "q=" + textoLibre;
-		for (int i = 1; i < advancedOperators.size(); i++)
-			advancedOperatorsText += "+AND+" + advancedOperators.get(i);
+		for (int i = 0; i < advancedOperators.size(); i++)
+			advancedOperatorsText += "+AND+%28" + advancedOperators.get(i) +"%29";
 		
 		String query = advancedOperatorsText;
 		for (String queryParam : queryParams)
@@ -2079,6 +2091,78 @@ public class Searcher {
 		}
 		
 		return listaResultados;
+	}
+
+	private static String getListaSites(Set<Localizacion> listaLocalizacion, Set<Sector> listaSector,
+			Set<TipoOrganizacion> listaTipoOrganizacion, int offset) {
+		
+		final int LIMIT = 50;
+		
+		ArrayList<String> sites = new ArrayList<>();
+		
+		String select, from, orderBy, limit;
+		ArrayList<String> join = new ArrayList<String>();
+		ArrayList<String> where = new ArrayList<String>();
+		ArrayList<String> order = new ArrayList<String>();
+
+		select = "Host.id, Host.url AS url ";
+		from = "Host ";
+		join.add("LEFT JOIN Host_Sector ON Host.id = Host_Sector.idHost");
+		join.add("LEFT JOIN Sector ON Host_Sector.idSector = Sector.id");
+		join.add("LEFT JOIN TipoOrganizacion ON Host.idTipoOrganizacion = TipoOrganizacion.id");
+		join.add("LEFT JOIN Localizacion ON Host.idLocalizacion = Localizacion.id");
+
+		if (listaSector.size() > 0) {
+			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
+					+ ") OR Host_Sector.idSector IS NULL)");
+			order.add("Host_Sector.idSector DESC");
+		}
+		if (listaTipoOrganizacion.size() > 0) {
+			where.add("(Host.idTipoOrganizacion IN ("
+					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
+					+ ") OR Host.idTipoOrganizacion IS NULL)");
+			order.add("Host.idTipoOrganizacion DESC");
+		}
+		if (listaLocalizacion.size() > 0) {
+			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
+					+ ") OR Host.idLocalizacion IS NULL)");
+			order.add("Host.idLocalizacion DESC");
+		}
+
+		limit = " LIMIT " + LIMIT + " OFFSET " + offset;
+
+		String sql = "SELECT " + select + " FROM " + from + " ";
+		for (String sJoin : join)
+			sql += sJoin + " ";
+		if (where.size() > 0)
+			sql += "WHERE " + where.get(0);
+		for (int i = 1; i < where.size(); i++)
+			sql += " AND " + where.get(i) + " ";
+		
+		sql += "ORDER BY Host.id ";
+		//sql += " GROUP BY Fuente.id "; // Evitamos duplicados
+		sql += " " + limit;
+
+		System.out.println("Sites, SQL de búsqueda: " + sql);
+
+		// System.out.println("SQL: " + sql);
+		Query query = Delphos.getSession().createSQLQuery(sql);
+		List lista = query.list();
+
+		Iterator it = lista.iterator();
+		ArrayList<DocumentoWeb> listaMalosDocumentos = new ArrayList<>();
+		while (it.hasNext()) {
+			//Object row[] = ((Object[]) it.next())[1];
+			//System.out.println(row[0] + " - " + row[1]);
+			sites.add(((Object[]) it.next())[1].toString());
+		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("site:"+sites.get(0));
+		for (int i = 1; i < sites.size(); i++)
+			sb.append("+OR+site:" + sites.get(i));
+		
+		return sb.toString();
 	}
 
 	private static String verIdsSeparadosPorComas(Set set, Class clase) {
