@@ -15,6 +15,8 @@ import delphos.iu.Delphos;
 @Entity
 public class Localizacion extends Jerarquia<Localizacion>{
 	
+	String idJerar;
+	
 	public Localizacion(){
 		super(Localizacion.class);
 	}

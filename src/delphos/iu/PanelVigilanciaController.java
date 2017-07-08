@@ -84,31 +84,6 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 		this.pnPagDocsWeb = new PanelPaginacionPatentes(0, 0, this);
 	}
 
-	public DefaultComboBoxModel<String> getListaPaisesLicitacion() {
-		return getLista("SELECT DISTINCT(pais) FROM Licitacion_Localizacion ORDER BY pais ASC");
-	}
-
-	public DefaultComboBoxModel<String> getListaCiudadesLicitacion() {
-		return getLista("SELECT DISTINCT(ciudad) FROM Licitacion_Localizacion ORDER BY ciudad ASC");
-	}
-
-	public DefaultComboBoxModel<String> getListaEntidadesEmisorasLicitacion() {
-		return getLista("SELECT DISTINCT(entidadEmisora) FROM Licitacion ORDER BY entidadEmisora ASC");
-	}
-
-	public DefaultComboBoxModel<String> getListaTipoLicitacion() {
-		return getLista("SELECT DISTINCT(nombre) FROM TipoLicitacion ORDER BY nombre ASC");
-	}
-
-	private DefaultComboBoxModel<String> getLista(String consulta) {
-		Session session = Delphos.getSession();
-		Query query = session.createSQLQuery(consulta);
-		List<String> lista = query.list();
-		lista.add(0, null);
-		DefaultComboBoxModel<String> model = new DefaultComboBoxModel(lista.toArray(new String[lista.size()]));
-		return model;
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -298,152 +273,6 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 		this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
-	private void buscarYMostrarDocsDSpace(Documento_Clasificacion coleccion,
-			JPanel panel, int nuevoIndice) {
-		try {
-			panel.removeAll();
-			ArrayList<DocumentoAcademico> listaResultadosDocsAcademicos2 = Searcher.buscarDocsDSpace(
-					this.textoLibreCompleto,
-					(GregorianCalendar) this.panelVigilancia.dpDocsFechaDesde.getModel().getValue(),
-					(GregorianCalendar) this.panelVigilancia.dpDocsFechaHasta.getModel().getValue(),
-					this.panelVigilancia.tfDocAutor.getText(), this.panelVigilancia.tfDocEntidad.getText(),
-					coleccion.getDescripcion() + "/advanced-search", nuevoIndice);
-			mostrarDocs(panel, listaResultadosDocsAcademicos2, coleccion);
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta a DSpace.MIT.edu", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			e1.printStackTrace();
-		}
-	}
-
-	private String crearTextoLibreCompleto() {
-		// Elaboración del textoLibre con ContrastarCon
-		String textoLibreCompleto = this.panelVigilancia.tfTextoLibre.getText();
-
-		Set<ContrastarCon> txt = this.panelVigilancia.dstdContrastarCon.getSeleccion();
-
-		// if (this.panelVigilancia.dstdContrastarCon.getSeleccion() != null){
-		// for(ContrastarCon entidad :
-		// this.panelVigilancia.dstdContrastarCon.getSeleccion())
-		// textoLibreCompleto += " \"" + entidad.getNombre() +"\"";
-		// }
-
-		System.out.println(textoLibreCompleto);
-
-		return textoLibreCompleto;
-	}
-
-	private void buscarYMostrarLicitacionesPorPagina() {
-		try {
-			this.listaResultadosLicitaciones = Searcher.buscarLicitacionesEnLineaPorPagina(this.indiceBusquedaTED);
-			mostrarLicitaciones();
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta online a TED", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			e1.printStackTrace();
-			return;
-		}
-	}
-
-	private void mostrarLicitaciones() {
-		// Cambiamos el panel por el de resultados
-		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.borrarLicitaciones();
-		this.panelVigilancia.framePrincipal.panelVigilanciaResultados
-				.setResultadoLicitaciones(listaResultadosLicitaciones.size());
-		Iterator<Licitacion> it = this.listaResultadosLicitaciones.iterator();
-		while (it.hasNext()) {
-			this.panelVigilancia.framePrincipal.panelVigilanciaResultados.addLicitacion(it.next());
-		}
-		int pagActual = this.indiceBusquedaTED;
-		int pagTotal = Math.round(Searcher.totalResultadosTED / 25);
-		pnPagTED = new PanelPaginacionPatentes(pagActual, pagTotal, this);
-		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.panelLicitaciones.add(pnPagTED);
-	}
-
-	private void buscarYMostrarLicitaciones() {
-		try {
-			// this.listaResultadosLicitaciones =
-			// Searcher.buscarLicitacionesEnLinea(this.textoLibreCompleto,
-			// (GregorianCalendar)
-			// this.panelVigilancia.dpFechaDesde.getModel().getValue(),
-			// (GregorianCalendar)
-			// this.panelVigilancia.dpFechaHasta.getModel().getValue(),
-			// this.panelVigilancia.dstdLicitacionLocalizacion.getSeleccion(),
-			// (String) this.panelVigilancia.cbTipoLicitacion.getSelectedItem(),
-			// this.panelVigilancia.jtfEntidadEmisora.getText(),
-			// this.panelVigilancia.dstdLicitacionSector.getSeleccion());
-			this.listaResultadosLicitaciones = Searcher.buscarLicitacionesEnLineaModoExperto(this.textoLibreCompleto,
-					(GregorianCalendar) this.panelVigilancia.dpFechaDesde.getModel().getValue(),
-					(GregorianCalendar) this.panelVigilancia.dpFechaHasta.getModel().getValue(),
-					this.panelVigilancia.dstdLicitacionLocalizacion.getSeleccion(),
-					(String) this.panelVigilancia.cbTipoLicitacion.getSelectedItem(),
-					this.panelVigilancia.jtfEntidadEmisora.getText(),
-					this.panelVigilancia.dstdLicitacionSector.getSeleccion(),
-					this.panelVigilancia.dstdContrastarCon.getSeleccion());
-			mostrarLicitaciones();
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta online a TED", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			e1.printStackTrace();
-		}
-	}
-
-	private void buscarYMostrarPatentes() {
-		try {
-			this.listaResultadosPatentes = Searcher.buscarPatentesEnLinea(this.textoLibreCompleto,
-					(GregorianCalendar) this.panelVigilancia.dpPatentesFechaDesde.getModel().getValue(),
-					(GregorianCalendar) this.panelVigilancia.dpPatentesFechaHasta.getModel().getValue(),
-					this.panelVigilancia.tfInventor.getText(), this.panelVigilancia.tfSolicitante.getText(),
-					this.panelVigilancia.dstdPatenteSector.getSeleccion(),
-					this.panelVigilancia.dsldPatenteLocalizacion.getSeleccion(), this.indiceBusquedaEPO,
-					this.panelVigilancia.dstdContrastarCon.getSeleccion());
-		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(this.panelVigilancia,
-					"Se ha producido un error en la consulta.\nPor favor, replantéela.", "ERROR EN LA CONSULTA",
-					JOptionPane.ERROR_MESSAGE);
-			ex.printStackTrace();
-			this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			return;
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(this.panelVigilancia,
-					"El número de códigos de CPI es excesivo (máximo 10).\nPor favor, redúzcalos y replantée la consulta.",
-					"ERROR EN LA CONSULTA", JOptionPane.ERROR_MESSAGE);
-			this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			return;
-		}
-		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.borrarPatentes();
-		this.panelVigilancia.framePrincipal.panelVigilanciaResultados
-				.setResultadoPatentes(listaResultadosPatentes.size());
-		Iterator<Patente> itPat = this.listaResultadosPatentes.iterator();
-		while (itPat.hasNext()) {
-			this.panelVigilancia.framePrincipal.panelVigilanciaResultados.addPatente(itPat.next());
-		}
-		int pagActual = Math.round(this.indiceBusquedaEPO / 99);
-		int pagTotal = Math.round(Searcher.totalResultadosEPO / 99);
-		pnPagEPO = new PanelPaginacionPatentes(pagActual, pagTotal, this);
-		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.panelPatentes.add(pnPagEPO);
-
-	}
-
-	private void buscarYMostrarDocumentosWeb() {
-		try {
-			this.listaResultadosDocumentosWeb = Searcher.buscarDocumentosWeb(this.textoLibreCompleto,
-					this.panelVigilancia.dstdDocsWebLocalizacion.getSeleccion(),
-					this.panelVigilancia.dstdDocsWebSector.getSeleccion(),
-					this.panelVigilancia.dstdDocsWebTipoOrganizacion.getSeleccion(), this.indiceBusquedaDocumentosWeb,
-					this.panelVigilancia.dstdContrastarCon.getSeleccion(),
-					this.panelVigilancia.chckbxDocsWebInBody.isSelected(),
-					this.panelVigilancia.chckbxDocsWebInTitle.isSelected(),
-					this.panelVigilancia.chckbxDocsWebInKeywords.isSelected(),
-					this.panelVigilancia.cbDocsWebActualidad.getSelectedItem().toString());
-			mostrarDocumentosWeb();
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta de Documentos Web", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			e1.printStackTrace();
-		}
-	}
-
 	private void buscarYMostrarDocsDSpace() {
 		try {
 			Set<Documento_Clasificacion> colecciones = this.panelVigilancia.dstdDocClasificacion.getSeleccion();
@@ -489,6 +318,170 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 					JOptionPane.ERROR_MESSAGE);
 			e1.printStackTrace();
 		}
+	}
+
+	private void buscarYMostrarDocsDSpace(Documento_Clasificacion coleccion,
+			JPanel panel, int nuevoIndice) {
+		try {
+			panel.removeAll();
+			ArrayList<DocumentoAcademico> listaResultadosDocsAcademicos2 = Searcher.buscarDocsDSpace(
+					this.textoLibreCompleto,
+					(GregorianCalendar) this.panelVigilancia.dpDocsFechaDesde.getModel().getValue(),
+					(GregorianCalendar) this.panelVigilancia.dpDocsFechaHasta.getModel().getValue(),
+					this.panelVigilancia.tfDocAutor.getText(), this.panelVigilancia.tfDocEntidad.getText(),
+					coleccion.getDescripcion() + "/advanced-search", nuevoIndice);
+			mostrarDocs(panel, listaResultadosDocsAcademicos2, coleccion);
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta a DSpace.MIT.edu", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			e1.printStackTrace();
+		}
+	}
+
+	private void buscarYMostrarDocumentosWeb() {
+		try {
+			this.listaResultadosDocumentosWeb = Searcher.buscarDocumentosWeb(this.textoLibreCompleto,
+					this.panelVigilancia.dstdDocsWebLocalizacion.getSeleccion(),
+					this.panelVigilancia.dstdDocsWebSector.getSeleccion(),
+					this.panelVigilancia.dstdDocsWebTipoOrganizacion.getSeleccion(), this.indiceBusquedaDocumentosWeb,
+					this.panelVigilancia.dstdContrastarCon.getSeleccion(),
+					this.panelVigilancia.chckbxDocsWebInBody.isSelected(),
+					this.panelVigilancia.chckbxDocsWebInTitle.isSelected(),
+					this.panelVigilancia.chckbxDocsWebInKeywords.isSelected(),
+					this.panelVigilancia.cbDocsWebActualidad.getSelectedItem().toString());
+			mostrarDocumentosWeb();
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta de Documentos Web", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			e1.printStackTrace();
+		}
+	}
+
+	private void buscarYMostrarLicitaciones() {
+		try {
+			// this.listaResultadosLicitaciones =
+			// Searcher.buscarLicitacionesEnLinea(this.textoLibreCompleto,
+			// (GregorianCalendar)
+			// this.panelVigilancia.dpFechaDesde.getModel().getValue(),
+			// (GregorianCalendar)
+			// this.panelVigilancia.dpFechaHasta.getModel().getValue(),
+			// this.panelVigilancia.dstdLicitacionLocalizacion.getSeleccion(),
+			// (String) this.panelVigilancia.cbTipoLicitacion.getSelectedItem(),
+			// this.panelVigilancia.jtfEntidadEmisora.getText(),
+			// this.panelVigilancia.dstdLicitacionSector.getSeleccion());
+			this.listaResultadosLicitaciones = Searcher.buscarLicitacionesEnLineaModoExperto(this.textoLibreCompleto,
+					(GregorianCalendar) this.panelVigilancia.dpFechaDesde.getModel().getValue(),
+					(GregorianCalendar) this.panelVigilancia.dpFechaHasta.getModel().getValue(),
+					this.panelVigilancia.dstdLicitacionLocalizacion.getSeleccion(),
+					(String) this.panelVigilancia.cbTipoLicitacion.getSelectedItem(),
+					this.panelVigilancia.jtfEntidadEmisora.getText(),
+					this.panelVigilancia.dstdLicitacionSector.getSeleccion(),
+					this.panelVigilancia.dstdContrastarCon.getSeleccion());
+			mostrarLicitaciones();
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta online a TED", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			e1.printStackTrace();
+		}
+	}
+
+	private void buscarYMostrarLicitacionesPorPagina() {
+		try {
+			this.listaResultadosLicitaciones = Searcher.buscarLicitacionesEnLineaPorPagina(this.indiceBusquedaTED);
+			mostrarLicitaciones();
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(panelVigilancia, "Error en la consulta online a TED", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			e1.printStackTrace();
+			return;
+		}
+	}
+
+	private void buscarYMostrarPatentes() {
+		try {
+			this.listaResultadosPatentes = Searcher.buscarPatentesEnLinea(this.textoLibreCompleto,
+					(GregorianCalendar) this.panelVigilancia.dpPatentesFechaDesde.getModel().getValue(),
+					(GregorianCalendar) this.panelVigilancia.dpPatentesFechaHasta.getModel().getValue(),
+					this.panelVigilancia.tfInventor.getText(), this.panelVigilancia.tfSolicitante.getText(),
+					this.panelVigilancia.dstdPatenteSector.getSeleccion(),
+					this.panelVigilancia.dsldPatenteLocalizacion.getSeleccion(), this.indiceBusquedaEPO,
+					this.panelVigilancia.dstdContrastarCon.getSeleccion());
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(this.panelVigilancia,
+					"Se ha producido un error en la consulta.\nPor favor, replantéela.", "ERROR EN LA CONSULTA",
+					JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
+			this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			return;
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(this.panelVigilancia,
+					"El número de códigos de CPI es excesivo (máximo 10).\nPor favor, redúzcalos y replantée la consulta.",
+					"ERROR EN LA CONSULTA", JOptionPane.ERROR_MESSAGE);
+			this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			return;
+		}
+		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.borrarPatentes();
+		this.panelVigilancia.framePrincipal.panelVigilanciaResultados
+				.setResultadoPatentes(listaResultadosPatentes.size());
+		Iterator<Patente> itPat = this.listaResultadosPatentes.iterator();
+		while (itPat.hasNext()) {
+			this.panelVigilancia.framePrincipal.panelVigilanciaResultados.addPatente(itPat.next());
+		}
+		int pagActual = Math.round(this.indiceBusquedaEPO / 99);
+		int pagTotal = Math.round(Searcher.totalResultadosEPO / 99);
+		pnPagEPO = new PanelPaginacionPatentes(pagActual, pagTotal, this);
+		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.panelPatentes.add(pnPagEPO);
+
+	}
+
+	private String crearTextoLibreCompleto() {
+		// Elaboración del textoLibre con ContrastarCon
+		String textoLibreCompleto = this.panelVigilancia.tfTextoLibre.getText();
+
+		Set<ContrastarCon> txt = this.panelVigilancia.dstdContrastarCon.getSeleccion();
+
+		// if (this.panelVigilancia.dstdContrastarCon.getSeleccion() != null){
+		// for(ContrastarCon entidad :
+		// this.panelVigilancia.dstdContrastarCon.getSeleccion())
+		// textoLibreCompleto += " \"" + entidad.getNombre() +"\"";
+		// }
+
+		System.out.println(textoLibreCompleto);
+
+		return textoLibreCompleto;
+	}
+
+	private void doPop(MouseEvent e) {
+		// Obtenemos el texto seleccionado
+		String textoSeleccionado = ((JTextArea) e.getSource()).getSelectedText();
+		System.out.println(textoSeleccionado);
+		PopUpDocsWeb jPopupMenu = new PopUpDocsWeb(this, textoSeleccionado);
+		jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+	}
+
+	private DefaultComboBoxModel<String> getLista(String consulta) {
+		Session session = Delphos.getSession();
+		Query query = session.createSQLQuery(consulta);
+		List<String> lista = query.list();
+		lista.add(0, null);
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel(lista.toArray(new String[lista.size()]));
+		return model;
+	}
+
+	public DefaultComboBoxModel<String> getListaCiudadesLicitacion() {
+		return getLista("SELECT DISTINCT(ciudad) FROM Licitacion_Localizacion ORDER BY ciudad ASC");
+	}
+
+	public DefaultComboBoxModel<String> getListaEntidadesEmisorasLicitacion() {
+		return getLista("SELECT DISTINCT(entidadEmisora) FROM Licitacion ORDER BY entidadEmisora ASC");
+	}
+
+	public DefaultComboBoxModel<String> getListaPaisesLicitacion() {
+		return getLista("SELECT DISTINCT(pais) FROM Licitacion_Localizacion ORDER BY pais ASC");
+	}
+
+	public DefaultComboBoxModel<String> getListaTipoLicitacion() {
+		return getLista("SELECT DISTINCT(nombre) FROM TipoLicitacion ORDER BY nombre ASC");
 	}
 
 	private void mostrarDocs(JPanel panel, ArrayList<DocumentoAcademico> listaResultadosDocsAcademicos2,
@@ -538,6 +531,50 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 		int pagTotal = -1;
 		pnPagDocsWeb = new PanelPaginacionPatentes(pagActual, pagTotal, this);
 		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.panelDocumentosWeb.add(pnPagDocsWeb);
+	}
+
+	private void mostrarLicitaciones() {
+		// Cambiamos el panel por el de resultados
+		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.borrarLicitaciones();
+		this.panelVigilancia.framePrincipal.panelVigilanciaResultados
+				.setResultadoLicitaciones(listaResultadosLicitaciones.size());
+		Iterator<Licitacion> it = this.listaResultadosLicitaciones.iterator();
+		while (it.hasNext()) {
+			this.panelVigilancia.framePrincipal.panelVigilanciaResultados.addLicitacion(it.next());
+		}
+		int pagActual = this.indiceBusquedaTED;
+		int pagTotal = Math.round(Searcher.totalResultadosTED / 25);
+		pnPagTED = new PanelPaginacionPatentes(pagActual, pagTotal, this);
+		this.panelVigilancia.framePrincipal.panelVigilanciaResultados.panelLicitaciones.add(pnPagTED);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger())
+			doPop(e);
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		if (e.isPopupTrigger())
+			doPop(e);
 	}
 
 	@Override
@@ -591,54 +628,17 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 	}
 
 	@Override
-	public void onCancelar(DelphosSelectionDialog dtd) {
-
-	}
-
-	@Override
 	public void onBorrar(DelphosSelectionDialog dtd) {
 
 	}
 
 	@Override
+	public void onCancelar(DelphosSelectionDialog dtd) {
+
+	}
+
+	@Override
 	public void onCrear(DelphosSelectionDialog dtd) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
-	}
-
-	private void doPop(MouseEvent e) {
-		// Obtenemos el texto seleccionado
-		String textoSeleccionado = ((JTextArea) e.getSource()).getSelectedText();
-		System.out.println(textoSeleccionado);
-		PopUpDocsWeb jPopupMenu = new PopUpDocsWeb(this, textoSeleccionado);
-		jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 }
