@@ -1940,18 +1940,18 @@ public class Searcher {
 
 		if (listaSector.size() > 0) {
 			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
-					+ ") OR Host_Sector.idSector IS NULL)");
+					+ ") OR Host_Sector.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + "))");
 			order.add("Host_Sector.idSector DESC");
 		}
 		if (listaTipoOrganizacion.size() > 0) {
 			where.add("(Host.idTipoOrganizacion IN ("
 					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
-					+ ") OR Host.idTipoOrganizacion IS NULL)");
+					+ ") OR Host.idTipoOrganizacion IS NULL OR (" + verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + "))");
 			order.add("Host.idTipoOrganizacion DESC");
 		}
 		if (listaLocalizacion.size() > 0) {
 			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
-					+ ") OR Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion) + "))");
+					+ ") OR Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion, "Localizacion") + "))");
 			order.add("Host.idLocalizacion DESC");
 		}
 
@@ -1991,11 +1991,11 @@ public class Searcher {
 		return sb.toString();
 	}
 
-	private static String verIdJerarEnOR(Set<Localizacion> listaLocalizacion) {
-		Localizacion[] arrayLocalizacion = (Localizacion[]) listaLocalizacion.toArray(new Localizacion[listaLocalizacion.size()]);
-		StringBuilder resultado = new StringBuilder("idJerar LIKE '" + arrayLocalizacion[0].idJerar + ".%' ");
-		for (int i = 1; i < arrayLocalizacion.length; i++)
-			resultado.append("OR idJerar LIKE '" + arrayLocalizacion[i].idJerar + ".%' ");
+	private static String verIdJerarEnOR(Set<? extends Jerarquia> listaJerarquia, String tabla) {
+		Jerarquia[] array = (Jerarquia[]) listaJerarquia.toArray(new Jerarquia[listaJerarquia.size()]);
+		StringBuilder resultado = new StringBuilder(tabla + ".idJerar LIKE '" + array[0].getIdJerar() + ".%' ");
+		for (int i = 1; i < array.length; i++)
+			resultado.append("OR "+tabla+".idJerar LIKE '" + array[i].getIdJerar() + ".%' ");
 		
 		return resultado.toString();
 	}

@@ -24,6 +24,7 @@ public abstract class Jerarquia<T> {
 	protected T padre;
 	protected String nombre;
 	protected String descripcion;
+	protected String idJerar;
 
 	@Transient
 	private Class<T> clase;
@@ -79,4 +80,10 @@ public abstract class Jerarquia<T> {
 		this.descripcion = descripcion;
 	}
 
+	public String getIdJerar() {
+		return idJerar;
+	}
+	public void setIdJerar(String idJerar) {
+		this.idJerar = idJerar;
+	}
 }
