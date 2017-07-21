@@ -1933,25 +1933,30 @@ public class Searcher {
 
 		select = "Host.id, Host.url AS url ";
 		from = "Host ";
-		join.add("LEFT JOIN Host_Sector ON Host.id = Host_Sector.idHost");
-		join.add("LEFT JOIN Sector ON Host_Sector.idSector = Sector.id");
+		//join.add("LEFT JOIN Host_Sector ON Host.id = Host_Sector.idHost");
+		//join.add("LEFT JOIN Sector ON Host_Sector.idSector = Sector.id");
+		join.add("LEFT JOIN Sector ON Host.idSector = Sector.id");
 		join.add("LEFT JOIN TipoOrganizacion ON Host.idTipoOrganizacion = TipoOrganizacion.id");
 		join.add("LEFT JOIN Localizacion ON Host.idLocalizacion = Localizacion.id");
 
 		if (listaSector.size() > 0) {
-			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
-					+ ") OR Host_Sector.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + "))");
-			order.add("Host_Sector.idSector DESC");
+			where.add("(Host.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + ")) ");
+//			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
+//					+ ") OR Host_Sector.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + "))");
+//			order.add("Host_Sector.idSector DESC");
+			order.add("Host.idSector DESC");
 		}
 		if (listaTipoOrganizacion.size() > 0) {
-			where.add("(Host.idTipoOrganizacion IN ("
-					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
-					+ ") OR Host.idTipoOrganizacion IS NULL OR (" + verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + "))");
+			where.add("(Host.idTipoOrganizacion IS NULL OR (" + verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + ")) ");
+//			where.add("(Host.idTipoOrganizacion IN ("
+//					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
+//					+ ") OR Host.idTipoOrganizacion IS NULL OR (" + verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + "))");
 			order.add("Host.idTipoOrganizacion DESC");
 		}
 		if (listaLocalizacion.size() > 0) {
-			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
-					+ ") OR Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion, "Localizacion") + "))");
+			where.add("(Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion, "Localizacion") + ")) ");
+			//where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
+			//		+ ") OR Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion, "Localizacion") + "))");
 			order.add("Host.idLocalizacion DESC");
 		}
 
@@ -1967,7 +1972,7 @@ public class Searcher {
 		
 		sql += "ORDER BY Host.id ";
 		//sql += " GROUP BY Fuente.id "; // Evitamos duplicados
-		sql += " " + limit;
+		//sql += " " + limit;
 
 		System.out.println("Sites, SQL de búsqueda: " + sql);
 
