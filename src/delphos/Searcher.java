@@ -265,21 +265,22 @@ public class Searcher {
 		// la consulta
 		select = "SELECT Fuente.id, ";
 		select += "COUNT(*)/" + descriptores.size() + " AS cobertura";
-		
-//		Cálculo original de similitud
-//		select += ", SUM(";
-//		String parentesis = "";
-//		for (Peso peso : descriptores) {
-//			select += "IF(Descriptor.id = " + peso.getDescriptor().getId() + "," + peso.getPeso() + ",";
-//			parentesis += ")";
-//		}
-//		select += "0" + parentesis;
-//		select += "* Peso.peso) as similitud ";
+
+		// Cálculo original de similitud
+		// select += ", SUM(";
+		// String parentesis = "";
+		// for (Peso peso : descriptores) {
+		// select += "IF(Descriptor.id = " + peso.getDescriptor().getId() + "," +
+		// peso.getPeso() + ",";
+		// parentesis += ")";
+		// }
+		// select += "0" + parentesis;
+		// select += "* Peso.peso) as similitud ";
 
 		from = "FROM Fuente";
 
 		groupBy = "GROUP BY Fuente.id";
-		orderBy = "ORDER BY cobertura DESC";	
+		orderBy = "ORDER BY cobertura DESC";
 
 		// Si hay texto libre, unimos Descriptor y Peso y ponemos claúsula where
 		String idsDescriptoresSeparadosComas;
@@ -327,14 +328,14 @@ public class Searcher {
 
 		Query query = Delphos.getSession().createSQLQuery(sql);
 		List listaObjetos = null;
-		try{
+		try {
 			listaObjetos = query.list();
 			System.out.println("Hay " + listaObjetos.size() + " fuentes coincidentes");
-		}
-		catch(GenericJDBCException ex){
+		} catch (GenericJDBCException ex) {
 			System.out.println("Excepcion: " + ex.getMessage());
 			if (ex.getMessage().contains("could not extract Resultset"))
-				System.out.println("Es necesario cambiar la configuración de MySQL. Incremente la pila de hilos (thread_stack) modificando el parámetro thread_stack en mysqld.conf. Ponga al menos 512K.");
+				System.out.println(
+						"Es necesario cambiar la configuración de MySQL. Incremente la pila de hilos (thread_stack) modificando el parámetro thread_stack en mysqld.conf. Ponga al menos 512K.");
 		}
 
 		// if (listaObjetos.size() == 0)
@@ -488,70 +489,79 @@ public class Searcher {
 
 	public static ArrayList<DocumentoWeb> buscarDocumentosWeb(String textoLibre, Set<Localizacion> listaLocalizacion,
 			Set<Sector> listaSector, Set<TipoOrganizacion> listaTipoOrganizacion, int offset,
-			Set<ContrastarCon> listaConstrastarCon, boolean inBody, boolean inTitle, boolean inKeywords, String freshness) throws Exception {
-		//Busca documentos web en Bing
-		
+			Set<ContrastarCon> listaConstrastarCon, boolean inBody, boolean inTitle, boolean inKeywords,
+			String freshness) throws Exception {
+		// Busca documentos web en Bing
+
 		ArrayList<DocumentoWeb> listaResultados = new ArrayList<DocumentoWeb>();
-		
-		//Añadimos los términos para contrastar
+
+		// Añadimos los términos para contrastar
 		textoLibre = generarTextoLibreConOrganizaciones(textoLibre, listaConstrastarCon);
-//		textoLibre = textoLibre.replace("'", "\\'");
-//		textoLibre = textoLibre.replace(":", " ");
-		
+		// textoLibre = textoLibre.replace("'", "\\'");
+		// textoLibre = textoLibre.replace(":", " ");
+
 		textoLibre = URLEncoder.encode(textoLibre, "UTF-8");
-		
-		//Construimos la query
+
+		// Construimos la query
 		String baseURL = "https://api.cognitive.microsoft.com/bing/v5.0/search?";
 		ArrayList<String> queryParams = new ArrayList<>();
 		queryParams.add("count=50");
 		queryParams.add("resonseFilter=Webpages");
-		if (freshness != ""){
+		if (freshness != "") {
 			String freshnessText = "";
 			if (freshness.equals(PanelVigilancia.ULTIMAS_24_HORAS))
-					freshnessText = "Day";
+				freshnessText = "Day";
 			if (freshness.equals(PanelVigilancia.ULTIMA_SEMANA))
-					freshnessText = "Week";
+				freshnessText = "Week";
 			if (freshness.equals(PanelVigilancia.ULTIMO_MES))
-					freshnessText = "Month";
+				freshnessText = "Month";
 			queryParams.add("freshness=" + freshnessText);
 		}
 		if (offset != 0)
 			queryParams.add("offet=" + offset);
-			
+
 		ArrayList<String> advancedOperators = new ArrayList<>();
-		//TODO: añadir site:
-		if (!listaLocalizacion.isEmpty() ||
-				!listaSector.isEmpty() ||
-				!listaTipoOrganizacion.isEmpty()){
-			String sites = getListaSites(listaLocalizacion, listaSector, listaTipoOrganizacion, 0);
-			System.out.println("Sites: " + sites);	
+
+		String sites = "";
+		if (!listaLocalizacion.isEmpty() || !listaSector.isEmpty() || !listaTipoOrganizacion.isEmpty()) {
+			sites = getListaSites(listaLocalizacion, listaSector, listaTipoOrganizacion, 0);
+			// System.out.println("Sites: " + sites);
 			advancedOperators.add(sites);
 		}
 		if (inBody)
-			advancedOperators.add("inBody:"+textoLibre);
+			advancedOperators.add("inBody:" + textoLibre);
 		if (inTitle)
-			advancedOperators.add("inTitle:"+textoLibre);
+			advancedOperators.add("inTitle:" + textoLibre);
 		if (inKeywords)
-			advancedOperators.add("inKeywords:"+textoLibre);
-		
+			advancedOperators.add("inKeywords:" + textoLibre);
+
 		String advancedOperatorsText = "q=" + textoLibre;
 		for (int i = 0; i < advancedOperators.size(); i++)
-			advancedOperatorsText += "+AND+%28" + advancedOperators.get(i) +"%29";
-		
+			advancedOperatorsText += "+AND+%28" + advancedOperators.get(i) + "%29";
+
 		String query = advancedOperatorsText;
 		for (String queryParam : queryParams)
 			query += "&" + queryParam;
-		
+
 		String urlText = baseURL + query;
-		System.out.println("URL: " + urlText);
-		if (query.length() > 1500)
-			throw new Exception("Query demasiado larga.");
-		
-		//urlText = "http://19e37.com/tmp/bing.txt";
+		// System.out.println("URL: " + urlText);
+		System.out.println("Query Length(): " + query.length());
+		System.out.println("Sites Length(): " + sites.length());
+		if (query.length() > 1500) {
+			if (query.length() - sites.length() > 1500)
+				System.out.println("Consulta imposible de partir.");
+			else {
+				System.out.println(
+						"Requiere " + sites.length() / (1500 - (query.length() - sites.length())) + " subconsultas");
+			}
+			throw new Exception("Query demasiado larga (" + query.length() + ")");
+		}
+
+		// urlText = "http://19e37.com/tmp/bing.txt";
 		URL obj = new URL(urlText);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
-		con.setRequestProperty("Ocp-Apim-Subscription-Key", BingAPIKey.KEY);	//Obligatoria
+		con.setRequestProperty("Ocp-Apim-Subscription-Key", BingAPIKey.KEY); // Obligatoria
 
 		int responseCode = con.getResponseCode();
 		System.out.println("Response Code : " + responseCode);
@@ -565,9 +575,9 @@ public class Searcher {
 		}
 		in.close();
 
-		//print result
+		// print result
 		System.out.println(response.toString());
-		
+
 		// Parseamos el resultado
 		JSONParser parser = new JSONParser();
 		Object json = parser.parse(response.toString());
@@ -583,12 +593,13 @@ public class Searcher {
 			if (!displayUrl.startsWith("http"))
 				displayUrl = "http://" + displayUrl;
 			String extracto = next.get("snippet").toString();
-			listaResultados.add(new DocumentoWeb(titulo, new URL(bingUrl), new URL(displayUrl), extracto, 0, "localizacion", "sector", "tipoOrgnizacion"));
+			listaResultados.add(new DocumentoWeb(titulo, new URL(bingUrl), new URL(displayUrl), extracto, 0,
+					"localizacion", "sector", "tipoOrgnizacion"));
 		}
-		
+
 		return listaResultados;
 	}
-	
+
 	public static ArrayList<Licitacion> buscarLicitaciones(String textoLibre, GregorianCalendar fechaDesde,
 			GregorianCalendar fechaHasta, String pais, String ciudad, String tipoLicitacion, String entidadEmisora,
 			Set<Sector> sectores, Set<CPV> codCPV) {
@@ -683,7 +694,7 @@ public class Searcher {
 
 		return resultado;
 	}
-	
+
 	public static ArrayList<Licitacion> buscarLicitacionesEnLinea(String textoLibre, GregorianCalendar fechaDesde,
 			GregorianCalendar fechaHasta, Set<Licitacion_Localizacion> paises, String tipoLicitacion,
 			String entidadEmisora, Set<Licitacion_Sector> listaSectores) throws Exception {
@@ -783,7 +794,7 @@ public class Searcher {
 		System.out.println("Parámetros POST: " + postParameters);
 
 		html = verPagina(url, postParameters);
-		System.out.println("HTML: "+ html);
+		System.out.println("HTML: " + html);
 		escribirFichero(html);
 
 		int numPaginas = verNumPag(html);
@@ -1113,9 +1124,9 @@ public class Searcher {
 
 			/*
 			 * BufferedReader in = new BufferedReader( new
-			 * InputStreamReader(uri.toURL().openStream())); String inputLine;
-			 * while ((inputLine = in.readLine()) != null)
-			 * System.out.println(inputLine); in.close();
+			 * InputStreamReader(uri.toURL().openStream())); String inputLine; while
+			 * ((inputLine = in.readLine()) != null) System.out.println(inputLine);
+			 * in.close();
 			 */
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -1307,7 +1318,7 @@ public class Searcher {
 				// int numTotal = verNumDocs(fechaInicioPeriodo,
 				// fechaFinIntervalo, tendenciaClon);
 				if (numTotalDocs == 0 && numEncontrados > 0)
-					numTotalDocs = verNumTotalDocsDSpace(); 
+					numTotalDocs = verNumTotalDocsDSpace();
 				System.out.println("Documentos: Fecha " + sdf.format(fechaInicioPeriodo.getTime()) + " = "
 						+ numEncontrados + "/" + numTotalDocs + " = " + (double) numEncontrados / numTotalDocs);
 				if ((numTotalDocs == 0) || (numEncontrados == 0))
@@ -1351,21 +1362,20 @@ public class Searcher {
 	 */
 	private static double calcularSimilitud(Set<Peso> consulta, int idFuente) {
 		double resultado = 0;
-		
-		//Creamos un mapa de idDescriptor->Peso para la consulta
+
+		// Creamos un mapa de idDescriptor->Peso para la consulta
 		Map<Integer, Peso> t = new HashMap<>();
 		// Creamos una lista de idDescriptores de la consulta
 		String listaDescriptoresConsulta = " ";
-		for (Peso p : consulta){
-			listaDescriptoresConsulta += p.getDescriptor().getId()+",";
+		for (Peso p : consulta) {
+			listaDescriptoresConsulta += p.getDescriptor().getId() + ",";
 			t.put(p.getDescriptor().getId(), p);
 		}
 		listaDescriptoresConsulta = listaDescriptoresConsulta.substring(0, listaDescriptoresConsulta.length() - 1);
-		
+
 		// Para cada documento de la Base de Datos
 		String sql = "SELECT idDescriptor, idFuente, peso FROM Peso ";
-		sql += "WHERE idDescriptor IN (" + listaDescriptoresConsulta + ") "
-				+ " AND idFuente = " + idFuente
+		sql += "WHERE idDescriptor IN (" + listaDescriptoresConsulta + ") " + " AND idFuente = " + idFuente
 				+ " ORDER BY idFuente";
 		Query query = Delphos.getSession().createSQLQuery(sql);
 		List listaPesos = query.list();
@@ -1378,13 +1388,13 @@ public class Searcher {
 			Integer idDescriptor = (Integer) row[0];
 			idFuente = (Integer) row[1];
 			idUltimaFuente = idFuente;
-			double qi = (Double) row[2];	//peso del término en la consulta		
+			double qi = (Double) row[2]; // peso del término en la consulta
 			double ti = t.get(idDescriptor).getPeso();
 			numerador += qi * ti;
-			denominador += Math.pow(qi*ti, 2);	
+			denominador += Math.pow(qi * ti, 2);
 		}
-		resultado = numerador/Math.sqrt(denominador);
-		
+		resultado = numerador / Math.sqrt(denominador);
+
 		return resultado;
 	}
 
@@ -1393,17 +1403,17 @@ public class Searcher {
 	 */
 	private static ArrayList<SimilitudDocumento> calcularSimilitudes(Set<Peso> consulta) {
 		ArrayList<SimilitudDocumento> resultado = new ArrayList<SimilitudDocumento>();
-		
-		//Creamos un mapa de idDescriptor->Peso para la consulta
+
+		// Creamos un mapa de idDescriptor->Peso para la consulta
 		Map<Integer, Peso> t = new HashMap<>();
 		// Creamos una lista de idDescriptores de la consulta
 		String listaDescriptoresConsulta = " ";
-		for (Peso p : consulta){
-			listaDescriptoresConsulta += p.getDescriptor().getId()+",";
+		for (Peso p : consulta) {
+			listaDescriptoresConsulta += p.getDescriptor().getId() + ",";
 			t.put(p.getDescriptor().getId(), p);
 		}
 		listaDescriptoresConsulta = listaDescriptoresConsulta.substring(0, listaDescriptoresConsulta.length() - 1);
-		
+
 		// Para cada documento de la Base de Datos
 		String sql = "SELECT idDescriptor, idFuente, peso FROM Peso ";
 		sql += "WHERE idDescriptor IN (" + listaDescriptoresConsulta + ") ORDER BY idFuente";
@@ -1415,10 +1425,10 @@ public class Searcher {
 		double numerador = 0.0;
 		double denominador = 0.0;
 		while (it.hasNext()) {
-			//Si es un idFuente nuevo
-			if (idFuente != idUltimaFuente){
+			// Si es un idFuente nuevo
+			if (idFuente != idUltimaFuente) {
 				if (idUltimaFuente != -1)
-					resultado.add(new SimilitudDocumento(numerador/Math.sqrt(denominador), idFuente));
+					resultado.add(new SimilitudDocumento(numerador / Math.sqrt(denominador), idFuente));
 				numerador = 0.0;
 				denominador = 0.0;
 			}
@@ -1426,16 +1436,16 @@ public class Searcher {
 			Integer idDescriptor = (Integer) row[0];
 			idFuente = (Integer) row[1];
 			idUltimaFuente = idFuente;
-			double qi = (Double) row[2];	//peso del término en la consulta		
+			double qi = (Double) row[2]; // peso del término en la consulta
 			double ti = t.get(idDescriptor).getPeso();
 			numerador += qi * ti;
-			denominador += Math.pow(qi*ti, 2);	
+			denominador += Math.pow(qi * ti, 2);
 		}
-		//Añadimos el último, si lo hay
+		// Añadimos el último, si lo hay
 		if (idUltimaFuente != -1)
-			resultado.add(new SimilitudDocumento(numerador/Math.sqrt(denominador), idFuente));
-		
-		Collections.sort(resultado); //Hay SimilitudDocumento.compareTo, ordena por similitud.
+			resultado.add(new SimilitudDocumento(numerador / Math.sqrt(denominador), idFuente));
+
+		Collections.sort(resultado); // Hay SimilitudDocumento.compareTo, ordena por similitud.
 		return resultado;
 	}
 
@@ -1849,7 +1859,7 @@ public class Searcher {
 			Object[] row = (Object[]) it.next();
 			int idFuente = (Integer) row[0];
 			double cobertura = ((BigDecimal) row[1]).doubleValue();
-			//double similitud = (double) row[2];
+			// double similitud = (double) row[2];
 			double similitud = calcularSimilitud(consultaInicial, idFuente);
 			Resultado resultado = new Resultado(idFuente, cobertura, similitud);
 			listaResultados.add(resultado);
@@ -1921,11 +1931,11 @@ public class Searcher {
 
 	private static String getListaSites(Set<Localizacion> listaLocalizacion, Set<Sector> listaSector,
 			Set<TipoOrganizacion> listaTipoOrganizacion, int offset) {
-		
+
 		final int LIMIT = 50;
-		
+
 		ArrayList<String> sites = new ArrayList<>();
-		
+
 		String select, from, orderBy, limit;
 		ArrayList<String> join = new ArrayList<String>();
 		ArrayList<String> where = new ArrayList<String>();
@@ -1933,30 +1943,42 @@ public class Searcher {
 
 		select = "Host.id, Host.url AS url ";
 		from = "Host ";
-		//join.add("LEFT JOIN Host_Sector ON Host.id = Host_Sector.idHost");
-		//join.add("LEFT JOIN Sector ON Host_Sector.idSector = Sector.id");
+		// join.add("LEFT JOIN Host_Sector ON Host.id = Host_Sector.idHost");
+		// join.add("LEFT JOIN Sector ON Host_Sector.idSector = Sector.id");
 		join.add("LEFT JOIN Sector ON Host.idSector = Sector.id");
 		join.add("LEFT JOIN TipoOrganizacion ON Host.idTipoOrganizacion = TipoOrganizacion.id");
 		join.add("LEFT JOIN Localizacion ON Host.idLocalizacion = Localizacion.id");
 
 		if (listaSector.size() > 0) {
 			where.add("(Host.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + ")) ");
-//			where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector, Sector.class)
-//					+ ") OR Host_Sector.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + "))");
-//			order.add("Host_Sector.idSector DESC");
+			// where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector,
+			// Sector.class)
+			// + ") OR Host_Sector.idSector IS NULL OR (" + verIdJerarEnOR(listaSector,
+			// "Sector") + "))");
+			// order.add("Host_Sector.idSector DESC");
 			order.add("Host.idSector DESC");
 		}
 		if (listaTipoOrganizacion.size() > 0) {
-			where.add("(Host.idTipoOrganizacion IS NULL OR (" + verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + ")) ");
-//			where.add("(Host.idTipoOrganizacion IN ("
-//					+ verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
-//					+ ") OR Host.idTipoOrganizacion IS NULL OR (" + verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + "))");
+			where.add("(Host.idTipoOrganizacion IS NULL OR ("
+					+ verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + ")) ");
+			// where.add("(Host.idTipoOrganizacion IN ("
+			// + verIdsSeparadosPorComas(listaTipoOrganizacion, TipoOrganizacion.class)
+			// + ") OR Host.idTipoOrganizacion IS NULL OR (" +
+			// verIdJerarEnOR(listaTipoOrganizacion, "TipoOrganizacion") + "))");
 			order.add("Host.idTipoOrganizacion DESC");
 		}
 		if (listaLocalizacion.size() > 0) {
-			where.add("(Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion, "Localizacion") + ")) ");
-			//where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
-			//		+ ") OR Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion, "Localizacion") + "))");
+			//where.add("(Host.idLocalizacion IS NULL OR Host.idLocalizacion IN ("
+			where.add("(Host.idLocalizacion IN ("
+					+ verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class) + ") )");
+
+			// where.add("(Host.idLocalizacion IS NULL OR (" +
+			// verIdJerarEnOR(listaLocalizacion, "Localizacion") + ")) ");
+
+			// where.add("(Host.idLocalizacion IN (" +
+			// verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
+			// + ") OR Host.idLocalizacion IS NULL OR (" + verIdJerarEnOR(listaLocalizacion,
+			// "Localizacion") + "))");
 			order.add("Host.idLocalizacion DESC");
 		}
 
@@ -1969,10 +1991,10 @@ public class Searcher {
 			sql += "WHERE " + where.get(0);
 		for (int i = 1; i < where.size(); i++)
 			sql += " AND " + where.get(i) + " ";
-		
+
 		sql += "ORDER BY Host.id ";
-		//sql += " GROUP BY Fuente.id "; // Evitamos duplicados
-		//sql += " " + limit;
+		// sql += " GROUP BY Fuente.id "; // Evitamos duplicados
+		// sql += " " + limit;
 
 		System.out.println("Sites, SQL de búsqueda: " + sql);
 
@@ -1983,16 +2005,16 @@ public class Searcher {
 		Iterator it = lista.iterator();
 		ArrayList<DocumentoWeb> listaMalosDocumentos = new ArrayList<>();
 		while (it.hasNext()) {
-			//Object row[] = ((Object[]) it.next())[1];
-			//System.out.println(row[0] + " - " + row[1]);
+			// Object row[] = ((Object[]) it.next())[1];
+			// System.out.println(row[0] + " - " + row[1]);
 			sites.add(((Object[]) it.next())[1].toString());
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("site:"+sites.get(0));
+		sb.append("site:" + sites.get(0));
 		for (int i = 1; i < sites.size(); i++)
 			sb.append("+OR+site:" + sites.get(i));
-		
+
 		return sb.toString();
 	}
 
@@ -2000,8 +2022,8 @@ public class Searcher {
 		Jerarquia[] array = (Jerarquia[]) listaJerarquia.toArray(new Jerarquia[listaJerarquia.size()]);
 		StringBuilder resultado = new StringBuilder(tabla + ".idJerar LIKE '" + array[0].getIdJerar() + ".%' ");
 		for (int i = 1; i < array.length; i++)
-			resultado.append("OR "+tabla+".idJerar LIKE '" + array[i].getIdJerar() + ".%' ");
-		
+			resultado.append("OR " + tabla + ".idJerar LIKE '" + array[i].getIdJerar() + ".%' ");
+
 		return resultado.toString();
 	}
 
@@ -2017,213 +2039,212 @@ public class Searcher {
 
 	public static ArrayList<Resultado> mejorarAG(Set<Jerarquia> sectores, Set<Jerarquia> tiposOrganizacion,
 			Set<Jerarquia> localizaciones) {
-		
+
 		log.trace("Iniciando AG");
-		//1. Parsear documentos (eliminar palabras vacías, reducir a la raíz...)
-		// 	Realizado previamente por Parser.
-		
-		//2. Obtenemos descriptores (términos para cada documento)
-		//3. Base documental como matriz.
-		//4. Ponderación de términos. 
-		//5. Documento como vectores.
-		//	Están en la base de datos. Tabla Peso (idFuente, idDescriptor, peso)
+		// 1. Parsear documentos (eliminar palabras vacías, reducir a la raíz...)
+		// Realizado previamente por Parser.
 
-		
-		//6. Consulta trasformada en vector. 
-		//	Ya está en consultaInicial:Set<Peso>, que ha sido parseada y pesada en Searcher.
-		
-		
-		//7. Calculo de similitud entre consulta (Qi) y documentos (Di). Medida del Coseno.
-		//8. Los documentos se devuelven ordenados por orden de similitud (de mayor a menor)
+		// 2. Obtenemos descriptores (términos para cada documento)
+		// 3. Base documental como matriz.
+		// 4. Ponderación de términos.
+		// 5. Documento como vectores.
+		// Están en la base de datos. Tabla Peso (idFuente, idDescriptor, peso)
+
+		// 6. Consulta trasformada en vector.
+		// Ya está en consultaInicial:Set<Peso>, que ha sido parseada y pesada en
+		// Searcher.
+
+		// 7. Calculo de similitud entre consulta (Qi) y documentos (Di). Medida del
+		// Coseno.
+		// 8. Los documentos se devuelven ordenados por orden de similitud (de mayor a
+		// menor)
 		ArrayList<SimilitudDocumento> similitudes = calcularSimilitudes(consultaInicial);
-		
-		//9. Evaluar el resultados calculando el promedio (Ejemplo Anexo I) de Precisión para 11 grados de Exhaustividad (1, 0'9, 0'8, …0). 
-		//E = nº de documentos relevantes recuperados / nº de documentos relevantes
-		//P = nº de documentos relevantes recuperados / nº de documentos recuperados
 
-		//10. Identificar los documentos relevantes de prueba entre los primeros 15 documentos del 	ranking de similitud y el primer no relevante.
-		
-		//... AG empieza en 17
-		/* 17. Mejora consulta con AG:
+		// 9. Evaluar el resultados calculando el promedio (Ejemplo Anexo I) de
+		// Precisión para 11 grados de Exhaustividad (1, 0'9, 0'8, …0).
+		// E = nº de documentos relevantes recuperados / nº de documentos relevantes
+		// P = nº de documentos relevantes recuperados / nº de documentos recuperados
 
-			a) Tomar 10 documentos: los relevantes obtenidos tras el proceso de retroalimentción (entre los primeros 15 del ranking)  + 
-			los  primeros no relevantes que devolvía la última consulta que no mejoró el promedio de Precisión.
-			
-			
-			b) Construir una “ruleta” con estos 10 documentos. Dividir la ruleta en porciones iguales a la  similitud que ofrece cada documento.
-			 A modo de porciones. (Ejemplo de Ruleta en Anexo II)
-			 
-			c) “Lanzar” la ruleta 10 veces. Seleccionando cada vez los documentos en los que pare.
-			
-			d) Obtenemos así 10 documentos (“cromosomas”) padre. 5 parejas.
-			
-			e) Probabilidad de cruce (Pc=0,7) entre parejas.
-		Buscar un número aleatorio entre 0,0 y 1,0.
-		Si el resultado es < 0,7. Se obtiene un número aleatorio entre 0 y n, y esa pareja se cruza en ese punto.
-		Si el resultado es > 0,7. No se cruzan.
-		Repetir para siguiente pareja.
-			f) Probabilidad de mutación (Pm= 0,05) para pesos de términos (“genes”) que componen los 	cromosomas (documentos)
-		Buscar un número aleatorio entre 0,00 y 1,00.
-		Si el resultado es < 0,05. Se obtiene un número aleatorio entre 0 y el peso máximo de los descriptores de los 10 documentos padre iniciales y asignarlo al término.
-		Si el resultado es > 0,05 No se muta.
-		Repetir para siguiente peso (descriptor).
-			g) Tenemos entonces 10 nuevos vectores.
-			h) Sumar estos 10 vectores y la última consulta de retroalimentación por relevancia que no 	obtuvo resultados relevantes nuevos. Así obtenemos una consulta de prueba (Qp).
-			i) Lanzar Qp al sistema y calcular promedio Precisión (P) para 11º de Exhaustividad (E).
-			j) Restar 1er vector  a Qp y lanzar esta nueva consulta (Qp') al sistema. Calcular promedio de 	Precisión para 11º de Exhaustividad de Qp'.
-					
-			k) Si Qp' obtiene mejor promedio de P que Qp. Eliminar 1er vector. Si no, recuperar 1er 	vector.
-			l) Repetir desde j) con los siguientes 9 vectores.
-			m) Obtenemos finalmente la consulta que mejor promedio de Precisión a obtenido a partir 	de AAGG, la consulta Qg.
-			ñ) Observar si mejora promedio de P para 11º de E. con respecto a Q'
-		Si el resultado es positivo: volver al paso 11.
-		Si el resultado es negativo: FIN.
-		
-		*/
-		
+		// 10. Identificar los documentos relevantes de prueba entre los primeros 15
+		// documentos del ranking de similitud y el primer no relevante.
+
+		// ... AG empieza en 17
+		/*
+		 * 17. Mejora consulta con AG:
+		 * 
+		 * a) Tomar 10 documentos: los relevantes obtenidos tras el proceso de
+		 * retroalimentción (entre los primeros 15 del ranking) + los primeros no
+		 * relevantes que devolvía la última consulta que no mejoró el promedio de
+		 * Precisión.
+		 * 
+		 * 
+		 * b) Construir una “ruleta” con estos 10 documentos. Dividir la ruleta en
+		 * porciones iguales a la similitud que ofrece cada documento. A modo de
+		 * porciones. (Ejemplo de Ruleta en Anexo II)
+		 * 
+		 * c) “Lanzar” la ruleta 10 veces. Seleccionando cada vez los documentos en los
+		 * que pare.
+		 * 
+		 * d) Obtenemos así 10 documentos (“cromosomas”) padre. 5 parejas.
+		 * 
+		 * e) Probabilidad de cruce (Pc=0,7) entre parejas. Buscar un número aleatorio
+		 * entre 0,0 y 1,0. Si el resultado es < 0,7. Se obtiene un número aleatorio
+		 * entre 0 y n, y esa pareja se cruza en ese punto. Si el resultado es > 0,7. No
+		 * se cruzan. Repetir para siguiente pareja. f) Probabilidad de mutación (Pm=
+		 * 0,05) para pesos de términos (“genes”) que componen los cromosomas
+		 * (documentos) Buscar un número aleatorio entre 0,00 y 1,00. Si el resultado es
+		 * < 0,05. Se obtiene un número aleatorio entre 0 y el peso máximo de los
+		 * descriptores de los 10 documentos padre iniciales y asignarlo al término. Si
+		 * el resultado es > 0,05 No se muta. Repetir para siguiente peso (descriptor).
+		 * g) Tenemos entonces 10 nuevos vectores. h) Sumar estos 10 vectores y la
+		 * última consulta de retroalimentación por relevancia que no obtuvo resultados
+		 * relevantes nuevos. Así obtenemos una consulta de prueba (Qp). i) Lanzar Qp al
+		 * sistema y calcular promedio Precisión (P) para 11º de Exhaustividad (E). j)
+		 * Restar 1er vector a Qp y lanzar esta nueva consulta (Qp') al sistema.
+		 * Calcular promedio de Precisión para 11º de Exhaustividad de Qp'.
+		 * 
+		 * k) Si Qp' obtiene mejor promedio de P que Qp. Eliminar 1er vector. Si no,
+		 * recuperar 1er vector. l) Repetir desde j) con los siguientes 9 vectores. m)
+		 * Obtenemos finalmente la consulta que mejor promedio de Precisión a obtenido a
+		 * partir de AAGG, la consulta Qg. ñ) Observar si mejora promedio de P para 11º
+		 * de E. con respecto a Q' Si el resultado es positivo: volver al paso 11. Si el
+		 * resultado es negativo: FIN.
+		 * 
+		 */
+
 		/*
 		 * log.trace("Iniciando AG");
 		 * 
-		 * log.trace("AG-1: Cogemos los resultados relevantes"); // 1. Tomamos
-		 * los primeros AG_TAMANO_RULETA resultados de la lista de // relevantes
-		 * + los últimos resultados ArrayList<Resultado> resultadosEntrada = new
+		 * log.trace("AG-1: Cogemos los resultados relevantes"); // 1. Tomamos los
+		 * primeros AG_TAMANO_RULETA resultados de la lista de // relevantes + los
+		 * últimos resultados ArrayList<Resultado> resultadosEntrada = new
 		 * ArrayList<Resultado>( listaResultadosRelevantes); // copiamos //
-		 * listaResultadosRelevantes en // ruleta // Añadimos un porcentaje de
-		 * la última listaResultados int numAnadir; if
-		 * (listaResultadosRelevantes.size() < 5) numAnadir = 10 -
-		 * listaResultadosRelevantes.size(); else if
+		 * listaResultadosRelevantes en // ruleta // Añadimos un porcentaje de la última
+		 * listaResultados int numAnadir; if (listaResultadosRelevantes.size() < 5)
+		 * numAnadir = 10 - listaResultadosRelevantes.size(); else if
 		 * (listaResultadosRelevantes.size() < 10) numAnadir = 15 -
-		 * listaResultadosRelevantes.size(); else if
-		 * (listaResultadosRelevantes.size() < 15) numAnadir = 20 -
-		 * listaResultadosRelevantes.size(); else if
+		 * listaResultadosRelevantes.size(); else if (listaResultadosRelevantes.size() <
+		 * 15) numAnadir = 20 - listaResultadosRelevantes.size(); else if
 		 * (listaResultadosRelevantes.size() < 20) numAnadir = 25 -
 		 * listaResultadosRelevantes.size(); else numAnadir = (int)
 		 * (listaResultadosRelevantes.size() * AG_PCT_ULTIMOS_RESULTADOS);
 		 * 
-		 * Iterator<Resultado> it = listaResultados.iterator(); while
-		 * (it.hasNext() && (numAnadir > 0)) { resultadosEntrada.add(it.next());
-		 * numAnadir--; } log.trace("AG-1a: Calculamos sus pesos."); //
-		 * calculamos el peso de cada resultado en la ruleta, proporcional a su
-		 * // similitud ArrayList<Double> porcionRuletaResultado = new
-		 * ArrayList<Double>(); int similitudTotal = 0; for (Resultado
-		 * ruletaResultado : resultadosEntrada) similitudTotal +=
+		 * Iterator<Resultado> it = listaResultados.iterator(); while (it.hasNext() &&
+		 * (numAnadir > 0)) { resultadosEntrada.add(it.next()); numAnadir--; }
+		 * log.trace("AG-1a: Calculamos sus pesos."); // calculamos el peso de cada
+		 * resultado en la ruleta, proporcional a su // similitud ArrayList<Double>
+		 * porcionRuletaResultado = new ArrayList<Double>(); int similitudTotal = 0; for
+		 * (Resultado ruletaResultado : resultadosEntrada) similitudTotal +=
 		 * ruletaResultado.getSimilitud(); for (Resultado ruletaResultado :
-		 * resultadosEntrada)
-		 * porcionRuletaResultado.add(ruletaResultado.getSimilitud() /
-		 * similitudTotal);
+		 * resultadosEntrada) porcionRuletaResultado.add(ruletaResultado.getSimilitud()
+		 * / similitudTotal);
 		 * 
-		 * log.trace("AG-1b: Calculamos la probalidad acumulada."); //
-		 * calculamos la probabilidad acumulada ArrayList<Double> ruleta = new
-		 * ArrayList<Double>(); ruleta.add(porcionRuletaResultado.get(0)); for
-		 * (int i = 1; i < porcionRuletaResultado.size(); i++)
-		 * ruleta.add(ruleta.get(i - 1) + porcionRuletaResultado.get(i));
+		 * log.trace("AG-1b: Calculamos la probalidad acumulada."); // calculamos la
+		 * probabilidad acumulada ArrayList<Double> ruleta = new ArrayList<Double>();
+		 * ruleta.add(porcionRuletaResultado.get(0)); for (int i = 1; i <
+		 * porcionRuletaResultado.size(); i++) ruleta.add(ruleta.get(i - 1) +
+		 * porcionRuletaResultado.get(i));
 		 * 
-		 * // Ver ruleta // System.out.print("Pesos ruleta: "); // for(Double pr
-		 * : ruleta) // System.out.print(pr + " ");
+		 * // Ver ruleta // System.out.print("Pesos ruleta: "); // for(Double pr :
+		 * ruleta) // System.out.print(pr + " ");
 		 * 
-		 * ArrayList<Cromosoma> cromosomas; ArrayList<Resultado>
-		 * resultadosEncontrados; do { // Los pasos 2 a 6 se repiten hasta que
-		 * la calidad de los // resultados obtenidos sea la adecuada log.trace(
-		 * "AG-2a: Selección por rueda de ruleta."); // 2. Selección por rueda
-		 * de ruleta ArrayList<Resultado> resultadosElegidosParaCruzar = new
+		 * ArrayList<Cromosoma> cromosomas; ArrayList<Resultado> resultadosEncontrados;
+		 * do { // Los pasos 2 a 6 se repiten hasta que la calidad de los // resultados
+		 * obtenidos sea la adecuada log.trace(
+		 * "AG-2a: Selección por rueda de ruleta."); // 2. Selección por rueda de ruleta
+		 * ArrayList<Resultado> resultadosElegidosParaCruzar = new
 		 * ArrayList<Resultado>(); Double tiradaAleatoria; log.trace("Hay " +
 		 * resultadosElegidosParaCruzar + " resultadosElegidosParaCruzar.");
-		 * log.trace("Elegidos: "); for (int i = 0; i <
-		 * resultadosEntrada.size(); i++) { // Seleccionamos // tantos // como
-		 * // resultados // (relevantes // + %), // pero // puede // haber //
-		 * repetidos tiradaAleatoria = Math.random(); Boolean encontrado =
-		 * false; int j = 0; while (!encontrado) { if (ruleta.get(j) >
+		 * log.trace("Elegidos: "); for (int i = 0; i < resultadosEntrada.size(); i++) {
+		 * // Seleccionamos // tantos // como // resultados // (relevantes // + %), //
+		 * pero // puede // haber // repetidos tiradaAleatoria = Math.random(); Boolean
+		 * encontrado = false; int j = 0; while (!encontrado) { if (ruleta.get(j) >
 		 * tiradaAleatoria) { resultadosElegidosParaCruzar.add(resultadosEntrada
 		 * .get(j)); encontrado = true; // System.out.print(j + " "); } j++; } }
 		 * 
 		 * log.trace(
 		 * "AG-2b: Creamos un cromosoma modelo con todos los descriptores de la consulta."
-		 * ); // Creamos los cromosomas de los resultados elegidos para cruzar
-		 * // Crear cromosoma modelo a peso 0 con los descriptores de todos los
-		 * // resultadosElegidos. Cromosoma cromosomaModelo = new Cromosoma();
+		 * ); // Creamos los cromosomas de los resultados elegidos para cruzar // Crear
+		 * cromosoma modelo a peso 0 con los descriptores de todos los //
+		 * resultadosElegidos. Cromosoma cromosomaModelo = new Cromosoma();
 		 * ArrayList<String> textosDescriptoresCromosomaModelo = new
 		 * ArrayList<String>(); for (Resultado resultadoElegido :
 		 * resultadosElegidosParaCruzar) for (Peso peso :
 		 * resultadoElegido.getFuente().getPesos()) if
 		 * (!textosDescriptoresCromosomaModelo.contains(peso
 		 * .getDescriptor().getTexto()))// Evitamos duplicados
-		 * textosDescriptoresCromosomaModelo.add(peso
-		 * .getDescriptor().getTexto());
+		 * textosDescriptoresCromosomaModelo.add(peso .getDescriptor().getTexto());
 		 * 
-		 * log.trace("AG-2c: Ordenamos el cromosoma modelo alfabéticamente.");
-		 * // Ordenar el cromosoma modelo alfabéticamente.
+		 * log.trace("AG-2c: Ordenamos el cromosoma modelo alfabéticamente."); //
+		 * Ordenar el cromosoma modelo alfabéticamente.
 		 * Collections.sort(textosDescriptoresCromosomaModelo);
 		 * 
-		 * for (String textoDescriptor : textosDescriptoresCromosomaModelo) {
-		 * Descriptor descriptorTmp = new Descriptor();
-		 * descriptorTmp.setTexto(textoDescriptor);
+		 * for (String textoDescriptor : textosDescriptoresCromosomaModelo) { Descriptor
+		 * descriptorTmp = new Descriptor(); descriptorTmp.setTexto(textoDescriptor);
 		 * cromosomaModelo.getDescriptores().add(descriptorTmp);
 		 * cromosomaModelo.getPesos().add(0.0); }
 		 * 
 		 * // verCromosoma(cromosomaModelo);
 		 * 
-		 * log.trace("AG-2d: Creamos los cromosomas para cada resultado."); //
-		 * Creamos la lista de cromosomas (antes del cruce) int i2 = 0;
-		 * cromosomas = new ArrayList<Cromosoma>(); for (Resultado
-		 * resultadoElegido : resultadosElegidosParaCruzar) { Cromosoma clon =
-		 * cromosomaModelo.clone(); log.trace(
-		 * "Creando cromosoma para resultado " + i2++); for (Peso peso :
-		 * resultadoElegido.getFuente().getPesos()) { // Buscamos el descriptor
-		 * y cambiamos el peso en el clon Boolean encontrado = false; int i = 0;
-		 * // System.out.println("-- Buscando descriptor " + //
-		 * peso.getDescriptor().getTexto()); while (i < clon.getPesos().size()
-		 * && !encontrado) { // System.out.println("--- comparando con " + //
+		 * log.trace("AG-2d: Creamos los cromosomas para cada resultado."); // Creamos
+		 * la lista de cromosomas (antes del cruce) int i2 = 0; cromosomas = new
+		 * ArrayList<Cromosoma>(); for (Resultado resultadoElegido :
+		 * resultadosElegidosParaCruzar) { Cromosoma clon = cromosomaModelo.clone();
+		 * log.trace( "Creando cromosoma para resultado " + i2++); for (Peso peso :
+		 * resultadoElegido.getFuente().getPesos()) { // Buscamos el descriptor y
+		 * cambiamos el peso en el clon Boolean encontrado = false; int i = 0; //
+		 * System.out.println("-- Buscando descriptor " + //
+		 * peso.getDescriptor().getTexto()); while (i < clon.getPesos().size() &&
+		 * !encontrado) { // System.out.println("--- comparando con " + //
 		 * clon.getDescriptores().get(i).getTexto()); if
 		 * (clon.getDescriptores().get(i).getTexto()
 		 * .equals(peso.getDescriptor().getTexto())) { clon.getPesos().set(i,
 		 * peso.getPeso()); encontrado = true; // System.out.println(
-		 * "---- ¡Encontrado!"); } i++; } } // verCromosoma(clon);
-		 * cromosomas.add(clon); }
+		 * "---- ¡Encontrado!"); } i++; } } // verCromosoma(clon); cromosomas.add(clon);
+		 * }
 		 * 
-		 * log.trace("AG-3: Cruzamos los cromosomas"); // 3. Cruce en un punto
-		 * Cromosoma cromosomaPrevio = null; Cromosoma cromosomaPrimero = null;
-		 * // Primer cromosoma seleccionado // (para cruzarlo si queda el //
-		 * último suelto for (Cromosoma cromosoma : cromosomas) { if
-		 * (Math.random() < Searcher.AG_PC) { // Si el elegio para // cruzar if
-		 * (cromosomaPrimero == null) cromosomaPrimero = cromosoma.clone(); if
-		 * (cromosomaPrevio == null) // No hay ninguno previo cromosomaPrevio =
-		 * cromosoma; else { // cruzamos cromosoma con cromosomaPrevio
-		 * cruzarCromosomas(cromosomaPrevio, cromosoma); cromosomaPrevio = null;
-		 * // Para detectar el último // suelto } } } if (cromosomaPrevio !=
-		 * null) { // Se nos ha quedado el primero que // fue seleccionado
-		 * cruzarCromosomas(cromosomaPrevio, cromosomaPrimero);// Cruzamos //
-		 * con el // primero }
+		 * log.trace("AG-3: Cruzamos los cromosomas"); // 3. Cruce en un punto Cromosoma
+		 * cromosomaPrevio = null; Cromosoma cromosomaPrimero = null; // Primer
+		 * cromosoma seleccionado // (para cruzarlo si queda el // último suelto for
+		 * (Cromosoma cromosoma : cromosomas) { if (Math.random() < Searcher.AG_PC) { //
+		 * Si el elegio para // cruzar if (cromosomaPrimero == null) cromosomaPrimero =
+		 * cromosoma.clone(); if (cromosomaPrevio == null) // No hay ninguno previo
+		 * cromosomaPrevio = cromosoma; else { // cruzamos cromosoma con cromosomaPrevio
+		 * cruzarCromosomas(cromosomaPrevio, cromosoma); cromosomaPrevio = null; // Para
+		 * detectar el último // suelto } } } if (cromosomaPrevio != null) { // Se nos
+		 * ha quedado el primero que // fue seleccionado
+		 * cruzarCromosomas(cromosomaPrevio, cromosomaPrimero);// Cruzamos // con el //
+		 * primero }
 		 * 
-		 * log.trace("AG-4: Mutamos los cromosomas."); // 4. Mutación //
-		 * Seleccionamos los pesos máximos y mínimos Criteria crit =
+		 * log.trace("AG-4: Mutamos los cromosomas."); // 4. Mutación // Seleccionamos
+		 * los pesos máximos y mínimos Criteria crit =
 		 * Delphos.getSession().createCriteria(Peso.class);
-		 * crit.setProjection(Projections.max("peso")); Double maxPeso =
-		 * (Double) crit.uniqueResult();
+		 * crit.setProjection(Projections.max("peso")); Double maxPeso = (Double)
+		 * crit.uniqueResult();
 		 * 
 		 * Criteria crit2 = Delphos.getSession().createCriteria(Peso.class);
 		 * crit2.add(Restrictions.gt("peso", 0.0));
-		 * crit2.setProjection(Projections.min("peso")); Double minPeso =
-		 * (Double) crit.uniqueResult();
+		 * crit2.setProjection(Projections.min("peso")); Double minPeso = (Double)
+		 * crit.uniqueResult();
 		 * 
 		 * double rangoPeso = maxPeso - minPeso;
 		 * 
 		 * for (Cromosoma cromosoma : cromosomas) { for (Double peso :
-		 * cromosoma.getPesos()) if (Math.random() < Searcher.AG_PM) // Se muta
-		 * el peso peso = minPeso + Math.random() * rangoPeso; }
+		 * cromosoma.getPesos()) if (Math.random() < Searcher.AG_PM) // Se muta el peso
+		 * peso = minPeso + Math.random() * rangoPeso; }
 		 * 
-		 * log.trace("AG-5: Construimos la nueva consulta."); // 5. Construimos
-		 * la consulta sumando consultaInicial + // listaResultadosRelevantes +
-		 * Cromosomas (mutados) Set<Peso> descriptoresConsulta =
+		 * log.trace("AG-5: Construimos la nueva consulta."); // 5. Construimos la
+		 * consulta sumando consultaInicial + // listaResultadosRelevantes + Cromosomas
+		 * (mutados) Set<Peso> descriptoresConsulta =
 		 * getDescriptoresConsulta(cromosomas);
 		 * 
-		 * // Lanzamos la consulta resultadosEncontrados =
-		 * buscar(descriptoresConsulta, sectores, tiposOrganizacion,
-		 * localizaciones);
+		 * // Lanzamos la consulta resultadosEncontrados = buscar(descriptoresConsulta,
+		 * sectores, tiposOrganizacion, localizaciones);
 		 * 
-		 * // 6. Comprobamos si están todos los resultadosRelevantes en los //
-		 * primeros umbral+Relevantes resultadosEncontrados } while
-		 * (!estanTodosRelevantes(resultadosEncontrados)); // Repetimos // pasos
-		 * 2 a 6 // mientras // falten // resultados
+		 * // 6. Comprobamos si están todos los resultadosRelevantes en los // primeros
+		 * umbral+Relevantes resultadosEncontrados } while
+		 * (!estanTodosRelevantes(resultadosEncontrados)); // Repetimos // pasos 2 a 6
+		 * // mientras // falten // resultados
 		 * 
 		 * // 7. 8. 11. 12. Comprobamos la utilidad de cada cromosoma
 		 * ArrayList<Cromosoma> cromosomasUtiles = new ArrayList<Cromosoma>(
@@ -2231,13 +2252,12 @@ public class Searcher {
 		 * cromosomasUtiles.remove(cromosomaAEliminar); Set<Peso>
 		 * descriptoresTmpConsulta = getDescriptoresConsulta(cromosomasUtiles);
 		 * ArrayList<Resultado> resultadosTmpEncontrados = buscar(
-		 * descriptoresTmpConsulta, sectores, tiposOrganizacion,
-		 * localizaciones); if (!estanTodosRelevantes(resultadosTmpEncontrados))
-		 * cromosomasUtiles.add(cromosomaAEliminar); // 11. Rescatamos el //
-		 * cromosoma }
+		 * descriptoresTmpConsulta, sectores, tiposOrganizacion, localizaciones); if
+		 * (!estanTodosRelevantes(resultadosTmpEncontrados))
+		 * cromosomasUtiles.add(cromosomaAEliminar); // 11. Rescatamos el // cromosoma }
 		 * 
-		 * log.trace("Fin AG"); // Finalmente, lanzamos una RRMax con la
-		 * consulta mejorada Set<Peso> descriptoresConsultaUtiles =
+		 * log.trace("Fin AG"); // Finalmente, lanzamos una RRMax con la consulta
+		 * mejorada Set<Peso> descriptoresConsultaUtiles =
 		 * getDescriptoresConsulta(cromosomasUtiles); return
 		 * buscar(descriptoresConsultaUtiles, sectores, tiposOrganizacion,
 		 * localizaciones);
@@ -2264,7 +2284,7 @@ public class Searcher {
 
 		if (listaObjetosResultado == null)
 			return null;
-		
+
 		eliminarRelevantes(listaObjetosResultado);
 		listaResultados = expandir(listaObjetosResultado);
 
@@ -2598,16 +2618,24 @@ public class Searcher {
 		int tamano = 0;
 		System.out.println("Inicial:" + tamano);
 		ArrayList<Integer> listaIds = new ArrayList<Integer>();
-		// Desarrollamos la jerarquía para buscar los hijos
-		while (set.size() > tamano) {
-			tamano = set.size();
-			listaIds = new ArrayList<Integer>();
+
+		if (clase != Localizacion.class) {
+			// Desarrollamos la jerarquía para buscar los hijos
+			while (set.size() > tamano) {
+				tamano = set.size();
+				listaIds = new ArrayList<Integer>();
+				for (Object s : set)
+					listaIds.add(((Jerarquia) s).getId());
+				Criteria crit = Delphos.getSession().createCriteria(clase);
+				crit.add(Restrictions.in("padre", set));
+				crit.add(Restrictions.not(Restrictions.in("id", listaIds)));
+				set.addAll(crit.list());
+			}
+		}
+		else {
+			//Para localización, no añadimos los hijos
 			for (Object s : set)
 				listaIds.add(((Jerarquia) s).getId());
-			Criteria crit = Delphos.getSession().createCriteria(clase);
-			crit.add(Restrictions.in("padre", set));
-			crit.add(Restrictions.not(Restrictions.in("id", listaIds)));
-			set.addAll(crit.list());
 		}
 		String resultado = "";
 		if (listaIds.size() > 0) {
@@ -2649,16 +2677,17 @@ public class Searcher {
 	private static int verNumDocs(Calendar fechaInicioPeriodo, Calendar fechaFinIntervalo, Tendencia tendencia) {
 		ArrayList<String> urls = new ArrayList<>();
 
-		// TODO:Mejora. Guardar el último resultado obtenido y si la consulta es la misma (porque es para otro periodo, utilizarla)
+		// TODO:Mejora. Guardar el último resultado obtenido y si la consulta es la
+		// misma (porque es para otro periodo, utilizarla)
 		// Es decir, montar una caché de urls.
-		
+
 		System.out.println("En Searcher.verNumDocs");
 
 		numTotalDocs = 0;
 
 		// Recorremos la lista de clasificaciones
 		for (Documento_Clasificacion dc : tendencia.getListaDocumentoClasificacion()) {
-			urls.add(dc.descripcion+"/advanced-search");
+			urls.add(dc.descripcion + "/advanced-search");
 		}
 		if (urls.isEmpty())
 			// Añadimos la url por defecto (todo DSpace)
@@ -2941,19 +2970,20 @@ public class Searcher {
 	private static int verNumResultados(String html) {
 		// Buscar <span class="pagebanner">91,050 elements found, displaying 1
 		// to 25.</span>
-		//Han cambiado: Showing 1 - 25 of 2,391 results. Y en div
-		
+		// Han cambiado: Showing 1 - 25 of 2,391 results. Y en div
+
 		int resultado = 0;
 		Document doc = Jsoup.parse(html);
 		Elements nodos = doc.select("div.pagebanner");
 		if (nodos.size() > 0) {
 			if (nodos.get(0).text().contains("One"))
 				resultado = 1;
-			else{
+			else {
 				String texto = nodos.get(0).text();
 				int inicio = texto.indexOf("of ") + 3;
 				int fin = texto.indexOf(" result");
-				//resultado = Integer.parseInt(nodos.get(0).text().split(" ")[0].replace(",", ""));
+				// resultado = Integer.parseInt(nodos.get(0).text().split(" ")[0].replace(",",
+				// ""));
 				resultado = Integer.parseInt(texto.substring(inicio, fin).replace(",", ""));
 			}
 		}
@@ -2968,11 +2998,11 @@ public class Searcher {
 			Document doc = Jsoup.connect("http://dspace.mit.edu/browse?type=dateissued").get();
 			Element elem = doc.select("p.pagination-info").get(0);
 			String[] trozos = elem.text().split(" ");
-			result = Integer.parseInt(trozos[trozos.length-1]);
+			result = Integer.parseInt(trozos[trozos.length - 1]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
 
