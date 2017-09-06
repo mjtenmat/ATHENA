@@ -494,6 +494,7 @@ public class Searcher {
 		// Busca documentos web en Bing
 
 		ArrayList<DocumentoWeb> listaResultados = new ArrayList<DocumentoWeb>();
+		ArrayList<String> queries = new ArrayList<>(); // Lista de consultas en que se divide la query
 
 		// Añadimos los términos para contrastar
 		textoLibre = generarTextoLibreConOrganizaciones(textoLibre, listaConstrastarCon);
@@ -522,12 +523,6 @@ public class Searcher {
 
 		ArrayList<String> advancedOperators = new ArrayList<>();
 
-		String sites = "";
-		if (!listaLocalizacion.isEmpty() || !listaSector.isEmpty() || !listaTipoOrganizacion.isEmpty()) {
-			sites = getListaSites(listaLocalizacion, listaSector, listaTipoOrganizacion, 0);
-			// System.out.println("Sites: " + sites);
-			advancedOperators.add(sites);
-		}
 		if (inBody)
 			advancedOperators.add("inBody:" + textoLibre);
 		if (inTitle)
@@ -545,56 +540,96 @@ public class Searcher {
 
 		String urlText = baseURL + query;
 		// System.out.println("URL: " + urlText);
-		System.out.println("Query Length(): " + query.length());
-		System.out.println("Sites Length(): " + sites.length());
 		if (query.length() > 1500) {
-			if (query.length() - sites.length() > 1500)
-				System.out.println("Consulta imposible de partir.");
-			else {
-				System.out.println(
-						"Requiere " + sites.length() / (1500 - (query.length() - sites.length())) + " subconsultas");
-			}
+			System.out.println(query);
+			System.out.println("Consulta imposible de partir.");
 			throw new Exception("Query demasiado larga (" + query.length() + ")");
+		} else {
+			ArrayList<String> listaSites = null;
+			String sites = null;
+			if (!listaLocalizacion.isEmpty() || !listaSector.isEmpty() || !listaTipoOrganizacion.isEmpty()) {
+				listaSites = getListaSites(listaLocalizacion, listaSector, listaTipoOrganizacion, 0);
+
+				int i = 0;
+				while (i < listaSites.size()) {
+					int espacioSites = 1500 - query.length();
+
+					StringBuilder sb = new StringBuilder();
+					sb.append("site:" + listaSites.get(i++));
+
+					while ((sb.length() + listaSites.get(i).length()) < espacioSites) {
+						sb.append("+OR+site:" + listaSites.get(i++));
+						if (i >= listaSites.size())
+							break;
+					}
+					// Construimos la consulta
+					advancedOperators.remove(sites);
+					sites = sb.toString();
+					advancedOperators.add(sites);
+					String advancedOperatorsText2 = "q=" + textoLibre;
+					for (int i2 = 0; i2 < advancedOperators.size(); i2++)
+						advancedOperatorsText2 += "+AND+%28" + advancedOperators.get(i2) + "%29";
+
+					String query2 = advancedOperatorsText2;
+					for (String queryParam : queryParams)
+						query2 += "&" + queryParam;
+
+					queries.add(query2);
+				}
+
+			} else {
+				// No hay problema. No hay parámetro de sites
+				queries.add(query);
+			}
+		}
+		
+		System.out.println("Hay " + queries.size() + " consultas.");
+		
+		if(true) {
+			for (String q : queries)
+				System.out.println(q);
 		}
 
-		// urlText = "http://19e37.com/tmp/bing.txt";
-		URL obj = new URL(urlText);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		con.setRequestMethod("GET");
-		con.setRequestProperty("Ocp-Apim-Subscription-Key", BingAPIKey.KEY); // Obligatoria
+		for (String q : queries) {
+			// urlText = "http://19e37.com/tmp/bing.txt";
+			URL obj = new URL(baseURL + q);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Ocp-Apim-Subscription-Key", BingAPIKey.KEY); // Obligatoria
 
-		int responseCode = con.getResponseCode();
-		System.out.println("Response Code : " + responseCode);
+			int responseCode = con.getResponseCode();
+			System.out.println("Response Code : " + responseCode);
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
 
-		// print result
-		System.out.println(response.toString());
+			// print result
+			System.out.println(response.toString());
 
-		// Parseamos el resultado
-		JSONParser parser = new JSONParser();
-		Object json = parser.parse(response.toString());
-		JSONObject jsonObject = (JSONObject) json;
-		JSONObject webPages = (JSONObject) jsonObject.get("webPages");
-		JSONArray value = (JSONArray) webPages.get("value");
-		Iterator<JSONObject> iterator = value.iterator();
-		while (iterator.hasNext()) {
-			JSONObject next = iterator.next();
-			String titulo = next.get("name").toString();
-			String bingUrl = next.get("url").toString();
-			String displayUrl = next.get("displayUrl").toString();
-			if (!displayUrl.startsWith("http"))
-				displayUrl = "http://" + displayUrl;
-			String extracto = next.get("snippet").toString();
-			listaResultados.add(new DocumentoWeb(titulo, new URL(bingUrl), new URL(displayUrl), extracto, 0,
-					"localizacion", "sector", "tipoOrgnizacion"));
+			// Parseamos el resultado
+			JSONParser parser = new JSONParser();
+			Object json = parser.parse(response.toString());
+			JSONObject jsonObject = (JSONObject) json;
+			JSONObject webPages = (JSONObject) jsonObject.get("webPages");
+			JSONArray value = (JSONArray) webPages.get("value");
+			Iterator<JSONObject> iterator = value.iterator();
+			while (iterator.hasNext()) {
+				JSONObject next = iterator.next();
+				String titulo = next.get("name").toString();
+				String bingUrl = next.get("url").toString();
+				String displayUrl = next.get("displayUrl").toString();
+				if (!displayUrl.startsWith("http"))
+					displayUrl = "http://" + displayUrl;
+				String extracto = next.get("snippet").toString();
+				listaResultados.add(new DocumentoWeb(titulo, new URL(bingUrl), new URL(displayUrl), extracto, 0,
+						"localizacion", "sector", "tipoOrgnizacion"));
+			}
 		}
 
 		return listaResultados;
@@ -1929,7 +1964,7 @@ public class Searcher {
 		return descriptoresConsulta;
 	}
 
-	private static String getListaSites(Set<Localizacion> listaLocalizacion, Set<Sector> listaSector,
+	private static ArrayList<String> getListaSites(Set<Localizacion> listaLocalizacion, Set<Sector> listaSector,
 			Set<TipoOrganizacion> listaTipoOrganizacion, int offset) {
 
 		final int LIMIT = 50;
@@ -1968,9 +2003,9 @@ public class Searcher {
 			order.add("Host.idTipoOrganizacion DESC");
 		}
 		if (listaLocalizacion.size() > 0) {
-			//where.add("(Host.idLocalizacion IS NULL OR Host.idLocalizacion IN ("
-			where.add("(Host.idLocalizacion IN ("
-					+ verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class) + ") )");
+			// where.add("(Host.idLocalizacion IS NULL OR Host.idLocalizacion IN ("
+			where.add("(Host.idLocalizacion IN (" + verIdsSeparadosPorComas(listaLocalizacion, Localizacion.class)
+					+ ") )");
 
 			// where.add("(Host.idLocalizacion IS NULL OR (" +
 			// verIdJerarEnOR(listaLocalizacion, "Localizacion") + ")) ");
@@ -2010,12 +2045,7 @@ public class Searcher {
 			sites.add(((Object[]) it.next())[1].toString());
 		}
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("site:" + sites.get(0));
-		for (int i = 1; i < sites.size(); i++)
-			sb.append("+OR+site:" + sites.get(i));
-
-		return sb.toString();
+		return sites;
 	}
 
 	private static String verIdJerarEnOR(Set<? extends Jerarquia> listaJerarquia, String tabla) {
@@ -2631,9 +2661,8 @@ public class Searcher {
 				crit.add(Restrictions.not(Restrictions.in("id", listaIds)));
 				set.addAll(crit.list());
 			}
-		}
-		else {
-			//Para localización, no añadimos los hijos
+		} else {
+			// Para localización, no añadimos los hijos
 			for (Object s : set)
 				listaIds.add(((Jerarquia) s).getId());
 		}
