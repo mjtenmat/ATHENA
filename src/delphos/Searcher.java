@@ -491,6 +491,9 @@ public class Searcher {
 			Set<Sector> listaSector, Set<TipoOrganizacion> listaTipoOrganizacion, int offset,
 			Set<ContrastarCon> listaConstrastarCon, boolean inBody, boolean inTitle, boolean inKeywords,
 			String freshness) throws Exception {
+		
+//TODO: Este método necesita una REFACTORIZACIÓN. Hay MUCHO código repetido.
+		
 		// Busca documentos web en Bing
 
 		ArrayList<DocumentoWeb> listaResultados = new ArrayList<DocumentoWeb>();
@@ -575,6 +578,7 @@ public class Searcher {
 						query2 += "&" + queryParam;
 
 					queries.add(query2);
+					advancedOperators.remove(sites); //Quitamos la última vez para la segunda vuelta
 				}
 
 			} else {
@@ -583,14 +587,124 @@ public class Searcher {
 			}
 		}
 		
-		System.out.println("Hay " + queries.size() + " consultas.");
+		System.out.println("Primera vuelta: Hay " + queries.size() + " consultas.");
 		
-		if(true) {
-			for (String q : queries)
+		for (String q : queries)
 				System.out.println(q);
-		}
+
+		//Construimos un ArrayList de ArrayList para los hosts
+		ArrayList<ArrayList<String>> hosts = new ArrayList<>();
 
 		for (String q : queries) {
+			hosts.add(new ArrayList<String>());
+			// urlText = "http://19e37.com/tmp/bing.txt";
+			URL obj = new URL(baseURL + q);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Ocp-Apim-Subscription-Key", BingAPIKey.KEY); // Obligatoria
+
+			int responseCode = con.getResponseCode();
+			System.out.println("Response Code : " + responseCode);
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			// print result
+			System.out.println(response.toString());
+
+			// Parseamos el resultado
+			JSONParser parser = new JSONParser();
+			Object json = parser.parse(response.toString());
+			JSONObject jsonObject = (JSONObject) json;
+			JSONObject webPages = (JSONObject) jsonObject.get("webPages");
+			JSONArray value = (JSONArray) webPages.get("value");
+			Iterator<JSONObject> iterator = value.iterator();
+			while (iterator.hasNext()) {
+				
+				try {
+					JSONObject next = iterator.next();
+					String titulo = next.get("name").toString();
+					String bingUrl = next.get("url").toString();
+					String displayUrl = next.get("displayUrl").toString();
+					if (!displayUrl.startsWith("http"))
+						displayUrl = "http://" + displayUrl;
+					//Obtenemos y Añadimos el host
+					URI uri = new URI(displayUrl.replaceAll(" ", "%20"));	//Fallo frecuente en la URIs de Bing
+					hosts.get(hosts.size()-1).add(uri.getHost());
+					
+					String extracto = next.get("snippet").toString();
+					listaResultados.add(new DocumentoWeb(titulo, new URL(bingUrl), new URL(displayUrl), extracto, 0,
+							"localizacion", "sector", "tipoOrgnizacion"));
+				} catch (Exception e) {
+					System.out.println("ERROR: " + e.getMessage());
+					System.out.println("Seguimos");
+				}
+			}
+		}
+		
+		//Escogemos los mejores 30 hosts
+		Set<String> mejoresHosts = new HashSet<>();
+		boolean quedan;
+		do {
+			quedan = false;
+			for (int i = 0; i < hosts.size(); i++) {
+				if (!hosts.get(i).isEmpty()) {
+					mejoresHosts.add(hosts.get(i).remove(0));
+					quedan = true;
+				}
+			}
+			if (!quedan)
+				break;
+		}while (mejoresHosts.size()< 30);
+		
+		System.out.print("Mejores hosts: ");
+		System.out.println(mejoresHosts);
+		
+		//Relanzamos la/s consulta/s con los "mejores hosts"
+		queries = new ArrayList<>();
+		int i = 0;
+		String sites = null;
+		ArrayList<String>listaSites = new ArrayList<>(mejoresHosts);
+		while (i < listaSites.size()) {
+			int espacioSites = 1500 - query.length();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("site:" + listaSites.get(i++));
+
+			while ((sb.length() + listaSites.get(i).length()) < espacioSites) {
+				sb.append("+OR+site:" + listaSites.get(i++));
+				if (i >= listaSites.size())
+					break;
+			}
+			// Construimos la consulta
+			advancedOperators.remove(sites);
+			sites = sb.toString();
+			advancedOperators.add(sites);
+			String advancedOperatorsText2 = "q=" + textoLibre;
+			for (int i2 = 0; i2 < advancedOperators.size(); i2++)
+				advancedOperatorsText2 += "+AND+%28" + advancedOperators.get(i2) + "%29";
+
+			String query2 = advancedOperatorsText2;
+			for (String queryParam : queryParams)
+				query2 += "&" + queryParam;
+
+			queries.add(query2);
+		}
+		
+		System.out.println("Segunda vuelta: Hay " + queries.size() + " consultas.");
+		
+		for (String q : queries)
+				System.out.println(q);
+
+		listaResultados = new ArrayList<>(); //Borramos los anteriores
+		for (String q : queries) {
+			hosts.add(new ArrayList<String>());
 			// urlText = "http://19e37.com/tmp/bing.txt";
 			URL obj = new URL(baseURL + q);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -633,7 +747,7 @@ public class Searcher {
 		}
 
 		return listaResultados;
-	}
+	}			    
 
 	public static ArrayList<Licitacion> buscarLicitaciones(String textoLibre, GregorianCalendar fechaDesde,
 			GregorianCalendar fechaHasta, String pais, String ciudad, String tipoLicitacion, String entidadEmisora,
