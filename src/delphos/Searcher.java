@@ -588,6 +588,8 @@ public class Searcher {
 		}
 		
 		System.out.println("Primera vuelta: Hay " + queries.size() + " consultas.");
+		if (queries.size() == 0)
+			return listaResultados;
 		
 		for (String q : queries)
 				System.out.println(q);
@@ -647,6 +649,9 @@ public class Searcher {
 				}
 			}
 		}
+		
+		if (queries.size() == 1)
+			return listaResultados;
 		
 		//Escogemos los mejores 30 hosts
 		Set<String> mejoresHosts = new HashSet<>();
