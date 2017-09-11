@@ -544,7 +544,7 @@ public class Searcher {
 			throw new Exception("Query demasiado larga (" + query.length() + ")");
 		}
 
-		ArrayList<String> listaSites = null;
+		ArrayList<String> listaSites = new ArrayList<>();
 		int cConsultas = 1;
 
 		while (true) { // Hasta que solo quede una query (y se ejecute)
@@ -554,34 +554,36 @@ public class Searcher {
 				else
 					queries.add(query);
 
-			System.out.print("Hosts para la consulta (vuelta " + cConsultas++ + "): ");
-			System.out.println(listaSites);
+			if (listaSites.size() > 0) {
+				System.out.print("Hosts para la consulta (vuelta " + cConsultas++ + "): ");
+				System.out.println(listaSites);
 
-			// Creamos la lista de consultas en las que se divide la query (queries)
-			int i = 0;
-			queries.clear();
-			while (i < listaSites.size()) {
-				int espacioSites = 1500 - query.length();
+				// Creamos la lista de consultas en las que se divide la query (queries)
+				int i = 0;
+				queries.clear();
+				while (i < listaSites.size()) {
+					int espacioSites = 1500 - query.length();
 
-				StringBuilder sb = new StringBuilder();
-				sb.append("site:" + listaSites.get(i++));
+					StringBuilder sb = new StringBuilder();
+					sb.append("site:" + listaSites.get(i++));
 
-				while ((sb.length() + listaSites.get(i).length()) < espacioSites) {
-					sb.append("+OR+site:" + listaSites.get(i++));
-					if (i >= listaSites.size())
-						break;
+					while ((sb.length() + listaSites.get(i).length()) < espacioSites) {
+						sb.append("+OR+site:" + listaSites.get(i++));
+						if (i >= listaSites.size())
+							break;
+					}
+					// Construimos la consulta
+					String query2 = advancedOperatorsText + "+AND+%28" + sb.toString() + "%29";
+					for (String queryParam : queryParams)
+						query2 += "&" + queryParam;
+
+					queries.add(query2);
 				}
-				// Construimos la consulta
-				String query2 = advancedOperatorsText + "+AND+%28" + sb.toString() + "%29";
-				for (String queryParam : queryParams)
-					query2 += "&" + queryParam;
 
-				queries.add(query2);
-			}
-
-			if (queries.size() == 0) {
-				System.out.println("ERROR: Han resultado 0 queries.");
-				return listaResultados;
+				if (queries.size() == 0) {
+					System.out.println("ERROR: Han resultado 0 queries.");
+					return listaResultados;
+				}
 			}
 
 			// Ejecutamos la/s consulta/s
@@ -647,7 +649,7 @@ public class Searcher {
 			boolean quedan;
 			do {
 				quedan = false;
-				for (i = 0; i < hosts.size(); i++) {
+				for (int i = 0; i < hosts.size(); i++) {
 					if (!hosts.get(i).isEmpty()) {
 						if (!listaSites.contains(hosts.get(i).get(0)))
 							listaSites.add(hosts.get(i).get(0));
