@@ -2099,7 +2099,7 @@ public class Searcher {
 		join.add("LEFT JOIN Localizacion ON Host.idLocalizacion = Localizacion.id");
 
 		if (listaSector.size() > 0) {
-			where.add("(Host.idSector IS NULL OR (" + verIdJerarEnOR(listaSector, "Sector") + ")) ");
+			where.add("((Host.idSector IS NULL) OR (" + verIdJerarEnOR(listaSector, "Sector") + ")) ");
 			// where.add("(Host_Sector.idSector IN (" + verIdsSeparadosPorComas(listaSector,
 			// Sector.class)
 			// + ") OR Host_Sector.idSector IS NULL OR (" + verIdJerarEnOR(listaSector,
@@ -2164,9 +2164,12 @@ public class Searcher {
 
 	private static String verIdJerarEnOR(Set<? extends Jerarquia> listaJerarquia, String tabla) {
 		Jerarquia[] array = (Jerarquia[]) listaJerarquia.toArray(new Jerarquia[listaJerarquia.size()]);
-		StringBuilder resultado = new StringBuilder(tabla + ".idJerar LIKE '" + array[0].getIdJerar() + ".%' ");
-		for (int i = 1; i < array.length; i++)
+		StringBuilder resultado = new StringBuilder(tabla + ".idJerar = '" + array[0].getIdJerar() + "' ");
+		resultado.append("OR " + tabla + ".idJerar LIKE '" + array[0].getIdJerar() + ".%' ");
+		for (int i = 1; i < array.length; i++) {
+			resultado.append("OR " + tabla + ".idJerar = '" + array[i].getIdJerar() + "' ");
 			resultado.append("OR " + tabla + ".idJerar LIKE '" + array[i].getIdJerar() + ".%' ");
+		}
 
 		return resultado.toString();
 	}
