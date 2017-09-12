@@ -579,11 +579,10 @@ public class Searcher {
 
 					queries.add(query2);
 				}
-
-				if (queries.size() == 0) {
-					System.out.println("ERROR: Han resultado 0 queries.");
-					return listaResultados;
-				}
+			}
+			if (queries.size() == 0) {
+				System.out.println("ERROR: Han resultado 0 queries.");
+				return listaResultados;
 			}
 
 			// Ejecutamos la/s consulta/s
