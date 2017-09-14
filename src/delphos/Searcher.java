@@ -567,10 +567,12 @@ public class Searcher {
 					StringBuilder sb = new StringBuilder();
 					sb.append("site:" + listaSites.get(i++));
 
-					while ((sb.length() + listaSites.get(i).length()) < espacioSites) {
-						sb.append("+OR+site:" + listaSites.get(i++));
-						if (i >= listaSites.size())
-							break;
+					if (listaSites.size() > 1) {
+						while ((sb.length() + listaSites.get(i).length()) < espacioSites) {
+							sb.append("+OR+site:" + listaSites.get(i++));
+							if (i >= listaSites.size())
+								break;
+						}
 					}
 					// Construimos la consulta
 					String query2 = advancedOperatorsText + "+AND+%28" + sb.toString() + "%29";
@@ -615,6 +617,8 @@ public class Searcher {
 				Object json = parser.parse(response.toString());
 				JSONObject jsonObject = (JSONObject) json;
 				JSONObject webPages = (JSONObject) jsonObject.get("webPages");
+				if (webPages == null)
+					break;
 				JSONArray value = (JSONArray) webPages.get("value");
 				Iterator<JSONObject> iterator = value.iterator();
 				while (iterator.hasNext()) {
