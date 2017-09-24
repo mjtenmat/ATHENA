@@ -46,7 +46,7 @@ import delphos.Sector;
 import delphos.TipoOrganizacion;
 
 public class PanelVigilanciaController implements ActionListener, DelphosSelectionListener, MouseListener {
-	private PanelVigilancia panelVigilancia;
+	protected PanelVigilancia panelVigilancia;
 	private PanelPaginacionPatentes pnPagTED;
 	private PanelPaginacionPatentes pnPagEPO;
 	private PanelPaginacionPatentes pnPagDocsWeb;
@@ -269,7 +269,7 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 			this.textoLibreCompleto += " " + PopUpDocsWeb.textoSeleccionado;
 			this.buscarYMostrarDocumentosWeb();
 		}
-
+		
 		this.panelVigilancia.framePrincipal.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
@@ -340,6 +340,8 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 
 	private void buscarYMostrarDocumentosWeb() {
 		try {
+			this.panelVigilancia.framePrincipal.panelVigilanciaResultados.controller.setResultadosRelevantesDocumentosWeb = new HashSet<>();
+			this.panelVigilancia.framePrincipal.panelVigilanciaResultados.controller.actualizarDialogoRelevantes();
 			this.listaResultadosDocumentosWeb = Searcher.buscarDocumentosWeb(this.textoLibreCompleto,
 					this.panelVigilancia.dstdDocsWebLocalizacion.getSeleccion(),
 					this.panelVigilancia.dstdDocsWebSector.getSeleccion(),
@@ -641,4 +643,5 @@ public class PanelVigilanciaController implements ActionListener, DelphosSelecti
 	public void onCrear(DelphosSelectionDialog dtd) {
 
 	}
+
 }

@@ -169,8 +169,9 @@ public class PanelBusqueda extends JPanel implements ConDefaultButton{
 	}
 	
 	private void crearDialogoRelevantes(){
-		dlgRelevantes = new DialogRelevantes();
-		dlgRelevantes.setController(controller);
+		//Esto ya no funciona (sept-2017) - Adaptado DialogRelevantes a resultados Bing.
+		//dlgRelevantes = new DialogRelevantes();
+		//dlgRelevantes.setController(controller);
 	}
 	
 	private void crearArboles(){

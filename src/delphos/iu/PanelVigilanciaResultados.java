@@ -1,5 +1,8 @@
 package delphos.iu;
 
+import java.awt.Frame;
+import java.util.Set;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -8,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 
 import delphos.DocumentoAcademico;
 import delphos.DocumentoWeb;
@@ -17,10 +21,13 @@ import delphos.Searcher;
 
 public class PanelVigilanciaResultados extends JPanel implements ConDefaultButton{
 
+	private static final long serialVersionUID = 1L;
 	protected DelphosFrame framePrincipal;
 	protected PanelVigilanciaResultadosController controller;
 	protected PanelVigilanciaController controllerVigilancia;
 	protected JButton btnVolver;
+	protected JButton btnRR;
+	protected JToggleButton btnVerRelevantes;
 	private JTabbedPane panelTabs;
 	protected JPanel panelLicitaciones;
 	protected JPanel panelPatentes;
@@ -92,7 +99,17 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 		this.panelPatentes.add(new JLabel("Se muestran " + numPatentes + " patentes de un total de " + Searcher.totalResultadosEPO));
 	}
 	public void setResultadoDocumentosWeb(int numDocsWeb){
-		this.panelDocumentosWeb.add(new JLabel("Se muestran " + numDocsWeb + " documentos web:"));
+		JPanel panelHorizontal = new JPanel();
+		panelHorizontal.setLayout(new BoxLayout(panelHorizontal, BoxLayout.X_AXIS));
+		panelHorizontal.setAlignmentX(LEFT_ALIGNMENT);
+		this.btnVerRelevantes = new JToggleButton("Relevantes");
+		this.btnVerRelevantes.addActionListener(this.controller);
+		panelHorizontal.add(this.btnVerRelevantes);
+		this.btnRR = new JButton("RR");
+		this.btnRR.addActionListener(this.controller);
+		panelHorizontal.add(this.btnRR);
+		panelHorizontal.add(new JLabel(" Se muestran " + numDocsWeb + " documentos web:"));
+		this.panelDocumentosWeb.add(panelHorizontal);
 	}
 	public void addLicitacion(Licitacion licitacion){
 		this.panelLicitaciones.add(new PanelLicitacion(licitacion));
@@ -102,7 +119,7 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 	}
 	public void addDocumentoWeb(DocumentoWeb docWeb, PanelVigilanciaController controllerVigilancia){
 		this.controllerVigilancia = controllerVigilancia;
-		this.panelDocumentosWeb.add(new PanelDocumentoWeb(docWeb,controllerVigilancia));
+		this.panelDocumentosWeb.add(new PanelDocumentoWeb(docWeb,controller, false));
 	}
 
 	@Override
@@ -125,5 +142,5 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 		else
 			this.panelDocsAcademicos.add(new PanelDocumentoAcademico(docAcademico,controllerVigilancia));
 	}
-
+	
 }
