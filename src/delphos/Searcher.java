@@ -1000,7 +1000,7 @@ public class Searcher {
 		// Búsqueda de Documentos en EPO
 		String scheme = "https";
 		String authority = "ops.epo.org";
-		String path = "/3.1/rest-services/published-data/search";
+		String path = "/rest-services/published-data/search";
 
 		// String query = "q=";
 		ArrayList<String> condiciones = new ArrayList<String>();
@@ -1158,18 +1158,21 @@ public class Searcher {
 			// URI uri = new
 			// URI("https://ops.epo.org/3.1/rest-services/published-data/search?"+URLEncoder.encode(query,
 			// "UTF-8"));
-			String sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta%3D\"battery\" and \"energy storage\""; // FALLA
-			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=battery"; // OK
-			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=\"battery\""; // Illegal
-																									// char
-			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=%22battery%22"; // OK
-			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=%22battery%22 and %22energy%22"; // Illegal
-			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=%22battery%22+and+%22energy+storage%22"; // OK
+			String sUrl;
+			//sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta%3D\"battery\" and \"energy storage\""; // FALLA
+//			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=battery"; // OK
+//			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=\"battery\""; // Illegal
+//																									// char
+//			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=%22battery%22"; // OK
+//			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=%22battery%22 and %22energy%22"; // Illegal
+//			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?q=ta=%22battery%22+and+%22energy+storage%22"; // OK
 			query = query.replace("\"", "%22");
 			query = query.replace(" ", "+");
 			query = query.replace("(", "%28");
 			query = query.replace(")", "%29");
-			sUrl = "https://ops.epo.org/3.1/rest-services/published-data/search?" + query;
+			
+			sUrl = "https://ops.epo.org/rest-services/published-data/search?" + query;
+			//sUrl = "http://ops.epo.org/3.2/rest-services/published-data/search?q=ti=plastic";
 			URI uri = new URI(sUrl);
 			System.out.println("URI: " + uri.toString());
 			HttpsURLConnection con = (HttpsURLConnection) (uri.toURL().openConnection());
@@ -1634,7 +1637,7 @@ public class Searcher {
 		// Recuperación de datos bibliográficos
 		String scheme = "https";
 		String authority = "ops.epo.org";
-		String path = "/3.1/rest-services/published-data/publication/";
+		String path = "/rest-services/published-data/publication/";
 
 		// https://ops.epo.org/3.1/rest-services/published-data/publication/docdb/US.8995573/biblio
 		path += patente.documentIdType + "/" + patente.getLocalizacion() + "." + patente.docNumber + "." + patente.kind
@@ -2448,7 +2451,7 @@ public class Searcher {
 		// Step 2
 		BufferedReader in = null;
 		try {
-			URL url = new URL("https://ops.epo.org/3.1/auth/accesstoken");
+			URL url = new URL("https://ops.epo.org/auth/accesstoken");
 
 			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 
@@ -2480,7 +2483,8 @@ public class Searcher {
 
 			// print result
 			log.trace(response.toString());
-			String aguja = "\"access_token\" : \"";
+			System.out.println(response.toString());
+			String aguja = "\"access_token\": \"";
 			int inicio = response.indexOf(aguja) + aguja.length();
 			int fin = response.indexOf("\"", inicio + 1);
 			token = response.substring(inicio, fin);
@@ -2886,7 +2890,7 @@ public class Searcher {
 		// Búsqueda de Documentos en EPO
 		String scheme = "https";
 		String authority = "ops.epo.org";
-		String path = "/3.1/rest-services/published-data/search";
+		String path = "/rest-services/published-data/search";
 
 		// String query = "q=";
 		ArrayList<String> condiciones = new ArrayList<String>();
