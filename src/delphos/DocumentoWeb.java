@@ -11,7 +11,6 @@ public class DocumentoWeb {
 	private String localizacion;
 	private String sector;
 	private String tipoOrgnizacion;
-
 	
 	public DocumentoWeb(String titulo, URL url, URL displayUrl, String extracto, int idFuente, String localizacion, String sector, String tipoOrgnizacion) {
 		this.titulo = titulo;

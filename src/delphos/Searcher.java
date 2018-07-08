@@ -116,7 +116,7 @@ public class Searcher {
 								sdf = new SimpleDateFormat("yyyy");
 								fecha = sdf.parse(docFechaPublicacion);
 							} catch (ParseException e6) {
-								System.out.println("Imposible adivinar fecha " + docFechaPublicacion);
+								//System.out.println("Imposible adivinar fecha " + docFechaPublicacion);
 							}
 						}
 					}
@@ -588,7 +588,7 @@ public class Searcher {
 			}
 
 			// Ejecutamos la/s consulta/s
-			System.out.println("Vuelta: " + cConsultas + " Hay " + queries.size() + " consultas.");
+			//System.out.println("Vuelta: " + cConsultas + " Hay " + queries.size() + " consultas.");
 			for (String q : queries)
 				System.out.println(q);
 			listaResultados.clear();
@@ -1397,9 +1397,9 @@ public class Searcher {
 					resultado.addValue(dato / 10, "Documentos", sdf.format(fechaFinIntervalo.getTime()));
 				}
 			}
-
+			System.out.println("TRON intervalo = " + intervalo);
 			fechaInicioPeriodo.add(tipoIntervalo, intervalo);
-
+			System.out.println("Iterando en buscarTendencia: fechaInicioPeriodo.before(fechaFinPeriodo): " + fechaInicioPeriodo.getTime() + " " + fechaFinPeriodo.getTime());
 		}
 
 		return resultado;
@@ -2761,13 +2761,16 @@ public class Searcher {
 			urls.add("http://dspace.mit.edu/advanced-search");
 		int resultado = 0;
 
+		int i = 0;
 		for (String sUrl : urls) {
+			System.out.println("Iterando url " + i + " de " + urls.size());
+			i++;
 			int page = 1;
 			int numDocs = 0;
 			do {
 				try {
 					URL url = new URL(sUrl);
-					System.out.println("URL: " + url);
+					//System.out.println("URL: " + url);
 					conn = (HttpURLConnection) url.openConnection();
 					String params = "num_search_field=3&results_per_page=100&";
 					if (url.equals("http://dspace.mit.edu/advanced-search"))
@@ -2797,13 +2800,13 @@ public class Searcher {
 							numTotalDocs = 0;
 							break;
 						}
-						System.out.println("TOTAL DE DOCUMENTOS: " + numTotalDocs);
+						//System.out.println("TOTAL DE DOCUMENTOS: " + numTotalDocs);
 					}
 
 					Elements listaLi = doc.select("li.ds-artifact-item");
 					for (Element li : listaLi) {
 						numDocs++;
-						System.out.println("Leyendo documento " + numDocs + " de " + numTotalDocs + " página: " + page);
+						//System.out.println("Leyendo documento " + numDocs + " de " + numTotalDocs + " página: " + page);
 						Element aTitulo = li.select("div.artifact-title>a").first();
 						String docTitulo = aTitulo.text();
 						String docUrl = "http://dspace.mit.edu" + aTitulo.attr("href");
@@ -2815,32 +2818,32 @@ public class Searcher {
 
 						// Si hay rango de fechas
 						Date fechaCandidato = adivinarFechaDocAcademico(docFechaPublicacion);
-						System.out.println("Fecha Documento: " + fechaCandidato);
+						//System.out.println("Fecha Documento: " + fechaCandidato);
 						if (fechaCandidato == null) {
-							System.out.println("Falla por fechaCandidato nula.");
+							//System.out.println("Falla por fechaCandidato nula.");
 							continue;
 						}
 
 						Date fechaDesde = fechaInicioPeriodo.getTime();
 						if (fechaCandidato.compareTo(fechaDesde) < 0) {
-							System.out.println("Falla por fecha inferior a periodo: " + fechaDesde);
+							//System.out.println("Falla por fecha inferior a periodo: " + fechaDesde);
 							continue;
 						}
 
 						Date fechaHasta = fechaFinIntervalo.getTime();
 						if (fechaCandidato.compareTo(fechaHasta) > 0) {
-							System.out.println("Falla por fecha superior a periodo: " + fechaHasta);
+							//System.out.println("Falla por fecha superior a periodo: " + fechaHasta);
 							continue;
 						}
 
 						// Si hay entidad
 						if (!tendencia.getDocumentoEntidad().isEmpty()) {
 							if (!docEntidad.toLowerCase().contains(tendencia.getDocumentoEntidad().toLowerCase())) {
-								System.out.println("Falla por no coincide la entidad.");
+								//System.out.println("Falla por no coincide la entidad.");
 								continue;
 							}
 						}
-						System.out.println("COINCIDE.");
+						//System.out.println("COINCIDE.");
 						resultado++;
 					}
 				} catch (Exception e) {
@@ -2848,6 +2851,7 @@ public class Searcher {
 					e.printStackTrace();
 				}
 				page++;
+				System.out.println("numDocs < numTotalDocs " + numDocs + " < " + numTotalDocs);
 			} while (numDocs < numTotalDocs);
 		}
 
@@ -3121,8 +3125,8 @@ public class Searcher {
 	}
 
 	private static String verPagina(URL url, String postParameters) throws Exception {
-		System.out.println("\nverPagina: Conectando a : " + url);
-		System.out.println("\nverPagina: Paramátros POST : " + postParameters);
+		//System.out.println("\nverPagina: Conectando a : " + url);
+		//System.out.println("\nverPagina: Paramátros POST : " + postParameters);
 		conn.setInstanceFollowRedirects(true);
 		HttpURLConnection.setFollowRedirects(true);
 
@@ -3149,7 +3153,7 @@ public class Searcher {
 			// conn.setFixedLengthStreamingMode(postParameters.getBytes().length);
 			conn.setUseCaches(false);
 
-			System.out.println("Poniendo parámetros de POST: " + postParameters);
+			//System.out.println("Poniendo parámetros de POST: " + postParameters);
 			// System.out.println("Long String: " + postParameters.length());
 			// System.out.println("Long Bytes: " +
 			// Integer.toString(postParameters.getBytes().length));

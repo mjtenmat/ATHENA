@@ -36,7 +36,7 @@ public class PanelVigilanciaResultados extends JPanel implements ConDefaultButto
 
 	public PanelVigilanciaResultados(DelphosFrame framePrincipal) {
 		this.framePrincipal = framePrincipal;
-		this.controller = new PanelVigilanciaResultadosController(this);
+		this.controller = new PanelVigilanciaResultadosController(this, framePrincipal.panelVigilancia.controller);
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
