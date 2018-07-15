@@ -87,15 +87,45 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 			listaCromosomas.add(new Cromosoma2(documentoWeb));
 		
 		//Expansión de los cromosomas, añadiendo los genes de cada uno a los demás, pero desactivados
+		System.out.println("Expandiendo el primer cromosoma.");
+		for(int i = 1; i < listaCromosomas.size(); i++) {
+			for(Gen gen : listaCromosomas.get(i).getGenes()) {
+				if(!listaCromosomas.get(0).getGenes().contains(gen)) {
+					Gen nuevoGen = gen.clonar();
+					nuevoGen.setActivo(false);
+					listaCromosomas.get(0).getGenes().add(nuevoGen);
+					System.out.println("Añadiendo gen " + nuevoGen.getRaiz());
+				}
+				else {
+					System.out.println("Ya existe el gen " + gen.getRaiz());
+				}
+			}
+		}
+		System.out.println("Expandiendo el resto de cromosomas.");
+		for(Gen gen : listaCromosomas.get(0).getGenes()) {
+			for(int i = 1; i < listaCromosomas.size(); i++) {				
+				if(!listaCromosomas.get(i).getGenes().contains(gen)) {
+					Gen nuevoGen = gen.clonar();
+					nuevoGen.setActivo(false);
+					listaCromosomas.get(i).getGenes().add(nuevoGen);
+					System.out.println("Añadiendo gen " + nuevoGen.getRaiz() + " al cromosoma " + i);
+				}
+				else {
+					System.out.println("Ya existe el gen " + gen.getRaiz() + " en el cromosoma " + i);
+				}
+			}
+		}
+		
+		/*
 		Iterator<Cromosoma2> it = listaCromosomas.iterator();
 		while (it.hasNext()) {
 			Cromosoma2 crAExpandir = it.next();
-			//System.out.println("EXPANDIENDO: " + crAExpandir);
+			System.out.println("EXPANDIENDO: " + crAExpandir);
 			
 			for(Cromosoma2 cromosoma : listaCromosomas) {
-				//System.out.println("Analizando: " + cromosoma);
+				System.out.println("Analizando: " + cromosoma);
 				if (cromosoma.equals(crAExpandir)) {
-					//System.out.println("evitado el propio cromosoma.");
+					System.out.println("evitado el propio cromosoma.");
 					continue;
 				}
 				//Revisamos sus genes
@@ -104,15 +134,21 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 						Gen nuevoGen = gen.clonar();
 						nuevoGen.setActivo(false);
 						crAExpandir.getGenes().add(nuevoGen);
-						//System.out.println("Añadiendo gen " + nuevoGen.getRaiz());
+						System.out.println("Añadiendo gen " + nuevoGen.getRaiz());
 					}
-//					else {
-//						System.out.println("Ya existe el gen " + gen.getRaiz());
-//					}
+					else {
+						System.out.println("Ya existe el gen " + gen.getRaiz());
+					}
 				}
 			}
 			Collections.sort(crAExpandir.getGenes());
 		}
+		*/
+		
+		//Ordenamos los cromosomas
+		for(Cromosoma2 cr : listaCromosomas)
+			Collections.sort(cr.getGenes());
+		
 		for(int i = 0; i < listaCromosomas.size(); i++)
 			System.out.println("Num genes: " + listaCromosomas.get(i).getGenes().size());
 		verListaCromosomas(listaCromosomas);

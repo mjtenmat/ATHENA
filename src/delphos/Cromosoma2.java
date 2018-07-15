@@ -88,7 +88,7 @@ public class Cromosoma2 {
 									} else { // Añadimos la palabra a la lista de términos
 										gen.getTerminos().put(palabra, 1);
 										flagProcesado = true;
-										break;
+										//break;
 									}
 								}
 							}
@@ -99,7 +99,8 @@ public class Cromosoma2 {
 			if (!flagProcesado) { // Añadimos directamente la raíz o palabra
 				Gen nuevoGen = new Gen(raiz);
 				nuevoGen.getTerminos().put(palabra, 1);
-				this.genes.add(nuevoGen);
+				if (!this.genes.contains(nuevoGen))//Evitamos duplicados
+					this.genes.add(nuevoGen);
 			}
 
 			// Determinamos si se cruzará
