@@ -71,12 +71,35 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 		}
 		
 		if (ae.getSource() == panelVigilanciaResultados.btnRR) {
-			System.out.println("Retroalimentación por Relevancia");
-			//TODO: Pendiente de implementar
-			this.algoritmoGenetico();
+			try {
+				if (!this.retroalimentacionPorRelevancia())//Lanzamos AG si RR no devuelve resultados
+					this.algoritmoGenetico();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
 		}
 
 		panelVigilanciaResultados.framePrincipal.frame.setCursor(Cursor.getDefaultCursor());
+	}
+
+	private boolean retroalimentacionPorRelevancia() throws Exception {
+		System.out.println("Ejecutando Retroalimentación por Relevancia (RR).");
+		String textoLibre = "";
+		for(DocumentoWeb documentoWeb : setResultadosRelevantesDocumentosWeb) {
+			textoLibre += documentoWeb.getTitulo() + " " + documentoWeb.getExtracto() + " ";
+		}
+		ArrayList<DocumentoWeb> listaResultadosDocumentosWeb = Searcher.buscarDocumentosWeb(textoLibre, new HashSet<Localizacion>(), new HashSet<Sector>(),
+				new HashSet<TipoOrganizacion>(), 0, new HashSet<ContrastarCon>(), false, false, false, "");
+		if (listaResultadosDocumentosWeb.size() > 0) {
+			//Presentamos los resultados
+			System.out.println("RR ha obtenido " + listaResultadosDocumentosWeb.size() + " resultados.");
+			mostrarResultados(listaResultadosDocumentosWeb);
+			return true;
+		}
+		else {
+			System.out.println("RR NO ha obtenido resultados.");
+			return false;
+		}
 	}
 
 	private void algoritmoGenetico() {
@@ -114,36 +137,7 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 					System.out.println("Ya existe el gen " + gen.getRaiz() + " en el cromosoma " + i);
 				}
 			}
-		}
-		
-		/*
-		Iterator<Cromosoma2> it = listaCromosomas.iterator();
-		while (it.hasNext()) {
-			Cromosoma2 crAExpandir = it.next();
-			System.out.println("EXPANDIENDO: " + crAExpandir);
-			
-			for(Cromosoma2 cromosoma : listaCromosomas) {
-				System.out.println("Analizando: " + cromosoma);
-				if (cromosoma.equals(crAExpandir)) {
-					System.out.println("evitado el propio cromosoma.");
-					continue;
-				}
-				//Revisamos sus genes
-				for(Gen gen : cromosoma.getGenes()) {
-					if(!crAExpandir.getGenes().contains(gen)) {
-						Gen nuevoGen = gen.clonar();
-						nuevoGen.setActivo(false);
-						crAExpandir.getGenes().add(nuevoGen);
-						System.out.println("Añadiendo gen " + nuevoGen.getRaiz());
-					}
-					else {
-						System.out.println("Ya existe el gen " + gen.getRaiz());
-					}
-				}
-			}
-			Collections.sort(crAExpandir.getGenes());
-		}
-		*/
+		}		
 		
 		//Ordenamos los cromosomas
 		for(Cromosoma2 cr : listaCromosomas)
