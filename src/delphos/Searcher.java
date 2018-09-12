@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,6 +86,9 @@ public class Searcher {
 	static HttpURLConnection conn;
 	static String cookie = null;
 	private static int numTotalDocs;
+	
+	private static Map<String, String>  cacheUrls = new HashMap<>();	
+	private static Map<String, Document>  cacheDocs = new HashMap<>();	
 
 	private final static Logger log = Logger.getLogger(Searcher.class);
 
@@ -1188,9 +1192,8 @@ public class Searcher {
 			con.setDoOutput(true);
 
 			int responseCode = con.getResponseCode();
-			// System.out.println("\nSending 'GET' request to URI : " + uri);
 			System.out.println("Response Code : " + responseCode);
-
+			
 			/*
 			 * BufferedReader in = new BufferedReader( new
 			 * InputStreamReader(uri.toURL().openStream())); String inputLine; while
@@ -1200,7 +1203,13 @@ public class Searcher {
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			org.w3c.dom.Document doc = dBuilder.parse(con.getInputStream());
+			org.w3c.dom.Document doc;
+			try {
+				doc = dBuilder.parse(con.getInputStream());
+			} catch (FileNotFoundException e) {
+				System.out.println("No se encontraron resultados.");
+				return listaPatentes;
+			}
 
 			// optional, but recommended
 			// read this -
@@ -2746,7 +2755,7 @@ public class Searcher {
 
 		// TODO:Mejora. Guardar el último resultado obtenido y si la consulta es la
 		// misma (porque es para otro periodo, utilizarla)
-		// Es decir, montar una caché de urls.
+		// Es decir, montar una caché de urls. 
 
 		System.out.println("En Searcher.verNumDocs");
 
@@ -2767,6 +2776,8 @@ public class Searcher {
 			i++;
 			int page = 1;
 			int numDocs = 0;
+			int numDocsAnterior = -1;
+			boolean salir = false;
 			do {
 				try {
 					URL url = new URL(sUrl);
@@ -2788,8 +2799,17 @@ public class Searcher {
 					// params =
 					// "order=DESC&rpp=100&sort_by=2&page=1&conjunction1=AND&results_per_page=10&etal=0&field1=ANY&num_search_field=3&query1=energy";
 
-					String html = verPagina(url, params);
-					escribirFichero(html);
+					String html;
+					if (cacheUrls.containsKey(url + params)) {
+						html = cacheUrls.get(url+params);
+						//System.out.println("Cache hit: " + cacheUrls.size());
+					}
+					else {
+						html = verPagina(url, params);
+						cacheUrls.put(url+params, html);
+						//System.out.println("Cache fails: " + cacheUrls.size());
+					}
+					//escribirFichero(html);
 
 					Document doc = Jsoup.parse(html);
 					if (numTotalDocs == 0) {
@@ -2800,7 +2820,7 @@ public class Searcher {
 							numTotalDocs = 0;
 							break;
 						}
-						//System.out.println("TOTAL DE DOCUMENTOS: " + numTotalDocs);
+						System.out.println("TOTAL DE DOCUMENTOS: " + numTotalDocs);
 					}
 
 					Elements listaLi = doc.select("li.ds-artifact-item");
@@ -2814,7 +2834,16 @@ public class Searcher {
 						String docEntidad = li.select("span.publisher").text();
 						String docFechaPublicacion = li.select("span.date").text();
 						String docResumen = li.select(".artifact-abstract").text();
-						Document docDetalle = Jsoup.connect(docUrl + "?show=full").get();
+						Document docDetalle;
+						if (cacheDocs.containsKey(docUrl)) {
+							docDetalle = cacheDocs.get(docUrl);
+							//System.out.println("CacheDocs hit: " + cacheDocs.size());
+						}
+						else {
+							docDetalle = Jsoup.connect(docUrl + "?show=full").get();
+							cacheDocs.put(docUrl, docDetalle);
+							//System.out.println("CacheDocs fails: " + cacheDocs.size());
+						}
 
 						// Si hay rango de fechas
 						Date fechaCandidato = adivinarFechaDocAcademico(docFechaPublicacion);
@@ -2852,9 +2881,18 @@ public class Searcher {
 				}
 				page++;
 				System.out.println("numDocs < numTotalDocs " + numDocs + " < " + numTotalDocs);
-			} while (numDocs < numTotalDocs);
+				
+				//Salimos cuando el número de documentos no se haya incrementado.
+				//Al procesar la última página no se llega a 30 documentos.
+				if (numDocs == numDocsAnterior)
+					salir = true;
+				else
+					numDocsAnterior = numDocs;
+			} while (!salir);
+			//System.out.println("Saliendo del while");
 		}
-
+		//System.out.println("Saliendo del for");
+		
 		return resultado;
 	}
 
