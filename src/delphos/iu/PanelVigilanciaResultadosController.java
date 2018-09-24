@@ -29,14 +29,14 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 	protected PanelVigilanciaController panelVigilanciaController;
 	protected DialogRelevantes dlgRelevantes;
 	protected Set<DocumentoWeb> setResultadosRelevantesDocumentosWeb;
-	protected Set<DocumentoWeb> setResultadosRelevantesDocumentosWebUltimaBusqueda;
+	//protected Set<DocumentoWeb> setResultadosRelevantesDocumentosWebUltimaBusqueda;
 
 	public PanelVigilanciaResultadosController(PanelVigilanciaResultados panelVigilanciaResultados, PanelVigilanciaController controller) {
 
 		this.panelVigilanciaResultados = panelVigilanciaResultados;
 		this.panelVigilanciaController = controller;
 		this.setResultadosRelevantesDocumentosWeb = new HashSet<>();
-		this.setResultadosRelevantesDocumentosWebUltimaBusqueda = new HashSet<>();
+		//this.setResultadosRelevantesDocumentosWebUltimaBusqueda = new HashSet<>();
 	}
 
 	public void addRelevante(DocumentoWeb docWeb) {
@@ -98,7 +98,7 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 			mostrarResultados(listaResultadosDocumentosWeb);
 			
 			//Borramos la lista de resultados relevantes de la última búsqueda
-			setResultadosRelevantesDocumentosWebUltimaBusqueda.clear();
+			//setResultadosRelevantesDocumentosWebUltimaBusqueda.clear();
 			
 			return true;
 		}
@@ -112,8 +112,9 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 		System.out.println("Algoritmo Genético.");
 		//Creamos la lista de Cromosomas
 		List<Cromosoma2> listaCromosomas = new ArrayList<>();
-		for(DocumentoWeb documentoWeb : setResultadosRelevantesDocumentosWebUltimaBusqueda)
-			listaCromosomas.add(new Cromosoma2(documentoWeb));
+		for(DocumentoWeb documentoWeb : setResultadosRelevantesDocumentosWeb)
+		//for(DocumentoWeb documentoWeb : setResultadosRelevantesDocumentosWebUltimaBusqueda)
+				listaCromosomas.add(new Cromosoma2(documentoWeb));
 		
 		//Expansión de los cromosomas, añadiendo los genes de cada uno a los demás, pero desactivados
 		System.out.println("Expandiendo el primer cromosoma.");
