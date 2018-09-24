@@ -29,13 +29,14 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 	protected PanelVigilanciaController panelVigilanciaController;
 	protected DialogRelevantes dlgRelevantes;
 	protected Set<DocumentoWeb> setResultadosRelevantesDocumentosWeb;
+	protected Set<DocumentoWeb> setResultadosRelevantesDocumentosWebUltimaBusqueda;
 
 	public PanelVigilanciaResultadosController(PanelVigilanciaResultados panelVigilanciaResultados, PanelVigilanciaController controller) {
 
 		this.panelVigilanciaResultados = panelVigilanciaResultados;
 		this.panelVigilanciaController = controller;
 		this.setResultadosRelevantesDocumentosWeb = new HashSet<>();
-
+		this.setResultadosRelevantesDocumentosWebUltimaBusqueda = new HashSet<>();
 	}
 
 	public void addRelevante(DocumentoWeb docWeb) {
@@ -90,10 +91,15 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 		}
 		ArrayList<DocumentoWeb> listaResultadosDocumentosWeb = Searcher.buscarDocumentosWeb(textoLibre, new HashSet<Localizacion>(), new HashSet<Sector>(),
 				new HashSet<TipoOrganizacion>(), 0, new HashSet<ContrastarCon>(), false, false, false, "");
+		
 		if (listaResultadosDocumentosWeb.size() > 0) {
 			//Presentamos los resultados
 			System.out.println("RR ha obtenido " + listaResultadosDocumentosWeb.size() + " resultados.");
 			mostrarResultados(listaResultadosDocumentosWeb);
+			
+			//Borramos la lista de resultados relevantes de la última búsqueda
+			setResultadosRelevantesDocumentosWebUltimaBusqueda.clear();
+			
 			return true;
 		}
 		else {
@@ -106,7 +112,7 @@ public class PanelVigilanciaResultadosController implements ActionListener {
 		System.out.println("Algoritmo Genético.");
 		//Creamos la lista de Cromosomas
 		List<Cromosoma2> listaCromosomas = new ArrayList<>();
-		for(DocumentoWeb documentoWeb : setResultadosRelevantesDocumentosWeb)
+		for(DocumentoWeb documentoWeb : setResultadosRelevantesDocumentosWebUltimaBusqueda)
 			listaCromosomas.add(new Cromosoma2(documentoWeb));
 		
 		//Expansión de los cromosomas, añadiendo los genes de cada uno a los demás, pero desactivados

@@ -78,6 +78,7 @@ public class Searcher {
 	private static String idioma;
 	private static ArrayList<Resultado> listaResultados;
 	private static ArrayList<Resultado> listaResultadosRelevantes;
+	private static ArrayList<Resultado> listaResultadosRelevantesUltimaBusqueda;
 	public static int totalResultadosEPO;
 	public static int totalResultadosTED;
 	public static int totalResultadosDocsWeb;
