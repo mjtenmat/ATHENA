@@ -1529,6 +1529,7 @@ public class Searcher {
 	}
 
 	private static String codificar(String textoLibre, String tipo) {
+		System.out.println("TRON Searcher.codificar: " + textoLibre);
 		String preExpresion = null, postExpresion = null;
 		switch (tipo) {
 		case "TED":
@@ -1590,14 +1591,11 @@ public class Searcher {
 					break;
 				}
 			default:
-				if (comillasAbiertas)
-					expresion += textoLibre.charAt(i);
-				else
-					expresion += textoLibre.charAt(i);
+				expresion += textoLibre.charAt(i);
 			}
 			if (procesarExpresion) {
 				if (expresion.length() > 0) {
-					if ("not".equals(expresion) || "and".equals(expresion) || "or".equals(expresion)) {
+					if ("not".equals(expresion.toLowerCase().trim()) || "and".equals(expresion.toLowerCase().trim()) || "or".equals(expresion.toLowerCase().trim())) {
 						// Ponemos operador
 						if (tipo.equals("SQL"))
 							if (expresion.equals("not"))
@@ -1626,8 +1624,8 @@ public class Searcher {
 		} // Fin del for
 			// Procesamos la última expresión
 		if (expresion.length() > 0) {
-			if ("not".equals(expresion) || "and".equals(expresion) || "or".equals(expresion)) {
-				// Ponemos operador
+			if ("not".equals(expresion.toLowerCase().trim()) || "and".equals(expresion.toLowerCase().trim()) || "or".equals(expresion.toLowerCase().trim())) {
+					// Ponemos operador
 				query += " " + expresion + " ";
 			} else {
 				// Literal
@@ -1639,7 +1637,7 @@ public class Searcher {
 				query += preExpresion + expresion + postExpresion;
 			}
 		}
-
+		System.out.println("TRON Searcher.codificar: " + query);
 		return query;
 	}
 
